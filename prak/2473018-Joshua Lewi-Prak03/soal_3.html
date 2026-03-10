@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>Soal 3 - Form Tambah Data User</title>
+</head>
+
+<body>
+    <form action="">
+        <table style="border: 1px solid black">
+            <tr>
+                <th>
+                    <h2>Form Tambah Data User</h2>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>Name</td>
+                            <td>:<input type="text" name="name" required placeholder="Name is required"
+                                    oninvalid="this.setCustomValidity('Name is Required!!!')"
+                                    oninput="this.setCustomValidity('')"></td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>:<input type="text" name="address" required placeholder="Address is required"
+                                    oninvalid="this.setCustomValidity('Address is Required!!!')"
+                                    oninput="this.setCustomValidity('')"></td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>:<input type="email" name="email" required placeholder="Email is required"
+                                    oninvalid="this.setCustomValidity('Email is Required!!!')"
+                                    oninput="this.setCustomValidity('')"></td>
+                        </tr>
+                        <tr>
+                            <td>Home Page</td>
+                            <td>:<input type="url" name="homepage" placeholder="https://example.com"></td>
+                        </tr>
+                        <tr>
+                            <td>Birthday</td>
+                            <td>:<input type="date" name="birthday"></td>
+                        </tr>
+                        <tr>
+                            <td>Favorit Color</td>
+                            <td>:<input type="color" name="favorite_color"></td>
+                        </tr>
+                        <tr>
+                            <td>IPK</td>
+                            <td>:<input type="number" name="ipk" step="0.01" min="0" max="4" placeholder="0"></td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number</td>
+                            <td>:<input type="tel" name="phone" placeholder="123-4567890" pattern="[0-9]{3}-[0-9]{7,10}"
+                                    minlength="10" maxlength="13"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" value="Add"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+</html>
