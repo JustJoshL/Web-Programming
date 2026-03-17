@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>2473018-Joshua Lewi</title>
+    <style>
+        .list-1 {
+            list-style-image: url('img/sqpurple.gif');
+        }
+
+        .list-2 {
+            list-style-image: url('img/sqorange.gif');
+        }
+        .list-none {
+            list-style-image: none;
+            list-style-type: none;
+            text-decoration: underline;
+        }
+        .bold {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="list-1">
+        <li>Coffee</li>
+        <li>Tea
+            <ul class="list-2">
+                <li><b class="bold">Cold</b> tea
+                <ul class="list-none">
+                    <li>Jasmine</li>
+                    <li>Green</li>
+                </ul>
+                </li>
+                <li><b class="bold">Hot</b> tea</li>
+            </ul>
+        </li>
+        <li>Coca-Cola</li>
+    </ul>
+</body>
+
+</html>
