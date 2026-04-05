@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>2473018-Joshua Lewi</title>
+    <style>
+        img {
+            position: absolute;
+            width: 200px;
+        }
+
+        .arena {
+            position: relative;
+            padding: 50px; 
+            height: 300px;
+        }
+
+        .full-dasar-1,
+        .full-dasar-2 {
+            z-index: 1;
+        }
+
+        .ungu-full {
+            z-index: 2;
+        }
+
+        .setengah-atas-1,
+        .setengah-atas-2 {
+            z-index: 3;
+        }
+
+        .full-dasar-1, .setengah-atas-1 {
+            left: 50px;
+            top: 50px;
+        }
+
+        .ungu-full {
+            left: 170px;
+            top: 50px;
+        }
+
+        .full-dasar-2, .setengah-atas-2 {
+            left: 290px; 
+            top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="arena">
+        <img src="src/circle-red.png" alt="" class="full-dasar-1">
+        <img src="src/circle-red.png" alt="" class="full-dasar-2">
+        
+        <img src="src/circle-purple.png" alt="" class="ungu-full">
+        
+        <img src="src/circle-red-half.png" alt="" class="setengah-atas-1">
+        <img src="src/circle-red-half.png" alt="" class="setengah-atas-2">
+    </div>
+</body>
+
+</html>

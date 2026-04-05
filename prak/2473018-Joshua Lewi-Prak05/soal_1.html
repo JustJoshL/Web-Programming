@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>2473018-Joshua Lewi</title>
+    <style>
+        .link {
+            display: inline-block;
+            position: relative;
+            padding: 20px;
+            text-decoration: none;
+        }
+
+        .link::before,
+        .link::after,
+        .link span::before,
+        .link span::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #FF0000;
+            border-style: solid;
+        }
+        
+        .link::before {
+            top: 0;
+            left: 0;
+            border-width: 4px 0 0 4px;
+        }
+
+        .link::after {
+            bottom: 0;
+            right: 0;
+            border-width: 0 4px 4px 0;
+        }
+
+        .link span::before {
+            top: 0;
+            right: 0;
+            border-width: 4px 4px 0 0;
+        }
+
+
+        .link span::after {
+            bottom: 0;
+            left: 0;
+            border-width: 0 0 4px 4px;
+        }
+
+        .link:hover::before,
+        .link:hover::after,
+        .link:hover span::before,
+        .link:hover span::after {
+            border-color: #FF00FF;
+        }
+
+        .star {
+            display: block;
+            width: 150px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>
+                <a href="#" class="link">
+                    <span></span>
+                    <img src="src/star.jpg" alt="Star" class="star">
+                </a>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

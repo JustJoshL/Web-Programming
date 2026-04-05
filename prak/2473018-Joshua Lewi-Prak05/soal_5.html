@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>2473018-Joshua Lewi</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav>li {
+            float: left;
+            margin-right: 3px;
+            position: relative;
+        }
+
+        .nav a {
+            display: block;
+            width: 120px;
+            padding: 5px 0;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            background-color: white;
+            border-style: dotted;
+            border-color: grey;
+            border-width: 2px;
+            box-sizing: border-box;
+        }
+
+        .nav a:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            padding-top: 3px;
+        }
+
+        .submenu li {
+            float: none;
+            margin-bottom: 3px;
+        }
+
+        .dropdown:hover .submenu {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="nav">
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+            <a href="#">News</a>
+            <ul class="submenu">
+                <li><a href="#">Sports</a></li>
+                <li><a href="#">Music</a></li>
+                <li><a href="#">Movie</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+</body>
+
+</html>
