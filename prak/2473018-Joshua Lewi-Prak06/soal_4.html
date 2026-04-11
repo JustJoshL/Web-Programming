@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            border: 2px solid black;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        table {
+            width: 500px;
+            border: 1px solid black;
+        }
+
+        tr,
+        td {
+            padding: 8px;
+            font-weight: bold;
+            border: 1px solid black;
+        }
+
+        .tombol {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .label {
+            color: blue;
+            text-align: right;
+            width: 30%;
+        }
+
+        select {
+            width: 50%;
+            padding: 3px;
+        }
+
+        button {
+            color: blue;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 5px 15px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <table>
+            <tr>
+                <td class="label">Input :</td>
+                <td><input type="text" id="inputData"></td>
+            </tr>
+            <tr>
+                <td class="label">Output : </td>
+                <td><input type="text" id="outputData" readonly></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <select id="pilihanKonversi">
+                        <option value="desimal-biner">decimal-biner</option>
+                        <option value="biner-desimal">biner-decimal</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="tombol">
+                    <button onclick="konversi()">PROSES</button>
+                    <button onclick="reset()">RESET</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        function konversi() {
+            var input = document.getElementById("inputData").value;
+            var tipe = document.getElementById("pilihanKonversi").value;
+            var output;
+
+            if (input === "") {
+                alert("Input tidak boleh kosong!");
+                return;
+            }
+
+            if (tipe === "desimal-biner") {
+                var desimal = parseInt(input);
+                var biner = "";
+
+                if (isNaN(desimal) || desimal < 0 || desimal > 255) {
+                    alert("Untuk konversi decimal-biner, masukkan angka 0 s/d 255!");
+                    return;
+                }
+
+                while (desimal > 0) {
+                    var sisa = desimal % 2;
+                    biner = sisa + biner;
+                    desimal = Math.floor(desimal / 2);
+                }
+
+                while (biner.length < 8) {
+                    biner = "0" + biner;
+                }
+            } else if (tipe === "biner-desimal") {
+                var biner = input;
+                var desimal = 0;
+                var pangkat = 0;
+                if (biner.length !== 8) {
+                    alert("Masukkan TEPAT 8 digit angka!");
+                    return;
+                }
+
+                for (let i = 0; i < biner.length; i++) {
+                    if (biner[i] !== '0' && biner[i] !== '1') {
+                        alert("Hanya boleh berisi angka 0 atau 1!");
+                        return;
+                    }
+                }
+                for (var i = biner.length - 1; i >= 0; i--) {
+                    var digit = parseInt(biner[i]);
+
+                    if (digit === 1) {
+                        desimal += Math.pow(2, pangkat);
+                    }
+                    pangkat++;
+                }
+
+            }
+            if (tipe === "desimal-biner") {
+                document.getElementById("outputData").value = biner;
+            } else {
+                document.getElementById("outputData").value = desimal;
+            }
+        }
+
+        function reset() {
+            document.getElementById("inputData").value = "";
+            document.getElementById("outputData").value = "";
+            document.getElementById("pilihanKonversi").selectedIndex = 0;
+        }
+    </script>
+</body>
+
+</html>

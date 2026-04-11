@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+</head>
+<body>
+    <form name="piramid">
+        Tinggi piramida: <input type="number" id="height" name="height"><br><br>
+        <input type="button" value="proses" onclick="buatPiramida()">
+    </form>
+
+    <div id="tempat-table"></div>
+
+    <script type="text/javascript">
+        function buatPiramida() {
+            let tinggi = parseInt(document.getElementById("height").value);
+            let totalKolom = 2 * tinggi - 1;
+            var tableHTML = "<table border='0' style='width: 800px; height: 600px;'>";
+
+            for (var i = 0; i < tinggi; i++) {
+                tableHTML += "<tr>";
+                for (var j = 0; j < totalKolom; j++) {
+                    if (j >= (tinggi - 1 - i) && j <= (tinggi - 1 + i)) {
+                        tableHTML += "<td bgcolor='orange' style='width: 50px; height: 50px;'></td>";
+                    } else {
+                        tableHTML += "<td bgcolor='white' style='width: 50px; height: 50px;'></td>";
+                    }
+                }
+                tableHTML += "</tr>";
+            }
+
+            tableHTML += "</table>";
+            document.getElementById("tempat-table").innerHTML = tableHTML;
+        }
+    </script>
+    </form>
+</body>
+</html>

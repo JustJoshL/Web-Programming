@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        table {
+            border: 1px solid black;
+            font-size: 24px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        td {
+            border: 1px solid black;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="tabel"></div>
+    <script>
+        function buatTabel(angka) {
+            let tabel = "<table>";
+            for (var i = 1; i <= angka; i++) {
+                var hasil = angka * i;
+                tabel += "<tr>";
+                tabel += "<td>" + i + "</td>";
+                tabel += "<td>" + " x " + "</td>";
+                tabel += "<td>" + angka + "</td>";
+                tabel += "<td>" + " = " + "</td>";
+                tabel += "<td>" + hasil + "</td>";
+                tabel += "</tr>";
+            }
+            tabel += "</table>";
+            document.getElementById("tabel").innerHTML = tabel;
+            return tabel;
+        }
+
+        function multiplication() {
+            do {
+                var popUp = prompt("A number?");
+                angka = parseInt(popUp);
+            } while (isNaN(angka));
+            tabelAkhir = buatTabel(angka);
+        }
+
+        window.onload = multiplication;
+    </script>
+
+</body>
+
+</html>
