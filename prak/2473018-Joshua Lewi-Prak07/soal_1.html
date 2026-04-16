@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        .box-container {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 350px;
+            background-color: #f9f9f9;
+            /* font-family: ; */
+            font-size: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            width: 70px;
+        }
+
+        .form-group span {
+            margin-right: 5px;
+        }
+
+        .form-group input[type="text"] {
+            flex: 1;
+        }
+
+        .form-group textarea {
+            flex: 1;
+            height: 80px;
+            resize: none;
+        }
+
+        .counter-container {
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        #txt2 {
+            width: 60px;
+            text-align: right;
+            border: 1px solid #ccc;
+            padding: 2px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box-container">
+        <div class="form-group">
+            <label for="box-judul">Judul</label>
+            <span> : </span>
+            <input type="text" id="box-judul" name="judul">
+        </div>
+        <div class="form-group">
+            <label for="box-deskripsi">Deskripsi</label>
+            <span> : </span>
+            <textarea name="deskripsi" id="box-deskripsi" onkeydown="call_onKeyPress(this)" onkeyup="call_onKeyPress(this)"></textarea>
+        </div>
+        <div class="counter-container">
+            <input type="text" id="txt2" value="0/256" readonly>
+        </div>
+    </div>
+
+
+
+    <script>
+        function call_onKeyPress(ob) {
+            var obval = ob.value;
+            if (obval.length > 256) {
+                ob.value = obval.substr(0, 256);
+            }
+            document.getElementById("txt2").value = obval.length + "/256";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="container" style="border: 1px solid black; padding: 15px; width: 235px;">
+        <div style="margin-bottom: 10px;">
+            <label for="data" style="display:inline-block; width: 50px; font-size: 24px;">Data</label>
+            <input type="text" id="data" name="data">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <input type="button" value="Add" onclick="addData()" style="margin-right: 10px;">
+            <select id="dropdown" name="dropdown" onchange="jalankan(this)">
+                <option value="#">Pilih Operasi</option>
+                <option value="display">Display</option>
+                <option value="count">Count</option>
+                <option value="sum">Sum</option>
+                <option value="average">Average</option>
+                <option value="max">Max</option>
+                <option value="min">Min</option>
+                <option value="ganjil">Ganjil</option>
+                <option value="genap">Genap</option>
+                <option value="hapus">Hapus</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="hasil" style="display:inline-block; width: 50px; font-size: 23px;">Hasil</label>
+            <input type="text" id="hasil" name="hasil" readonly>
+        </div>
+    </div>
+
+    <script>
+        arrayData = new Array();
+        function addData(data) {
+            var input = document.getElementById("data").value;
+            var angka = parseFloat(input);
+
+            if (!isNaN(angka)) {
+                arrayData.push(angka);
+                input.value = "";
+                input.focus();
+            } else {
+                alert("Input harus berupa angka!");
+            }
+        }
+
+        function jalankan(dropdown) {
+            var dropdownElemen = document.getElementById("dropdown");
+            var hasilElemen = document.getElementById("hasil");
+            var pilihan = dropdown.value;
+            var hasilSementara = "";
+
+            if (pilihan === "display") {
+                hasil = arrayData.join(", ");
+            } else if (pilihan === "count") {
+                hasil = arrayData.length;
+            } else if (pilihan === "sum") {
+                var total = 0;
+                for (var i = 0; i < arrayData.length; i++) {
+                    total += arrayData[i];
+                }
+                hasil = total;
+            } else if (pilihan === "average") {
+                var total = 0;
+                for (var i = 0; i < arrayData.length; i++) {
+                    total += arrayData[i];
+                }
+                hasil = (total / arrayData.length);
+            } else if (pilihan === "max") {
+                hasil = Math.max(...arrayData);
+            } else if (pilihan === "min") {
+                hasil = Math.min(...arrayData);
+            } else if (pilihan === "ganjil") {
+                var arrayGanjil = new Array();
+                for (var i = 0; i < arrayData.length; i++) {
+                    if (arrayData[i] % 2 !== 0) {
+                        arrayGanjil.push(arrayData[i]);
+                    }
+                }
+                hasil = arrayGanjil.join(", ");
+
+            } else if (pilihan === "genap") {
+                var arrayGenap = new Array();
+                for (var i = 0; i < arrayData.length; i++) {
+                    if (arrayData[i] % 2 === 0) {
+                        arrayGenap.push(arrayData[i]);
+                    }
+                }
+                hasil = arrayGenap.join(", ");
+            } else if (pilihan === "hapus") {
+                arrayData = [];
+                hasil = "";
+            }
+            hasilElemen.value = hasil;
+            dropdownElemen.value = "";
+        }
+    </script>
+</body>
+
+</html>

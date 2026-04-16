@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 400px;
+            text-align: left;
+        }
+
+        .heading {
+            background-color: #8FBC8F;
+            padding: 8px;
+            border: 1px solid white;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .biru {
+            background-color: #AACCFF;
+        }
+
+        .merah {
+            background-color: #FFCCAA;
+        }
+
+        .hijau {
+            background-color: #CCFFAA;
+        }
+    </style>
+</head>
+
+<body>
+<table>
+    <tr class="heading" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'heading')">
+        <td>Position</td>
+        <td>Programming Language</td>
+        <td>Ratings</td>
+    </tr>
+    <tr class="biru" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'biru')">
+        <td>1</td>
+        <td>C</td>
+        <td>18.058%</td>
+    </tr>
+    <tr class="merah" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'merah')">
+        <td>2</td>
+        <td>Java</td>
+        <td>18.051%</td>
+    </tr>
+    <tr class="biru" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'biru')">
+        <td>3</td>
+        <td>C++</td>
+        <td>9.707%</td>
+    </tr>
+    <tr class="merah" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'merah')">
+        <td>4</td>
+        <td>PHP</td>
+        <td>9.662%</td>
+    </tr>
+    <tr class="biru" onmouseover="jadiHijau(this)" onmouseout="jadiBiasa(this, 'biru')">
+        <td>5</td>
+        <td>(Visual) Basic</td>
+        <td>6.392%</td>
+    </tr>
+</table>
+
+<script>
+    function jadiHijau(baris) {
+        baris.className = 'hijau';
+    }
+
+    function jadiBiasa(baris, warna) {
+        baris.className = warna;
+    }
+</script>
+</body>
+
+</html>
