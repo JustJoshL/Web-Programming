@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <script type="text/javascript" src="jquery-4.0.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#tombol-add").click(function () {
+                var inputNama = $("#input-name").val();
+                if (inputNama !== "") {
+                    $("<div>" + inputNama + "</div>").appendTo("#hasil");
+                    $("#input-name").val('');
+                }
+            });
+
+            $("#tombol-search").click(function () {
+                var keyword = $("#input-name").val();
+                $("#hasil div").css("text-decoration", "none");
+                if (keyword !== "") {
+                    $("#hasil div:contains('" + keyword + "')").css("text-decoration", "underline");
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <input type="text" id="input-name" placeholder="Enter your name">
+    <button id="tombol-add">Add</button>
+    <button id="tombol-search">Search</button>
+    <br>
+    <div id="hasil">
+        <div>John Resig</div>
+        <div>George Martin</div>
+        <div>Malcom John Sinclair</div>
+        <div>J. Ohn</div>
+    </div>
+</body>
+
+</html>

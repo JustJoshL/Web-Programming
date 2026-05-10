@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        ol {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.item {
+            float: left;
+            width: 150px;
+            background-color: #ff1493;
+            text-decoration: underline;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 5px;
+        }
+
+        li.item ol {
+            background-color: white;
+            color: black;
+            border: 1px solid #ff1493;
+            margin-top: 5px;
+            width: 150px;
+        }
+
+        li.item ol li {
+            padding: 2px 2px;
+            text-decoration: underline;
+        }
+    </style>
+    <script type="text/javascript" src="jquery-4.0.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("li.item ol").hide();
+            $(".item").hover(function () {
+                $(this).find("ol").show();
+            }, function () {
+                $(this).find("ol").hide();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <ol id="menu-utama">
+        <li class="item">
+            jQuery
+            <ol>
+                <li>Download</li>
+                <li>Documentation</li>
+                <li>Blog</li>
+            </ol>
+        </li>
+        <li class="item">
+            Community
+            <ol>
+                <li>Mailing List</li>
+                <li>Tutorials</li>
+                <li>Demos</li>
+                <li>Plugins</li>
+            </ol>
+        </li>
+        <li class="item">
+            Development
+            <ol>
+                <li>Source Code</li>
+                <li>Bug Tracking</li>
+                <li>Recent Changes</li>
+            </ol>
+        </li>
+    </ol>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018] Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        #daftar-perusahaan {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="jquery-4.0.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#search-box").on("input", function () {
+                var cari = $(this).val();
+                $("#daftar-perusahaan div").css("color", "black");
+                if (cari !== "") {
+                    $("#daftar-perusahaan div:contains('" + cari + "')").css("color", "red");
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <input type="text" id="search-box">
+    <div id="daftar-perusahaan">
+        <div>Sun Microsystem</div>
+        <div>Apache Software Foundation</div>
+        <div>Oracle Coorporation</div>
+        <div>International Bussiness Machines</div>
+        <div>Microsoft Coorporation</div>
+        <div>Apple Inc</div>
+        <div>Sap Ag</div>
+        <div>Accenture</div>
+        <div>Computer Sciences Coorporation</div>
+        <div>Google</div>
+        <div>Softbank</div>
+        <div>Yahoo</div>
+    </div>
+</body>
+
+</html>
