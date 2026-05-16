@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018]-Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+        }
+
+        th {
+            color: white;
+            background-color: black;
+        }
+
+        .container-input {
+            margin: 20px 0;
+            border: 1px solid black;
+            padding: 10px;
+            width: 300px;
+        }
+    </style>
+    <script src="jquery-4.0.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#search").click(function () {
+                $("#isianTabel").empty();
+                var kelasTerpilih = $("input[name='kelas']:checked").val();
+                var urlPilihan = "";
+
+                if (kelasTerpilih == "All") {
+                    urlPilihan = "jsonSoal1/nilai.js";
+                } else if (kelasTerpilih == "kelasA") {
+                    urlPilihan = "jsonSoal1/nilaiA.js";
+                } else if (kelasTerpilih == "kelasB") {
+                    urlPilihan = "jsonSoal1/nilaiB.js";
+                }
+
+                $.getJSON(urlPilihan, function (data) {
+                    $.each(data.nilai, function (index, mahasiswa) {
+                        $("#isianTabel").append(
+                            "<tr>" +
+                            "<td>" + mahasiswa.nrp + "</td>" +
+                            "<td>" + mahasiswa.nama + "</td>" +
+                            "<td>" + mahasiswa.kelas + "</td>" +
+                            "<td>" + mahasiswa.nilaiakhir + "</td>" +
+                            "</tr>"
+                        );
+                    });
+                    $("#isianTabel tr:odd").css("background-color", "#FFFFCC");
+                    $("#isianTabel tr:even").css("background-color", "#CCFFAA");
+                });
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1>Selamat! Berikut adalah Daftar Mahasiswa yang mendapat<br>Nilai A Pemrograman Web SI Tahun Ajaran 2023/2024</h1>
+    <div class="container-input">
+        <form action="POST">
+            <input type="radio" id="all" name="kelas" value="All" checked>
+            <label for="All">All</label>
+            <br>
+            <input type="radio" id="kelasA" name="kelas" value="kelasA">
+            <label for="kelasA">Kelas A</label>
+            <br>
+            <input type="radio" id="kelasB" name="kelas" value="kelasB">
+            <label for="kelasB">Kelas B</label>
+            <br>
+            <input type="button" id="search" value="Search">
+        </form>
+    </div>
+    <table id="tabelan">
+        <tr>
+            <th>NRP</th>
+            <th>NAMA</th>
+            <th>KELAS</th>
+            <th>NILAI AKHIR</th>
+        </tr>
+        <tbody id="isianTabel"></tbody>
+    </table>
+</body>
+
+</html>

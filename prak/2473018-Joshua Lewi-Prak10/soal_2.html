@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="[2473018]-Joshua Lewi">
+    <title>[2473018]-Joshua Lewi</title>
+    <style>
+        .container {
+            width: 500px;
+            border: 3px double black;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            border-bottom: 3px double black;
+            padding: 10px;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var buttonLook = document.getElementById("look");
+            var wadahNya = document.getElementById("wadah");
+            buttonLook.addEventListener("click", function (event) {
+                fetch("jsonSoal2/SIJson.txt")
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        var isianHTML = "";
+                        isianHTML += "<div class='row' style='margin: 0 auto; text-align: center;'><h3><a href='" + data.link + "'>" + data.title + "</a></h3></div>";
+                        isianHTML += "<div class='row'>";
+                        data.items.forEach(function (berita) {
+                            isianHTML += "<a href='" + berita.link + "'>" + berita.title + "</a>";
+                            isianHTML += "<p>By: " + berita.author + " / " + "<i>" + berita.published + "</i></p>";
+                            isianHTML += "<p>" + berita.description + "</p>";
+                            isianHTML += "<p>Universitas: <a href='" + berita.universitas.m + "'>Click Here</a></p>";
+                            isianHTML += "<p>Tag(s): " + berita.tags + "</p>";
+                        });
+                        isianHTML += "</div>";
+                        isianHTML += "<div class='row'>&copy; " + data.generator + "</div>";
+
+                        wadahNya.innerHTML = isianHTML;
+                    })
+                    .catch(function (error) {
+                        console.error("Error euy:", error);
+                    });
+            });
+        });
+    </script>
+    
+</head>
+
+<body>
+    <div class="container" id="wadah">
+        <div class="row">Title</div>
+        <div class="row">Content</div>
+        <div class="row">Generator</div>
+    </div>
+    <button id="look" value="look">Look</button>
+</body>
+
+</html>
