@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Jadwal - Admin ChurchSync</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Menggunakan CSS yang sama persis dengan Pengumuman Admin untuk konsistensi */
+        .header-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .page-title h2 {
+            color: var(--primary-blue);
+            font-size: 28px;
+        }
+
+        .page-title p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .schedule-list {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .schedule-info h4 {
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .schedule-info p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .action-btns button {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .btn-edit {
+            background-color: #eef2f6;
+            color: var(--primary-blue);
+        }
+
+        .btn-delete {
+            background-color: #fef2f2;
+            color: #dc3545;
+        }
+
+        /* Modal Style */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <nav>
+            <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
+            <a href="pengumuman-admin.html" class="nav-link">Pengumuman</a>
+            <a href="jadwal-admin.html" class="nav-link active">Jadwal Ibadah</a>
+            <a href="data-jemaat-admin.html" class="nav-link">Data Jemaat</a>
+            <a href="laporan-admin.html" class="nav-link">Laporan Ibadah</a>
+            <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
+            <a href="profil-admin.html" class="nav-link">Profil Saya</a>
+        </nav>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="top-navbar">
+            <div class="navbar-right">
+                <div class="noti-icon">🔔<span class="noti-badge"></span></div>
+                <div class="user-profile-dropdown">
+                    <div class="nav-avatar">⚡</div>
+                    <div class="nav-user-name">Halan Walker (Admin)</div>▼
+                    <div class="dropdown-content">
+                        <a href="profil-admin.html">Profil Saya</a>
+                        <a href="login.html" class="logout-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header-toolbar">
+                <div class="page-title">
+                    <h2>Kelola Jadwal Ibadah</h2>
+                    <p>Atur jadwal ibadah rutin dan khusus untuk setiap cabang</p>
+                </div>
+                <button class="btn-add" onclick="document.getElementById('modalJadwal').style.display='flex'">+ Tambah
+                    Jadwal</button>
+            </div>
+
+            <div class="schedule-list">
+                <div class="schedule-info">
+                    <h4>Ibadah Raya 1 (Minggu, 07:00 WIB)</h4>
+                    <p>📍 GBI Maranatha Pusat • Kategori: Umum</p>
+                </div>
+                <div class="action-btns">
+                    <button class="btn-edit"
+                        onclick="document.getElementById('modalJadwal').style.display='flex'">Edit</button>
+                    <button class="btn-delete">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalJadwal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Form Jadwal Ibadah</h3>
+            </div>
+            <div class="form-group"><label>Nama Sesi Ibadah</label><input type="text"
+                    placeholder="Contoh: Ibadah Raya 1"></div>
+            <div class="form-group"><label>Hari</label><select>
+                    <option>Minggu</option>
+                    <option>Rabu</option>
+                    <option>Sabtu</option>
+                </select></div>
+            <div class="form-group"><label>Waktu Mulai</label><input type="time"></div>
+            <div class="form-group"><label>Lokasi Cabang</label><select>
+                    <option>GBI Maranatha Pusat</option>
+                    <option>GBI Maranatha Dago</option>
+                </select></div>
+            <div class="modal-actions">
+                <button class="btn-cancel"
+                    onclick="document.getElementById('modalJadwal').style.display='none'">Batal</button>
+                <button class="btn-add">Simpan Jadwal</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

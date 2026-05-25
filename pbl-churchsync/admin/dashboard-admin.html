@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - ChurchSync</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        /* --- INTERNAL CSS KHUSUS DASHBOARD ADMIN --- */
+        .admin-banner {
+            background-color: var(--primary-blue);
+            border-radius: 12px;
+            padding: 25px 30px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .admin-banner h2 {
+            margin-bottom: 5px;
+        }
+
+        .admin-banner p {
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .stat-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card-admin {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .icon-box-admin {
+            width: 50px;
+            height: 50px;
+            background-color: #eef2f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .data-box-admin p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .data-box-admin h3 {
+            font-size: 22px;
+            color: var(--primary-blue);
+        }
+
+        .grid-two-column {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card-admin {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-admin-header {
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .recent-activity-list {
+            list-style: none;
+        }
+
+        .recent-activity-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .recent-activity-list li:last-child {
+            border-bottom: none;
+        }
+
+        .activity-time {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <nav>
+            <a href="dashboard-admin.html" class="nav-link active">Dashboard</a>
+            <a href="pengumuman-admin.html" class="nav-link">Pengumuman</a>
+            <a href="jadwal-admin.html" class="nav-link">Jadwal Ibadah</a>
+            <a href="data-jemaat-admin.html" class="nav-link">Data Jemaat</a>
+            <a href="laporan-admin.html" class="nav-link">Laporan Ibadah</a>
+            <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
+            <a href="profil-admin.html" class="nav-link">Profil Saya</a>
+        </nav>
+    </div>
+
+    <div class="content-wrapper">
+
+        <div class="top-navbar">
+            <div class="navbar-right">
+                <div class="noti-icon">
+                    🔔<span class="noti-badge"></span>
+                </div>
+
+                <div class="user-profile-dropdown">
+                    <div class="nav-avatar">⚡</div>
+                    <div class="nav-user-name">Halan Walker</div>
+                    ▼
+                    <div class="dropdown-content">
+                        <a href="profil-admin.html">Profil Saya</a>
+                        <a href="login.html" class="logout-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="admin-banner">
+                <h2>Selamat Datang Kembali, Halan Walker!</h2>
+                <p>Sistem Informasi Administrasi Gereja Terpusat — Akun Admin Utama</p>
+            </div>
+
+            <div class="stat-grid-4">
+                <div class="stat-card-admin">
+                    <div class="icon-box-admin">⛪</div>
+                    <div class="data-box-admin">
+                        <p>Total Cabang</p>
+                        <h3>3 Cabang</h3>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="icon-box-admin">👥</div>
+                    <div class="data-box-admin">
+                        <p>Total Jemaat</p>
+                        <h3>1,450 Orang</h3>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="icon-box-admin">📄</div>
+                    <div class="data-box-admin">
+                        <p>Laporan Masuk</p>
+                        <h3>146 Laporan</h3>
+                    </div>
+                </div>
+                <div class="stat-card-admin">
+                    <div class="icon-box-admin">⏳</div>
+                    <div class="data-box-admin">
+                        <p>Butuh Verifikasi</p>
+                        <h3 style="color: #dc3545;">5 Data</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-two-column">
+                <div class="card-admin">
+                    <div class="card-admin-header">🔄 Aktivitas Sistem Terbaru</div>
+                    <ul class="recent-activity-list">
+                        <li><span>Gembala Cabang Dago mengirimkan laporan Ibadah Raya (27 April)</span> <span
+                                class="activity-time">5 menit yang lalu</span></li>
+                        <li><span>Jemaat 'Justin Bieber' memperbarui data alamat domisili</span> <span
+                                class="activity-time">1 jam yang lalu</span></li>
+                        <li><span>Admin menambahkan jadwal ibadah baru untuk sesi Mei</span> <span
+                                class="activity-time">Yesterday</span></li>
+                    </ul>
+                </div>
+
+                <div class="card-admin">
+                    <div class="card-admin-header">📅 Kalender Admin</div>
+                    <div
+                        style="text-align: center; color: #666; padding: 40px 0; background: #f8fafc; border-radius: 8px; font-size: 14px;">
+                        [Widget Kalender Kontrol Pusat]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
