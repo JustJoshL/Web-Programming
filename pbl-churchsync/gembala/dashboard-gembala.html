@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Gembala - ChurchSync</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .profile-banner {
+            background-color: var(--primary-blue);
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-blue);
+        }
+
+        .profile-text h2 {
+            margin-bottom: 5px;
+        }
+
+        .profile-text p {
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .btn-profile {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        .birthday-list {
+            display: flex;
+            gap: 20px;
+            justify-content: space-around;
+        }
+
+        .birthday-item {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: 32%;
+        }
+
+        .birthday-item .avatar {
+            margin: 0 auto 10px;
+        }
+
+        .btn-ucapan {
+            margin-top: 10px;
+            background-color: var(--primary-yellow);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Summary Section Gembala */
+        .summary-section {
+            margin-bottom: 25px;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #eef2f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-data p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-data h3 {
+            font-size: 24px;
+            color: var(--primary-blue);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .pengumuman-list {
+            list-style: none;
+        }
+
+        .pengumuman-list li {
+            background-color: #f1f5f9;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <nav>
+           <nav>
+            <a href="dashboard-gembala.html" class="nav-link active">Dashboard</a>
+            <a href="pengumuman-gembala.html" class="nav-link">Pengumuman</a>
+            <a href="jadwal-gembala.html" class="nav-link">Jadwal Ibadah</a>
+            <a href="data-jemaat-gembala.html" class="nav-link">Data Jemaat</a>
+            <a href="laporan-ibadah-gembala.html" class="nav-link">Laporan Ibadah</a>
+            <a href="profil-gembala.html" class="nav-link">Profil Saya</a>
+        </nav>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-banner">
+            <div class="profile-info">
+                <div class="avatar">👨🏽‍💼</div>
+                <div class="profile-text">
+                    <h2>Kristian Tohalim, S.Th.</h2>
+                    <p>Gembala Cabang Timur</p>
+                </div>
+            </div>
+            <button class="btn-profile">Profile</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Ulang Tahun (30 April 2026)</h3>
+            </div>
+            <div class="birthday-list">
+                <div class="birthday-item">
+                    <div class="avatar">🧑🏽</div>
+                    <p>Jemaat 1</p><button class="btn-ucapan">Kirim Ucapan</button>
+                </div>
+                <div class="birthday-item">
+                    <div class="avatar">🧑🏽</div>
+                    <p>Jemaat 2</p><button class="btn-ucapan">Kirim Ucapan</button>
+                </div>
+                <div class="birthday-item">
+                    <div class="avatar">🧑🏽</div>
+                    <p>Jemaat 3</p><button class="btn-ucapan">Kirim Ucapan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <div class="summary-title">Rangkuman Gembala</div>
+            <div class="summary-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-data">
+                        <p>Total Jemaat Cabang</p>
+                        <h3>100 orang</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📄</div>
+                    <div class="stat-data">
+                        <p>Total Laporan Terkirim</p>
+                        <h3>25 laporan</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Pengumuman</h3>
+                </div>
+                <ul class="pengumuman-list">
+                    <li>Jadwal Ibadah Paskah 2026</li>
+                    <li>Rekapitulasi Persembahan Per Wilayah</li>
+                    <li>Pengumuman Pernikahan Pendeta</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>April 2026</h3>
+                </div>
+                <div
+                    style="text-align: center; color: #666; padding: 30px 0; background: #f8fafc; border-radius: 8px; font-size: 14px;">
+                    [Widget Kalender]
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
