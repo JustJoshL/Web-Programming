@@ -1,0 +1,89 @@
+:root {
+    --primary-blue: #1e3264;
+    --primary-yellow: #ffc107;
+    --bg-light: #eef2f6; 
+    --card-bg: #ffffff;
+    --text-dark: #333;
+    --text-gray: #666;
+    /* Tambahan dari halaman pengumuman */
+    --tag-important: #dc3545;
+    --tag-activity: #17a2b8;
+    --tag-worship: #28a745;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: var(--bg-light);
+    height: 100vh;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 250px;
+    background-color: var(--primary-blue);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.sidebar-logo {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-yellow);
+    margin-bottom: 40px;
+}
+
+.sidebar-logo span {
+    display: block;
+    font-size: 12px;
+    color: #ccc;
+    font-weight: normal;
+}
+
+.nav-link {
+    padding: 15px 20px;
+    color: #d1d5db;
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+    margin-bottom: 5px;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--primary-yellow);
+    color: var(--primary-blue);
+    font-weight: bold;
+    border-radius: 0 20px 20px 0;
+    margin-right: 20px;
+}
+
+/* --- MAIN CONTENT & HEADER --- */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h2 {
+    color: var(--primary-blue);
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.page-header p {
+    color: var(--text-gray);
+    font-size: 14px;
+}

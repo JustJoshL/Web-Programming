@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ChurchSync</title>
+    <style>
+        :root {
+            --primary-blue: #1e3264; /* Warna biru gelap */
+            --primary-yellow: #ffc107; /* Warna kuning/emas */
+            --text-dark: #333;
+            --text-gray: #666;
+            --bg-light: #f4f7f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+        }
+
+        .left-panel {
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 40px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            color: var(--primary-blue);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .login-box p {
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-options a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #152449;
+        }
+
+        .right-panel {
+            width: 50%;
+            background-color: var(--primary-blue);
+            background-image: linear-gradient(rgba(30, 50, 100, 0.7), rgba(30, 50, 100, 0.7)), url('https://images.unsplash.com/photo-1548625361-ec8538749a2a?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-yellow);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <div class="login-box">
+            <h1>Login</h1>
+            <p>Login to your account.</p>
+            
+            <form action="dashboard.html" method="GET">
+                <div class="form-group">
+                    <label for="email">E-mail Address</label>
+                    <input type="email" id="email" placeholder="Masukkan email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Masukkan password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#">Reset Password?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h2 class="logo-text">CHURCHSYNC</h2>
+    </div>
+</body>
+</html>
