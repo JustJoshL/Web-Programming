@@ -10,5 +10,5 @@ if (!$conn) {
     die("Aduh bung, koneksi database gagal nih: " . mysqli_connect_error());
 }
 
-echo "Koneksi ke db_churchsync Sukses Mantap!"; 
+// echo "Koneksi ke db_churchsync Sukses Mantap!"; 
 ?>

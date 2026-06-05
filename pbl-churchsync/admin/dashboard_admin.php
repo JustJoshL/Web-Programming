@@ -1,13 +1,23 @@
 <?php
-// Mulai session
 session_start();
 
-// Cek apakah user sudah login dan apakah role-nya benar-benar 'admin'
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    // Kalau belum login atau bukan admin, tendang balik ke halaman login!
     header("location:../login.php?pesan=belum_login");
     exit();
 }
+include '../koneksi.php';
+
+$query_cabang = mysqli_query($conn, "SELECT COUNT(*) as total_cabang FROM cabang_gereja");
+$data_cabang = mysqli_fetch_assoc($query_cabang);
+
+$query_jemaat = mysqli_query($conn, "SELECT COUNT(*) as total_jemaat FROM jemaat");
+$data_jemaat = mysqli_fetch_assoc($query_jemaat);
+
+$query_laporan = mysqli_query($conn, "SELECT COUNT(*) as total_laporan FROM pendataan");
+$data_laporan = mysqli_fetch_assoc($query_laporan);
+
+$query_verifikasi = mysqli_query($conn, "SELECT COUNT(*) as butuh_verif FROM temp_update_jemaat WHERE status_pengajuan = 'pending'");
+$data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -20,7 +30,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     <link rel="stylesheet" href="../style.css">
 
     <style>
-        /* --- INTERNAL CSS KHUSUS DASHBOARD ADMIN --- */
         .admin-banner {
             background-color: var(--primary-blue);
             border-radius: 12px;
@@ -146,7 +155,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
-                    <div class="nav-user-name">Halan Walker (Admin)</div>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin)</div>
                     ▼
                     <div class="dropdown-content">
                         <a href="profil-admin.html">Profil Saya</a>
@@ -158,7 +167,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 
         <div class="main-content">
             <div class="admin-banner">
-                <h2>Selamat Datang Kembali, Halan Walker!</h2>
+                <h2>Selamat Datang Kembali, <?= $_SESSION['nama_lengkap']; ?>!</h2>
                 <p>Sistem Informasi Administrasi Gereja Terpusat — Akun Admin Utama</p>
             </div>
 
@@ -167,21 +176,21 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
                     <div class="icon-box-admin">⛪</div>
                     <div class="data-box-admin">
                         <p>Total Cabang</p>
-                        <h3>3 Cabang</h3>
+                        <h3><?= $data_cabang['total_cabang']; ?> Cabang</h3>
                     </div>
                 </div>
                 <div class="stat-card-admin">
                     <div class="icon-box-admin">👥</div>
                     <div class="data-box-admin">
                         <p>Total Jemaat</p>
-                        <h3>1,450 Orang</h3>
+                        <h3><?= $data_jemaat['total_jemaat']; ?> Orang</h3>
                     </div>
                 </div>
                 <div class="stat-card-admin">
                     <div class="icon-box-admin">📄</div>
                     <div class="data-box-admin">
                         <p>Laporan Masuk</p>
-                        <h3>146 Laporan</h3>
+                        <h3><?= $data_laporan['total_laporan']; ?> Laporan</h3>
                     </div>
                 </div>
                 <div class="stat-card-admin">
