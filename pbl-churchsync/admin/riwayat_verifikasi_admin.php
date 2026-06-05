@@ -70,7 +70,7 @@
         <nav>
             <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
             <a href="pengumuman-admin.html" class="nav-link">Pengumuman</a>
-            <a href="jadwal-admin.html" class="nav-link">Jadwal Ibadah</a>
+            <a href="jadwal-admin-up.html" class="nav-link">Jadwal Ibadah</a>
             <a href="data-jemaat-admin.html" class="nav-link active">Data Jemaat</a>
             <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
         </nav>
