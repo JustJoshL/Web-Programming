@@ -105,6 +105,8 @@
             width: 600px;
             border-radius: 12px;
             padding: 30px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -138,6 +140,23 @@
             font-family: inherit;
         }
 
+        /* Styling Button Upload Custom */
+        .btn-upload {
+            background: #eef2f6;
+            color: var(--primary-blue);
+            border: 1px dashed var(--primary-blue);
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload:hover {
+            background: #dbeafe;
+        }
+
         .modal-actions {
             display: flex;
             justify-content: flex-end;
@@ -162,9 +181,8 @@
         <nav>
             <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
             <a href="pengumuman-admin.html" class="nav-link active">Pengumuman</a>
-            <a href="jadwal-admin.html" class="nav-link">Jadwal Ibadah</a>
+            <a href="jadwal-admin-up.html" class="nav-link">Jadwal Ibadah</a>
             <a href="data-jemaat-admin.html" class="nav-link">Data Jemaat</a>
-            <a href="laporan-admin.html" class="nav-link">Laporan Ibadah</a>
             <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
             <a href="profil-admin.html" class="nav-link">Profil Saya</a>
         </nav>
@@ -217,16 +235,35 @@
             </div>
             <div class="form-group"><label>Judul Pengumuman</label><input type="text" placeholder="Masukkan judul...">
             </div>
-            <div class="form-group"><label>Kategori</label><select>
-                    <option>Penting</option>
-                    <option>Kegiatan</option>
-                    <option>Ibadah</option>
-                </select></div>
-            <div class="form-group"><label>Target Cabang</label><select>
-                    <option>Semua Cabang (Global)</option>
-                    <option>GBI Maranatha Dago</option>
-                </select></div>
-            <div class="form-group"><label>Isi Pengumuman</label><textarea rows="4"></textarea></div>
+            
+            <!-- Tambahan Field Dilaporkan/Dibuat Oleh -->
+            <div class="form-group">
+                <label>Dibuat Oleh</label>
+                <input type="text" placeholder="Contoh: Pdt. Samuel / Divisi Pemuda" value="Halan Walker">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;"><label>Kategori</label><select>
+                        <option>Penting</option>
+                        <option>Kegiatan</option>
+                        <option>Ibadah</option>
+                    </select></div>
+                <div class="form-group" style="flex: 1;"><label>Target Cabang</label><select>
+                        <option>Semua Cabang (Global)</option>
+                        <option>GBI Maranatha Dago</option>
+                    </select></div>
+            </div>
+            
+            <div class="form-group"><label>Isi Pengumuman</label><textarea rows="4" placeholder="Tulis rincian pengumuman..."></textarea></div>
+            
+            <div class="form-group">
+                <label>Gambar Pendukung (Opsional)</label>
+                <button type="button" class="btn-upload" onclick="document.getElementById('uploadGambar').click()">
+                    📷 Pilih Gambar untuk Diunggah
+                </button>
+                <input type="file" id="uploadGambar" accept="image/*" style="display: none;">
+            </div>
+
             <div class="modal-actions">
                 <button class="btn-cancel"
                     onclick="document.getElementById('modalTambah').style.display='none'">Batal</button>
