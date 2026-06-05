@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ChurchSync</title>
     <style>
         :root {
-            --primary-blue: #1e3264; /* Warna biru gelap */
-            --primary-yellow: #ffc107; /* Warna kuning/emas */
+            --primary-blue: #1e3264;
+            --primary-yellow: #ffc107;
             --text-dark: #333;
             --text-gray: #666;
             --bg-light: #f4f7f6;
@@ -61,8 +62,7 @@
             font-weight: 600;
         }
 
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
+        .form-group input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
@@ -121,29 +121,28 @@
         }
     </style>
 </head>
+
 <body>
     <div class="left-panel">
         <div class="login-box">
             <h1>Login</h1>
             <p>Login to your account.</p>
-            
-            <form action="dashboard.html" method="GET">
+
+            <form action="proses_login.php" method="POST">
                 <div class="form-group">
                     <label for="email">E-mail Address</label>
-                    <input type="email" id="email" placeholder="Masukkan email" required>
+                    <input type="email" name="email" id="email" placeholder="Masukkan email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Masukkan password" required>
+                    <input type="password" name="password" id="password" placeholder="Masukkan password" required>
                 </div>
-                
+
                 <div class="form-options">
-                    <label>
-                        <input type="checkbox"> Remember me
-                    </label>
+                    <label><input type="checkbox"> Remember me</label>
                     <a href="#">Reset Password?</a>
                 </div>
-                
+
                 <button type="submit" class="btn-login">Sign In</button>
             </form>
         </div>
@@ -153,4 +152,5 @@
         <h2 class="logo-text">CHURCHSYNC</h2>
     </div>
 </body>
+
 </html>

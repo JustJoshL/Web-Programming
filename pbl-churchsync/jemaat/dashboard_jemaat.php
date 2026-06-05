@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -127,10 +136,10 @@
             <span>ALL ABOUT OUR CHURCH</span>
         </div>
         <nav>
-            <a href="dashboard-jemaat.html" class="nav-link active">Dashboard</a>
-            <a href="pengumuman-jemaat.html" class="nav-link">Pengumuman</a>
-            <a href="jadwal-jemaat.html" class="nav-link">Jadwal Ibadah</a>
-            <a href="profil-jemaat.html" class="nav-link">Profil Saya</a>
+            <a href="dashboard_jemaat.php" class="nav-link active">Dashboard</a>
+            <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
+            <a href="jadwal_jemaat.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="profil_jemaat.php" class="nav-link">Profil Saya</a>
         </nav>
     </div>
 
@@ -147,8 +156,8 @@
                     <div class="nav-user-name">Justin Bieber</div>
                     ▼
                     <div class="dropdown-content">
-                        <a href="profil-gembala.html">Profil Saya</a>
-                        <a href="login.html" class="logout-item">Logout</a>
+                        <a href="profil_jemaat.php">Profil Saya</a>
+                        <a href="login.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>

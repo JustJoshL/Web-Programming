@@ -1,3 +1,14 @@
+<?php
+// Mulai session
+session_start();
+
+// Cek apakah user sudah login dan apakah role-nya benar-benar 'admin'
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    // Kalau belum login atau bukan admin, tendang balik ke halaman login!
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 

@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
