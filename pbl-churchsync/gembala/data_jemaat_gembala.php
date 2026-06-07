@@ -1,3 +1,36 @@
+<?php
+session_start();
+
+/** @var mysqli $conn */
+
+include '../koneksi.php';
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+
+if (isset($_POST['aksi']) && $_POST['aksi'] == 'tambah_jemaat') {
+    $nama = mysqli_real_escape_string($conn, $_POST['nama_lengkap']);
+    $telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
+    $tgl_lahir = mysqli_real_escape_string($conn, $_POST['tanggal_lahir']);
+    $alamat = mysqli_real_escape_string($conn, $_POST['alamat']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    
+    $password_default = password_hash('jemaat123', PASSWORD_DEFAULT); // Password default
+    $role = 'jemaat';
+
+    $query_insert = "INSERT INTO jemaat (nama_lengkap, tanggal_lahir, no_telp, alamat, email, password, role) 
+                     VALUES ('$nama', '$tgl_lahir', '$telp', '$alamat', '$email', '$password_default', '$role')";
+    
+    mysqli_query($conn, $query_insert);
+    header("Location: data_jemaat_gembala.php");
+    exit();
+}
+
+$query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DESC");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -105,7 +138,6 @@
             color: var(--primary-blue);
         }
 
-        /* Modal Form */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -194,133 +226,85 @@
         </nav>
     </div>
 
-    <div class="content-wrapper">
-
-        <div class="top-navbar">
-            <div class="navbar-right">
-                <div class="noti-icon">
-                    🔔<span class="noti-badge"></span>
-                </div>
-
-                <div class="user-profile-dropdown">
-                    <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name">Kristian Tohalim, S.Th.</div>
-                    ▼
-                    <div class="dropdown-content">
-                        <a href="profil-gembala.html">Profil Saya</a>
-                        <a href="login.html" class="logout-item">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<div class="content-wrapper">
         <div class="main-content">
             <div class="header-toolbar">
                 <div class="page-title">
                     <h2>Daftar Jemaat</h2>
-                    <p>1324 anggota terdaftar</p>
-                    <div class="toolbar-actions">
-                        <input type="text" class="search-box" placeholder="Cari nama jemaat...">
-                        <select class="filter-box">
-                            <option>Semua Cabang</option>
-                        </select>
-                    </div>
                 </div>
-                <button class="btn-add" onclick="document.getElementById('modalTambahData').style.display='flex'">+
-                    Tambah
-                    Data Jemaat</button>
-
-                <div id="modalTambahData" class="modal-overlay">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Tambah Data Jemaat Baru</h3>
-                        </div>
-
-                        <div class="form-group"><label>Nama Lengkap</label><input type="text"
-                                placeholder="Masukkan nama jemaat..."></div>
-                        <div class="form-group"><label>Nomor Telepon</label><input type="text"
-                                placeholder="Contoh: 08123456789"></div>
-                        <div class="form-group"><label>Tanggal Lahir</label><input type="date"></div>
-                        <div class="form-group"><label>Alamat Domisili</label><input type="text"
-                                placeholder="Masukkan alamat lengkap..."></div>
-
-                        <div class="form-group"
-                            style="flex-direction: row; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background: #eef2f6; border-radius: 8px;">
-                            <input type="checkbox" id="buatAkunGembala"
-                                style="width: auto; transform: scale(1.2); cursor: pointer;">
-                            <label for="buatAkunGembala"
-                                style="margin-bottom: 0; cursor: pointer; color: var(--primary-blue);">
-                                Jemaat butuh akses web? Centang untuk buatkan Akun Login
-                            </label>
-                        </div>
-
-                        <div class="modal-actions">
-                            <button class="btn-cancel"
-                                onclick="document.getElementById('modalTambahData').style.display='none'">Batal</button>
-                            <button class="btn-add" style="background-color: var(--primary-blue); color: white;">Simpan
-                                Data</button>
-                        </div>
-                    </div>
-                </div>
+                <button class="btn-add" onclick="document.getElementById('modalTambahData').style.display='flex'">+ Tambah Jemaat</button>
             </div>
 
             <div class="list-container">
-                <div class="list-item">
-                    <div class="item-info">
-                        <div class="avatar">👨🏽</div>
-                        <div class="item-text">
-                            <h4>Vanessa Felicia</h4>
-                            <p>GBI Maranatha Pusat • vanessa@gmail.com</p>
-                        </div>
+            <?php while($row = mysqli_fetch_assoc($query_jemaat)) { ?>
+            <div class="list-item">
+                <div class="item-info">
+                    <div class="avatar">👤</div>
+                    <div class="item-text">
+                        <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
+                        <p>
+                            <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?> 
+                            <br>
+                            <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+                                <?= htmlspecialchars($row['role']); ?>
+                            </span>
+                        </p>
                     </div>
-                    <button class="btn-view">👁️</button>
                 </div>
-                <div class="list-item">
-                    <div class="item-info">
-                        <div class="avatar">👨🏽</div>
-                        <div class="item-text">
-                            <h4>Joshua L</h4>
-                            <p>GBI Maranatha Dago • joshua@gmail.com</p>
-                        </div>
-                    </div>
-                    <button class="btn-view">👁️</button>
-                </div>
+                <button class="btn-view" onclick="viewJemaat(
+                    '<?= addslashes($row['nama_lengkap']); ?>', 
+                    '<?= htmlspecialchars($row['no_telp']); ?>', 
+                    '<?= htmlspecialchars($row['tanggal_lahir']); ?>', 
+                    '<?= addslashes($row['alamat']); ?>', 
+                    '<?= htmlspecialchars($row['email']); ?>',
+                    '<?= htmlspecialchars($row['role']); ?>' 
+                )">👁️</button>
+            </div>
+            <?php } ?>
+        </div>
+        </div>
+    </div>
+
+    <div id="modalViewData" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Detail Jemaat</h3></div>
+            <div class="detail-row"><label>Nama Lengkap: </label><span id="view_nama"></span></div>
+            <div class="detail-row"><label>Email: </label><span id="view_email"></span></div>
+            <div class="detail-row"><label>No. Telepon: </label><span id="view_telp"></span></div>
+            <div class="detail-row"><label>Tanggal Lahir: </label><span id="view_tgl"></span></div>
+            <div class="detail-row"><label>Alamat: </label><span id="view_alamat"></span></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="document.getElementById('modalViewData').style.display='none'">Tutup</button>
             </div>
         </div>
+    </div>
 
-        <div id="modalJemaat" class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 style="color: var(--primary-blue);">Tambah Data Jemaat</h3>
-                </div>
-                <div class="form-group">
-                    <label>Nama Jemaat</label>
-                    <input type="text">
-                </div>
-                <div class="form-group">
-                    <label>Email Jemaat (opsional)</label>
-                    <input type="email">
-                </div>
-                <div class="form-group">
-                    <label>Alamat</label>
-                    <input type="text">
-                </div>
-                <div class="form-group">
-                    <label>No. Telepon</label>
-                    <input type="text">
-                </div>
-                <div class="form-group">
-                    <label>Tanggal Lahir</label>
-                    <input type="date">
-                </div>
+    <div id="modalTambahData" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Tambah Data Jemaat</h3>
+            <form action="" method="POST">
+                <div class="form-group"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" required></div>
+                <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+                <div class="form-group"><label>Nomor Telepon</label><input type="text" name="no_telp" required></div>
+                <div class="form-group"><label>Tanggal Lahir</label><input type="date" name="tanggal_lahir" required></div>
+                <div class="form-group"><label>Alamat Domisili</label><input type="text" name="alamat" required></div>
 
                 <div class="modal-actions">
-                    <button class="btn-cancel"
-                        onclick="document.getElementById('modalJemaat').style.display='none'">Batal</button>
-                    <button class="btn-save">Simpan</button>
+                    <button type="button" class="btn-cancel" onclick="document.getElementById('modalTambahData').style.display='none'">Batal</button>
+                    <button type="submit" name="aksi" value="tambah_jemaat" class="btn-save" style="background: var(--primary-blue); color:white;">Simpan Data</button>
                 </div>
-            </div>
+            </form>
         </div>
+    </div>
+    <script>
+        function viewJemaat(nama, telp, tgl, alamat, email) {
+            document.getElementById('view_nama').innerText = nama;
+            document.getElementById('view_telp').innerText = telp;
+            document.getElementById('view_tgl').innerText = tgl;
+            document.getElementById('view_alamat').innerText = alamat;
+            document.getElementById('view_email').innerText = email;
+            document.getElementById('modalViewData').style.display = 'flex';
+        }
+    </script>
 </body>
-
 </html>
