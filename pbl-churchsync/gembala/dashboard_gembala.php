@@ -182,12 +182,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
         <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
         <nav>
            <nav>
-            <a href="dashboard-gembala.html" class="nav-link active">Dashboard</a>
-            <a href="pengumuman-gembala.html" class="nav-link">Pengumuman</a>
-            <a href="jadwal-gembala.html" class="nav-link">Jadwal Ibadah</a>
-            <a href="data-jemaat-gembala.html" class="nav-link">Data Jemaat</a>
-            <a href="laporan-ibadah-gembala.html" class="nav-link">Laporan Ibadah</a>
-            <a href="profil-gembala.html" class="nav-link">Profil Saya</a>
+            <a href="dashboard_gembala.php" class="nav-link active">Dashboard</a>
+            <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
+            <a href="jadwal_gembala.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="data_jemaat_gembala.php" class="nav-link">Data Jemaat</a>
+            <a href="laporan_ibadah_gembala.php" class="nav-link">Laporan Ibadah</a>
+            <a href="profil_gembala.php" class="nav-link">Profil Saya</a>
         </nav>
         </nav>
     </div>
