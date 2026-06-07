@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+/** @var mysqli $conn */
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+
+include '../koneksi.php';
+
+$query_pengumuman = mysqli_query($conn, "SELECT * FROM pengumuman WHERE status_publikasi = 'Published' ORDER BY tanggal_publikasi DESC");
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -9,66 +24,49 @@
     <link rel="stylesheet" href="../style.css">
 
     <style>
-        /* --- INTERNAL CSS KHUSUS PENGUMUMAN --- */
-        .announcement-container {
+        .header-toolbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        .page-title h2 { color: var(--primary-blue); font-size: 28px; margin-bottom: 5px; }
+        .page-title p { color: var(--text-gray); font-size: 14px; }
+        
+        /* CSS Card Pengumuman */
+        .list-card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 25px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--primary-blue);
+        }
+        
+        .list-header {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 15px;
         }
 
-        .announcement-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+        .list-info h4 { color: var(--primary-blue); margin-bottom: 8px; font-size: 20px; }
+        .list-info p { color: var(--text-gray); font-size: 13px; }
+        
+        .badge-kategori { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; margin-right: 10px; background-color: #17a2b8; }
+        .badge-status { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-right: 10px; }
+        .status-Published { background-color: #dcfce7; color: #166534; }
+        .status-Draft { background-color: #fef3c7; color: #b45309; }
 
-        .card-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 4px;
-            color: white;
-            text-transform: uppercase;
-        }
-
-        .badge.important {
-            background-color: var(--tag-important);
-        }
-
-        .badge.activity {
-            background-color: var(--tag-activity);
-        }
-
-        .badge.worship {
-            background-color: var(--tag-worship);
-        }
-
-        .badge.general {
-            background-color: var(--text-gray);
-        }
-
-        .date {
-            color: var(--text-gray);
-        }
-
-        .announcement-card h3 {
-            color: var(--primary-blue);
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .announcement-card p {
-            color: var(--text-dark);
+        .pengumuman-body {
             font-size: 15px;
+            color: var(--text-dark);
             line-height: 1.6;
+            white-space: pre-line; /* Mempertahankan enter/baris baru dari database */
+        }
+
+        .pengumuman-img {
+            margin-top: 15px;
+            max-width: 300px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
@@ -100,57 +98,54 @@
                     <div class="nav-user-name">Kristian Tohalim, S.Th.</div>
                     ▼
                     <div class="dropdown-content">
-                        <a href="profil-gembala.html">Profil Saya</a>
-                        <a href="login.html" class="logout-item">Logout</a>
+                        <a href="profil_gembala.php">Profil Saya</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="main-content">
-            <div class="page-header">
-                <h2>Pengumuman</h2>
-                <p>Informasi dan berita terbaru dari gereja</p>
-            </div>
-
-            <div class="announcement-container">
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge important">Penting</span>
-                        <span class="date">28 April 2026</span>
-                    </div>
-                    <h3>Ibadah Natal Bersama 2026</h3>
-                    <p>Ibadah Natal Bersama akan dilaksanakan pada tanggal 25 Desember 2026 pukul 09.00 WIB di Gedung
-                        Utama
-                        GBI Maranatha Pusat. Seluruh jemaat dari semua cabang diundang untuk hadir bersama keluarga.</p>
-                </div>
-
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge activity">Kegiatan</span>
-                        <span class="date">23 April 2026</span>
-                    </div>
-                    <h3>Pendaftaran Pelayanan Worship Team</h3>
-                    <p>Dibuka pendaftaran untuk bergabung dalam tim pujian dan penyembahan gereja. Bagi jemaat yang
-                        memiliki
-                        talenta di bidang musik dan vokal, silakan mendaftarkan diri melalui sekretariat masing-masing
-                        cabang.</p>
-                </div>
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge worship">Ibadah</span>
-                        <span class="date">20 April 2026</span>
-                    </div>
-                    <h3>Jadwal Ibadah Bulan Mei 2026</h3>
-                    <p>Informasi jadwal ibadah untuk bulan Mei 2026 telah diperbarui. Terdapat perubahan waktu ibadah
-                        pada
-                        Ibadah sesi kedua di cabang Dago. Silakan cek halaman jadwal ibadah untuk informasi
-                        selengkapnya.
-                    </p>
+            <div class="header-toolbar">
+                <div class="page-title">
+                    <h2>Informasi & Pengumuman</h2>
+                    <p>Pusat informasi kegiatan dan ibadah gereja</p>
                 </div>
             </div>
+
+            <?php 
+            if(mysqli_num_rows($query_pengumuman) > 0) {
+                while($row = mysqli_fetch_assoc($query_pengumuman)) { 
+            ?>
+            <div class="list-card">
+                <div class="list-header">
+                    <div class="list-info">
+                        <h4><?= htmlspecialchars($row['judul_pengumuman']); ?></h4>
+                        <p>
+                            <span class="badge-kategori"><?= htmlspecialchars($row['kategori_pengumuman']); ?></span>
+                            Dipublikasikan pada: <?= date('d F Y', strtotime($row['tanggal_publikasi'])); ?>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="pengumuman-body">
+                    <?= htmlspecialchars($row['isi_pengumuman']); ?>
+                    
+                    <?php if (!empty($row['gambar_pendukung'])) { ?>
+                        <br>
+                        <img src="../uploads/<?= htmlspecialchars($row['gambar_pendukung']); ?>" alt="Gambar Pengumuman" class="pengumuman-img">
+                    <?php } ?>
+                </div>
+            </div>
+            <?php 
+                } 
+            } else {
+                echo "<p style='text-align: center; color: var(--text-gray); padding: 40px; background: white; border-radius: 12px;'>Belum ada informasi atau pengumuman saat ini.</p>";
+            }
+            ?>
+
         </div>
     </div>
 
 </body>
-
 </html>
