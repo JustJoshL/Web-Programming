@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+/** @var mysqli $conn */
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     header("location:../login.php?pesan=belum_login");
     exit();
@@ -18,6 +20,25 @@ $data_laporan = mysqli_fetch_assoc($query_laporan);
 
 $query_verifikasi = mysqli_query($conn, "SELECT COUNT(*) as butuh_verif FROM temp_update_jemaat WHERE status_pengajuan = 'pending'");
 $data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
+
+$query_jadwal_terdekat = mysqli_query($conn, "
+    SELECT kategori_ibadah, waktu_pelaksanaan 
+    FROM jadwal_ibadah 
+    WHERE waktu_pelaksanaan >= NOW() 
+    ORDER BY waktu_pelaksanaan ASC 
+    LIMIT 3
+");
+
+$query_aktivitas = mysqli_query($conn, "
+    (SELECT 'laporan' AS tipe, waktu_pelaporan AS waktu, 'Gembala Cabang' AS aktor, 'mengirimkan laporan pendataan ibadah baru' AS aksi 
+     FROM pendataan)
+    UNION
+    (SELECT 'update' AS tipe, temp_update_jemaat.tanggal_pengajuan AS waktu, jemaat.nama_lengkap AS aktor, 'mengajukan perubahan data profil' AS aksi 
+     FROM temp_update_jemaat 
+     JOIN jemaat ON temp_update_jemaat.id_jemaat = jemaat.id_jemaat)
+    ORDER BY waktu DESC 
+    LIMIT 3
+");
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -136,12 +157,12 @@ $data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
     <div class="sidebar">
         <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
         <nav>
-            <a href="dashboard-admin.html" class="nav-link active">Dashboard</a>
-            <a href="pengumuman-admin.html" class="nav-link">Pengumuman</a>
-            <a href="jadwal-admin-up.html" class="nav-link">Jadwal Ibadah</a>
-            <a href="data-jemaat-admin.html" class="nav-link">Data Jemaat</a>
-            <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
-            <a href="profil-admin.html" class="nav-link">Profil Saya</a>
+            <a href="dashboard_admin.php" class="nav-link active">Dashboard</a>
+            <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>
+            <a href="jadwal_admin_up.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="data_jemaat_admin.php" class="nav-link">Data Jemaat</a>
+            <a href="cabang_admin.php" class="nav-link">Cabang Gereja</a>
+            <a href="profil_admin.php" class="nav-link">Profil Saya</a>
         </nav>
     </div>
 
@@ -158,8 +179,8 @@ $data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
                     <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin)</div>
                     ▼
                     <div class="dropdown-content">
-                        <a href="profil-admin.html">Profil Saya</a>
-                        <a href="login.html" class="logout-item">Logout</a>
+                        <a href="profil_admin.php">Profil Saya</a>
+                        <a href="login.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
@@ -206,21 +227,42 @@ $data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
                 <div class="card-admin">
                     <div class="card-admin-header">🔄 Aktivitas Sistem Terbaru</div>
                     <ul class="recent-activity-list">
-                        <li><span>Gembala Cabang Dago mengirimkan laporan Ibadah Raya (27 April)</span> <span
-                                class="activity-time">5 menit yang lalu</span></li>
-                        <li><span>Jemaat 'Justin Bieber' memperbarui data alamat domisili</span> <span
-                                class="activity-time">1 jam yang lalu</span></li>
-                        <li><span>Admin menambahkan jadwal ibadah baru untuk sesi Mei</span> <span
-                                class="activity-time">Yesterday</span></li>
+                        <?php if (mysqli_num_rows($query_aktivitas) == 0) : ?>
+                            <li style="justify-content: center; color: #94a3b8;">Belum ada aktivitas sistem terbaru.</li>
+                        <?php else : ?>
+                            <?php while ($row_act = mysqli_fetch_assoc($query_aktivitas)) : ?>
+                                <li>
+                                    <span>
+                                        <?= $row_act['tipe'] == 'laporan' ? '📊' : '👤'; ?>
+                                        <strong><?= $row_act['aktor']; ?></strong> <?= $row_act['aksi']; ?>
+                                    </span>
+                                    <span class="activity-time">
+                                        <?= date('d M Y, H:i', strtotime($row_act['waktu'])); ?>
+                                    </span>
+                                </li>
+                            <?php endwhile; ?>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
                 <div class="card-admin">
-                    <div class="card-admin-header">📅 Kalender Admin</div>
-                    <div
-                        style="text-align: center; color: #666; padding: 40px 0; background: #f8fafc; border-radius: 8px; font-size: 14px;">
-                        [Widget Kalender Kontrol Pusat]
-                    </div>
+                    <div class="card-admin-header">📅 Jadwal Ibadah Mendatang</div>
+                    <?php if (mysqli_num_rows($query_jadwal_terdekat) == 0) : ?>
+                        <div style="text-align: center; color: #666; padding: 40px 0; background: #f8fafc; border-radius: 8px; font-size: 14px;">
+                            [ Tidak ada jadwal ibadah terdekat ]
+                        </div>
+                    <?php else : ?>
+                        <?php while ($row_jdwal = mysqli_fetch_assoc($query_jadwal_terdekat)) : ?>
+                            <li style="background: #f8fafc; margin-bottom: 8px; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--primary-yellow);">
+                                <div>
+                                    <strong style="color: var(--primary-blue); d-block;"><?= $row_jdwal['kategori_ibadah']; ?></strong>
+                                    <div style="font-size: 12px; color: #666; margin-top: 3px;">
+                                        🕒 <?= date('l, d M Y - H:i', strtotime($row_jdwal['waktu_pelaksanaan'])); ?> WIB
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

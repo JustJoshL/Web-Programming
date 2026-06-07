@@ -121,12 +121,12 @@
     <div class="sidebar">
         <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
         <nav>
-            <a href="dashboard-admin.html" class="nav-link">Dashboard</a>
-            <a href="pengumuman-admin.html" class="nav-link">Pengumuman</a>
-            <a href="jadwal-admin-up.html" class="nav-link">Jadwal Ibadah</a>
-            <a href="data-jemaat-admin.html" class="nav-link">Data Jemaat</a>
-            <a href="cabang-admin.html" class="nav-link">Cabang Gereja</a>
-            <a href="profil-admin.html" class="nav-link active">Profil Saya</a>
+            <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
+            <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>
+            <a href="jadwal_admin_up.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="data_jemaat_admin.php" class="nav-link">Data Jemaat</a>
+            <a href="cabang_admin.php" class="nav-link">Cabang Gereja</a>
+            <a href="profil_admin.php" class="nav-link active">Profil Saya</a>
         </nav>
     </div>
 
@@ -137,7 +137,7 @@
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">Halan Walker (Admin)</div>▼
-                    <div class="dropdown-content"><a href="login.html">Logout</a></div>
+                    <div class="dropdown-content"><a href="login.php">Logout</a></div>
                 </div>
             </div>
         </div>
@@ -174,7 +174,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <a href="../login.html" class="btn-logout">Logout</a>
+                        <a href="../login.php" class="btn-logout">Logout</a>
                         <button type="button" class="btn-submit">Simpan Profil Admin</button>
                     </div>
                 </form>
