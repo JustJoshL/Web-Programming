@@ -1,3 +1,22 @@
+<?php
+session_start();
+
+/** @var mysqli $conn */
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+include '../koneksi.php';
+
+$query_jadwal = mysqli_query($conn, "
+    SELECT jadwal_ibadah.*, cabang_gereja.nama_cabang 
+    FROM jadwal_ibadah 
+    LEFT JOIN cabang_gereja ON jadwal_ibadah.id_cabang = cabang_gereja.id_cabang 
+    ORDER BY jadwal_ibadah.waktu_pelaksanaan DESC
+");
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -45,9 +64,13 @@
             align-items: center;
         }
 
-        /* Penanda Visual Untuk Jadwal Selesai & Mendatang */
-        .schedule-list.past { border-left: 5px solid #166534; }
-        .schedule-list.upcoming { border-left: 5px solid #f59e0b; }
+        .schedule-list.past {
+            border-left: 5px solid #166534;
+        }
+
+        .schedule-list.upcoming {
+            border-left: 5px solid #f59e0b;
+        }
 
         .schedule-info h4 {
             color: var(--text-dark);
@@ -70,10 +93,16 @@
             font-weight: bold;
         }
 
-        .status-past { background-color: #dcfce7; color: #166534; }
-        .status-upcoming { background-color: #fef3c7; color: #b45309; }
-        
-        /* Status Laporan */
+        .status-past {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-upcoming {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         .badge-laporan {
             background-color: #eef2f6;
             color: var(--primary-blue);
@@ -97,18 +126,37 @@
             font-weight: bold;
         }
 
-        .btn-edit { background-color: #eef2f6; color: var(--primary-blue); }
-        .btn-delete { background-color: #fef2f2; color: #dc3545; }
-        
-        /* Styling Tombol Laporan */
-        .btn-report { background-color: #dcfce7; color: #166534; border: 1px solid #166534; }
-        .btn-report:hover { background-color: #bbf7d0; }
-        .btn-report.view-mode { background-color: var(--primary-blue); color: white; border: none; }
-        .btn-report:disabled { 
-            background-color: #f1f5f9; 
-            color: #94a3b8; 
+        .btn-edit {
+            background-color: #eef2f6;
+            color: var(--primary-blue);
+        }
+
+        .btn-delete {
+            background-color: #fef2f2;
+            color: #dc3545;
+        }
+
+        .btn-report {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #166534;
+        }
+
+        .btn-report:hover {
+            background-color: #bbf7d0;
+        }
+
+        .btn-report.view-mode {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-report:disabled {
+            background-color: #f1f5f9;
+            color: #94a3b8;
             border: 1px solid #cbd5e1;
-            cursor: not-allowed; 
+            cursor: not-allowed;
         }
 
         /* Modal Style */
@@ -165,20 +213,16 @@
             font-family: inherit;
         }
 
-        /* Styling Dinamis Pelayan Ibadah */
         .pelayan-row {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
             align-items: center;
         }
-        
+
         .pelayan-row input {
             flex: 2;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
-            background-repeat: no-repeat;
-            background-position: 10px center;
-            padding-left: 35px !important;
+            padding-left: 10px;
         }
 
         .pelayan-row select {
@@ -211,9 +255,11 @@
             text-align: center;
             margin-top: 5px;
         }
-        .btn-add-row:hover { background: #dbeafe; }
 
-        /* Styling Daftar Pelayan di Laporan */
+        .btn-add-row:hover {
+            background: #dbeafe;
+        }
+
         .pelayan-list-summary {
             background: white;
             border: 1px solid #e2e8f0;
@@ -275,7 +321,7 @@
         <nav>
             <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>
-            <a href="jadwal_admin_up.php" class="nav-link active">Jadwal Ibadah</a>
+            <a href="jadwal_admin.php" class="nav-link active">Jadwal Ibadah</a>
             <a href="data_jemaat_admin.php" class="nav-link">Data Jemaat</a>
             <a href="cabang_admin.php" class="nav-link">Cabang Gereja</a>
             <a href="profil_admin.php" class="nav-link">Profil Saya</a>
@@ -288,7 +334,7 @@
                 <div class="noti-icon">🔔<span class="noti-badge"></span></div>
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
-                    <div class="nav-user-name">Halan Walker (Admin)</div>▼
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin)</div>▼
                 </div>
             </div>
         </div>
@@ -302,171 +348,91 @@
                 <button class="btn-add" onclick="bukaModal('modalJadwal')">+ Tambah Jadwal</button>
             </div>
 
-            <!-- JADWAL SUDAH LEWAT (BELUM DIBUAT LAPORAN) -->
-            <div class="schedule-list past">
-                <div class="schedule-info">
-                    <h4>Ibadah Raya 1 (Minggu, 11 Mei 2026, 07:00 WIB)</h4>
-                    <p>
-                        📍 GBI Maranatha Pusat 
-                        <span class="status-badge status-past">Selesai</span>
-                        <span class="badge-laporan" style="color:#dc3545; border-color:#dc3545; background:#fef2f2;">Laporan Belum Ada</span>
-                    </p>
-                </div>
-                <div class="action-btns">
-                    <button class="btn-report" onclick="bukaModal('modalLaporan')">📝 Buat Laporan</button>
-                    <button class="btn-edit" onclick="bukaModal('modalJadwal')">Edit</button>
-                    <button class="btn-delete">Hapus</button>
-                </div>
-            </div>
-            
-            <!-- JADWAL SUDAH LEWAT (SUDAH DIBUAT LAPORAN) -->
-            <div class="schedule-list past">
-                <div class="schedule-info">
-                    <h4>Ibadah Doa Malam (Jumat, 9 Mei 2026, 18:00 WIB)</h4>
-                    <p>
-                        📍 GBI Maranatha Pusat 
-                        <span class="status-badge status-past">Selesai</span>
-                        <span class="badge-laporan" style="color:#166534; border-color:#166534; background:#dcfce7;">Laporan Terkirim</span>
-                    </p>
-                </div>
-                <div class="action-btns">
-                    <button class="btn-report view-mode" onclick="bukaModal('modalLaporan')">📄 Lihat Laporan</button>
-                    <button class="btn-edit" onclick="bukaModal('modalJadwal')">Edit</button>
-                    <button class="btn-delete">Hapus</button>
-                </div>
-            </div>
+            <?php
+            if (mysqli_num_rows($query_jadwal) == 0) {
+                echo "<p style='text-align:center; color:#666;'>Belum ada jadwal ibadah yang dibuat.</p>";
+            } else {
+                while ($row = mysqli_fetch_assoc($query_jadwal)) :
 
-            <!-- JADWAL MENDATANG -->
-            <div class="schedule-list upcoming">
-                <div class="schedule-info">
-                    <h4>Ibadah Youth (Minggu, 18 Mei 2026, 17:00 WIB)</h4>
-                    <p>
-                        📍 GBI Maranatha Dago 
-                        <span class="status-badge status-upcoming">Mendatang</span>
-                    </p>
-                </div>
-                <div class="action-btns">
-                    <button class="btn-report" disabled>⏳ Laporan Belum Dibuka</button>
-                    <button class="btn-edit" onclick="bukaModal('modalJadwal')">Edit</button>
-                    <button class="btn-delete">Hapus</button>
-                </div>
-            </div>
+                    // --- LOGIKA WAKTU PHP ---
+                    $waktu_db = strtotime($row['waktu_pelaksanaan']);
+                    $waktu_sekarang = time();
+                    $is_past = ($waktu_db < $waktu_sekarang); // Ngecek apakah udah lewat
+
+                    // Tentukan class border dan badge berdasarkan waktu
+                    $border_class = $is_past ? 'past' : 'upcoming';
+                    $badge_class = $is_past ? 'status-past' : 'status-upcoming';
+                    $badge_text = $is_past ? 'Selesai' : 'Mendatang';
+
+                    // CEK LAPORAN: Di sini kita cek apakah di tabel 'pendataan' sudah ada id_jadwal ini?
+                    // (Sementara gw set dummy logic 'false' dulu sampai fitur Create Laporan kita bikin)
+                    $ada_laporan = false;
+            ?>
+
+                    <div class="schedule-list <?= $border_class; ?>">
+                        <div class="schedule-info">
+                            <h4><?= $row['kategori_ibadah']; ?>
+                                (<?= date('l, d M Y, H:i', strtotime($row['waktu_pelaksanaan'])); ?> WIB)
+                            </h4>
+                            <p>
+                                📍 Cabang: <strong><?= $row['nama_cabang']; ?></strong> <span class="status-badge <?= $badge_class; ?>"><?= $badge_text; ?></span>
+
+                                <?php if ($is_past): ?>
+                                    <?php if ($ada_laporan): ?>
+                                        <span class="badge-laporan" style="color:#166534; border-color:#166534; background:#dcfce7;">Laporan Terkirim</span>
+                                    <?php else: ?>
+                                        <span class="badge-laporan" style="color:#dc3545; border-color:#dc3545; background:#fef2f2;">Laporan Belum Ada</span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                        <div class="action-btns">
+                            <?php if ($is_past): ?>
+                                <?php if ($ada_laporan): ?>
+                                    <button class="btn-report view-mode" onclick="bukaModal('modalLaporan')">📄 Lihat Laporan</button>
+                                <?php else: ?>
+                                    <button class="btn-report" onclick="bukaModal('modalLaporan')">📝 Buat Laporan</button>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <button class="btn-report" disabled>⏳ Laporan Belum Dibuka</button>
+                            <?php endif; ?>
+
+                            <button class="btn-edit" onclick="bukaModal('modalJadwal')">Edit</button>
+                            <button class="btn-delete">Hapus</button>
+                        </div>
+                    </div>
+
+            <?php
+                endwhile;
+            }
+            ?>
         </div>
     </div>
 
-    <!-- MODAL 1: TAMBAH / EDIT JADWAL -->
     <div id="modalJadwal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Form Jadwal Ibadah</h3>
             </div>
-            <div class="form-group"><label>Nama Sesi Ibadah</label><input type="text" placeholder="Contoh: Ibadah Raya 1"></div>
-            <div style="display: flex; gap: 10px;">
-                <div class="form-group" style="flex: 1;"><label>Tanggal & Hari</label><input type="date"></div>
-                <div class="form-group" style="flex: 1;"><label>Waktu Mulai</label><input type="time"></div>
-            </div>
-            <div class="form-group"><label>Lokasi Cabang</label>
-                <select>
-                    <option>GBI Maranatha Pusat</option>
-                    <option>GBI Maranatha Dago</option>
-                </select>
-            </div>
-            
-            <!-- SECTION PELAYAN IBADAH -->
-            <div class="form-group">
-                <label>Penugasan Pelayan Ibadah</label>
-                <div id="container-pelayan">
-                    <div class="pelayan-row">
-                        <input type="text" placeholder="Cari nama jemaat...">
-                        <select>
-                            <option value="">-- Pilih Peran --</option>
-                            <option>Worship Leader (WL)</option>
-                            <option>Singer</option>
-                            <option>Pemusik</option>
-                            <option>Penyambut Jemaat (Usher)</option>
-                            <option>Multimedia</option>
-                        </select>
-                        <button type="button" class="btn-remove-row" onclick="hapusBaris(this)">✖</button>
-                    </div>
-                </div>
-                <button type="button" class="btn-add-row" onclick="tambahBaris()">+ Tambah Pelayan Lainnya</button>
-            </div>
-
+            <p>Fitur form menyusul di step berikutnya...</p>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="tutupModal('modalJadwal')">Batal</button>
-                <button class="btn-add">Simpan Jadwal</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: BUAT / CEK LAPORAN IBADAH -->
     <div id="modalLaporan" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Form Laporan Ibadah</h3>
             </div>
-            
-            <!-- Info Data Utama yang ditarik dari Jadwal -->
-            <div style="background: #eef2f6; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; border-left: 4px solid var(--primary-blue);">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                    <div><strong>Sesi:</strong> Ibadah Raya 1</div>
-                    <div><strong>Tanggal:</strong> Minggu, 11 Mei 2026</div>
-                    <div><strong>Waktu:</strong> 07:00 WIB</div>
-                    <div><strong>Cabang:</strong> GBI Maranatha Pusat</div>
-                </div>
-                
-                <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 10px 0;">
-                
-                <!-- Rincian Nama & Peran Pelayan Terjadwal -->
-                <strong>Daftar Pelayan Terjadwal:</strong>
-                <div class="pelayan-list-summary">
-                    <div class="pelayan-item">
-                        <span class="pelayan-name">Budi Santoso</span>
-                        <span class="pelayan-role">Worship Leader</span>
-                    </div>
-                    <div class="pelayan-item">
-                        <span class="pelayan-name">Siti Aminah</span>
-                        <span class="pelayan-role">Singer</span>
-                    </div>
-                    <div class="pelayan-item">
-                        <span class="pelayan-name">Daniel Setiawan</span>
-                        <span class="pelayan-role">Pemusik</span>
-                    </div>
-                    <div class="pelayan-item">
-                        <span class="pelayan-name">Grace Natalia</span>
-                        <span class="pelayan-role">Penyambut Jemaat</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form Input Laporan -->
-            <div class="form-group"><label>Dilaporkan Oleh</label><input type="text" placeholder="Contoh: Pdt. Samuel Wibowo" value="Halan Walker"></div>
-            <div class="form-group"><label>Total Kehadiran Jemaat</label><input type="number" placeholder="Masukkan total jiwa yang hadir"></div>
-            
-            <!-- SECTION KEUANGAN (Persembahan & Perpuluhan) -->
-            <div style="display: flex; gap: 10px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Total Persembahan (Rp)</label>
-                    <input type="number" placeholder="Contoh: 1500000">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Total Perpuluhan (Rp)</label>
-                    <input type="number" placeholder="Contoh: 5000000">
-                </div>
-            </div>
-            
-            <div class="form-group"><label>Catatan / Ringkasan Evaluasi</label>
-                <textarea rows="4" placeholder="Masukkan catatan tambahan ibadah, evaluasi, kesaksian, atau info lainnya..."></textarea>
-            </div>
+            <p>Fitur form menyusul di step berikutnya...</p>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="tutupModal('modalLaporan')">Batal</button>
-                <button class="btn-add">Simpan Data Laporan</button>
             </div>
         </div>
     </div>
-
     <script>
-        // Fungsi Buka Tutup Modal
         function bukaModal(idModal) {
             document.getElementById(idModal).style.display = 'flex';
         }
@@ -475,7 +441,6 @@
             document.getElementById(idModal).style.display = 'none';
         }
 
-        // Fungsi Tambah Baris Pelayan Secara Dinamis (Di Modal Jadwal)
         function tambahBaris() {
             const container = document.getElementById('container-pelayan');
             const rowBaru = document.createElement('div');
@@ -495,7 +460,6 @@
             container.appendChild(rowBaru);
         }
 
-        // Fungsi Hapus Baris Pelayan
         function hapusBaris(btn) {
             const container = document.getElementById('container-pelayan');
             if (container.children.length > 1) {
@@ -503,6 +467,14 @@
             } else {
                 alert("Minimal harus ada satu baris input pelayan.");
             }
+        }
+
+        function bukaModal(idModal) {
+            document.getElementById(idModal).style.display = 'flex';
+        }
+
+        function tutupModal(idModal) {
+            document.getElementById(idModal).style.display = 'none';
         }
     </script>
 </body>

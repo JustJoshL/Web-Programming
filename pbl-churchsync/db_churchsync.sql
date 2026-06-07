@@ -44,18 +44,19 @@ CREATE TABLE `jadwal_ibadah` (
   `id_jadwal` int(10) NOT NULL AUTO_INCREMENT,
   `kategori_ibadah` varchar(255) NOT NULL,
   `waktu_pelaksanaan` datetime(6) NOT NULL,
+  `id_cabang` int(11) NOT NULL,
   PRIMARY KEY (`id_jadwal`),
   CONSTRAINT `kd_jadwal` FOREIGN KEY (`id_jadwal`) REFERENCES `cabang_gereja` (`id_cabang`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `jadwal_ibadah` */
 
-insert  into `jadwal_ibadah`(`id_jadwal`,`kategori_ibadah`,`waktu_pelaksanaan`) values 
-(1,'Ibadah Raya 1 Pusat','2026-06-07 07:00:00.000000'),
-(2,'Ibadah Raya 2 Dago','2026-06-07 09:30:00.000000'),
-(3,'Ibadah Youth Pasteur','2026-06-06 17:00:00.000000'),
-(4,'Ibadah Raya 1 Buah Batu','2026-06-07 08:00:00.000000'),
-(5,'Ibadah Tengah Minggu Cimahi','2026-06-10 18:30:00.000000');
+insert  into `jadwal_ibadah`(`id_jadwal`,`kategori_ibadah`,`waktu_pelaksanaan`,`id_cabang`) values 
+(1,'Ibadah Raya 1 Pusat','2026-06-07 07:00:00.000000',1),
+(2,'Ibadah Raya 2 Dago','2026-06-07 09:30:00.000000',2),
+(3,'Ibadah Youth Pasteur','2026-06-06 17:00:00.000000',3),
+(4,'Ibadah Raya 1 Buah Batu','2026-06-07 08:00:00.000000',4),
+(5,'Ibadah Tengah Minggu Cimahi','2026-06-10 18:30:00.000000',5);
 
 /*Table structure for table `jemaat` */
 
@@ -119,9 +120,8 @@ CREATE TABLE `pengumuman` (
   `status_publikasi` enum('Draft','Published') NOT NULL,
   `kategori_pengumuman` varchar(50) NOT NULL,
   `gambar_pendukung` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_pengumuman`),
-  CONSTRAINT `kd_jemaat` FOREIGN KEY (`id_pengumuman`) REFERENCES `jemaat` (`id_jemaat`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id_pengumuman`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `pengumuman` */
 
@@ -130,7 +130,9 @@ insert  into `pengumuman`(`id_pengumuman`,`judul_pengumuman`,`isi_pengumuman`,`t
 (2,'Latihan Musik','Latihan musik dipindah ke hari Jumat.','2026-06-02','Published','Kegiatan','musik.jpg'),
 (3,'Kerja Bakti','Mohon kehadiran jemaat untuk kerja bakti.','2026-06-03','Draft','Kegiatan','kerja_bakti.jpg'),
 (4,'Kelas Baptisan','Pendaftaran kelas baptisan sudah dibuka.','2026-06-04','Published','Penting','baptisan.jpg'),
-(5,'Ibadah Padang','Ibadah padang dilaksanakan di Lembang.','2026-06-05','Draft','Kegiatan','ibadah_padang.jpg');
+(5,'Ibadah Padang','Ibadah padang dilaksanakan di Lembang.','2026-06-05','Draft','Kegiatan','ibadah_padang.jpg'),
+(8,'Jadwal Baptisan Air','Hari: Senin\r\nTanggal: 14 Juni 2026\r\nWaktu: 08:00 - 10:00\r\nTempat: Kolam Renang Surya Sport','2026-06-07','Published','Kegiatan',''),
+(11,'Berita aja','Bla blabla ablablablablabala','2026-06-08','Published','Kegiatan','805862927115434280.jpg');
 
 /*Table structure for table `penugasan_pelayan` */
 
