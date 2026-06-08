@@ -5,28 +5,12 @@ session_start();
 
 include '../koneksi.php';
 
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
     header("location:../login.php?pesan=belum_login");
     exit();
 }
 
-if (isset($_POST['aksi']) && $_POST['aksi'] == 'tambah_jemaat') {
-    $nama = mysqli_real_escape_string($conn, $_POST['nama_lengkap']);
-    $telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
-    $tgl_lahir = mysqli_real_escape_string($conn, $_POST['tanggal_lahir']);
-    $alamat = mysqli_real_escape_string($conn, $_POST['alamat']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    
-    $password_default = password_hash('jemaat123', PASSWORD_DEFAULT); // Password default
-    $role = 'jemaat';
-
-    $query_insert = "INSERT INTO jemaat (nama_lengkap, tanggal_lahir, no_telp, alamat, email, password, role) 
-                     VALUES ('$nama', '$tgl_lahir', '$telp', '$alamat', '$email', '$password_default', '$role')";
-    
-    mysqli_query($conn, $query_insert);
-    header("Location: data_jemaat_gembala.php");
-    exit();
-}
 
 $query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DESC");
 ?>
@@ -232,7 +216,6 @@ $query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DES
                 <div class="page-title">
                     <h2>Daftar Jemaat</h2>
                 </div>
-                <button class="btn-add" onclick="document.getElementById('modalTambahData').style.display='flex'">+ Tambah Jemaat</button>
             </div>
 
             <div class="list-container">
@@ -279,23 +262,6 @@ $query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DES
         </div>
     </div>
 
-    <div id="modalTambahData" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Tambah Data Jemaat</h3>
-            <form action="" method="POST">
-                <div class="form-group"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" required></div>
-                <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-                <div class="form-group"><label>Nomor Telepon</label><input type="text" name="no_telp" required></div>
-                <div class="form-group"><label>Tanggal Lahir</label><input type="date" name="tanggal_lahir" required></div>
-                <div class="form-group"><label>Alamat Domisili</label><input type="text" name="alamat" required></div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="document.getElementById('modalTambahData').style.display='none'">Batal</button>
-                    <button type="submit" name="aksi" value="tambah_jemaat" class="btn-save" style="background: var(--primary-blue); color:white;">Simpan Data</button>
-                </div>
-            </form>
-        </div>
-    </div>
     <script>
         function viewJemaat(nama, telp, tgl, alamat, email) {
             document.getElementById('view_nama').innerText = nama;
