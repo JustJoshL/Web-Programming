@@ -504,8 +504,35 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
                             <p>
                                 <?= $row['email']; ?>
                                 • <?= $row['no_telp']; ?>
-                                • <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
                             </p>
+
+                            <?php
+                            $role = $row['role'];
+
+                            if ($role == 'admin') {
+                                $bg = '#fee2e2';
+                                $color = '#dc2626';
+                            } elseif ($role == 'gembala_cabang') {
+                                $bg = '#dbeafe';
+                                $color = '#2563eb';
+                            } else {
+                                $bg = '#dcfce7';
+                                $color = '#16a34a';
+                            }
+                            ?>
+
+                            <span style="
+                                display:inline-block;
+                                margin-top:5px;
+                                background:<?= $bg ?>;
+                                color:<?= $color ?>;
+                                padding:4px 10px;
+                                border-radius:20px;
+                                font-size:11px;
+                                font-weight:600;
+                            ">
+                                <?= ucwords(str_replace('_', ' ', strtolower($role))); ?>
+                            </span>
                         </div>
                     </div>
 
