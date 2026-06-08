@@ -16,12 +16,11 @@ if (isset($_POST['tambah'])) {
     $no_telp = $_POST['no_telp'];
     $tanggal_lahir = $_POST['tanggal_lahir'];
     $alamat = $_POST['alamat'];
-    $email = $_POST['email'];
+    $email = $_POST['email'] ?? '';
     $id_cabang = $_POST['id_cabang'];
 
     mysqli_query($conn, "
-        INSERT INTO jemaat
-        (
+        INSERT INTO jemaat (
             nama_lengkap,
             tanggal_lahir,
             no_telp,
@@ -31,8 +30,7 @@ if (isset($_POST['tambah'])) {
             role,
             id_cabang
         )
-        VALUES
-        (
+        VALUES (
             '$nama',
             '$tanggal_lahir',
             '$no_telp',
@@ -43,6 +41,9 @@ if (isset($_POST['tambah'])) {
             '$id_cabang'
         )
     ");
+
+    header("Location: data_jemaat_admin.php?status=sukses");
+    exit();
 }
 
 $query_jemaat = mysqli_query($conn, "
@@ -249,10 +250,8 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
         }
 
         .akun-wrapper {
-            display: none;
-            /* Default sembunyi */
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 15px;
+            padding: 15px;
             background: #f8fafc;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -262,10 +261,25 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
             display: block !important;
             /* Paksa muncul */
         }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+
+            max-height: 90vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
 <body>
+    <?php
+    if (isset($_GET['status']) && $_GET['status'] == 'sukses') {
+        echo "<script>alert('Data jemaat berhasil ditambahkan');</script>";
+    }
+    ?>
     <div class="sidebar">
         <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
         <nav>
@@ -317,82 +331,116 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
 
                     <div id="modalTambahDataAdmin" class="modal-overlay">
                         <div class="modal-content">
+
                             <form method="POST">
+
                                 <div class="modal-header">
                                     <h3>Tambah Data Jemaat</h3>
                                 </div>
 
-                                <div class="form-group"><label>Nama Lengkap</label><input type="text"
+                                <div class="form-group">
+                                    <label>Nama Lengkap</label>
+                                    <input type="text"
                                         name="nama_lengkap"
-                                        placeholder="Masukkan nama jemaat..."></div>
+                                        placeholder="Masukkan nama jemaat..."
+                                        required>
+                                </div>
+
                                 <div class="form-group">
                                     <label>Cabang Penempatan</label>
 
-                                    <select name="id_cabang">
-
+                                    <select name="id_cabang" required>
                                         <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) : ?>
-
                                             <option value="<?= $cabang['id_cabang']; ?>">
                                                 <?= $cabang['nama_cabang']; ?>
                                             </option>
-
                                         <?php endwhile; ?>
-
                                     </select>
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div class="form-group"><label>Nomor Telepon</label><input type="text"
-                                            name="no_telp"
-                                            placeholder="0812xxxx"></div>
-                                    <div class="form-group"><label>Tanggal Lahir</label><input type="date"
-                                            name="tanggal_lahir"></div>
-                                </div>
-                                <div class="form-group"><label>Alamat Domisili</label><input type="text"
-                                        name="alamat"
-                                        placeholder="Masukkan alamat lengkap..."></div>
 
-                                <div
-                                    style="margin-top: 15px; padding: 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
-                                    <div style="padding: 10px; background: #eef2f6; border-radius: 8px;">
-                                        <input type="checkbox" id="toggleAkun" onclick="toggleAkun(this)"
-                                            style="transform: scale(1.2); margin-right: 8px;">
-                                        <label for="toggleAkun"
-                                            style="font-weight: bold; color: var(--primary-blue); cursor: pointer;">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                                    <div class="form-group">
+                                        <label>Nomor Telepon</label>
+                                        <input type="text"
+                                            name="no_telp"
+                                            placeholder="0812xxxx">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tanggal Lahir</label>
+                                        <input type="date"
+                                            name="tanggal_lahir">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Alamat Domisili</label>
+                                    <input type="text"
+                                        name="alamat"
+                                        placeholder="Masukkan alamat lengkap...">
+                                </div>
+
+                                <div style="margin-top:15px;padding:15px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;">
+
+                                    <div style="padding:10px;background:#eef2f6;border-radius:8px;">
+                                        <input type="checkbox"
+                                            id="toggleAkun"
+                                            onchange="toggleAkun(this)">
+
+                                        <label for="toggleAkun">
                                             Buatkan Akun Login Web (Opsional)
                                         </label>
                                     </div>
 
                                     <div id="akunFields" class="akun-wrapper">
-                                        <div class="form-group"><label>Email Login</label><input type="email"
+
+                                        <div class="form-group">
+                                            <label>Email Login</label>
+                                            <input type="email"
                                                 name="email"
-                                                placeholder="Masukkan email login"></div>
-                                        <div class="form-group"><label>Password Default</label><input type="text"
-                                                name="password_default"
-                                                value="churchsync123" disabled></div>
+                                                placeholder="Masukkan email login">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Password Default</label>
+                                            <input type="text"
+                                                value="churchsync123"
+                                                readonly>
+                                        </div>
+
                                     </div>
+
                                 </div>
 
                                 <div class="modal-actions">
-                                    <button class="btn-cancel"
-                                        onclick="document.getElementById('modalTambahDataAdmin').style.display='none'">Batal</button>
+                                    <button type="button"
+                                        class="btn-cancel"
+                                        onclick="document.getElementById('modalTambahDataAdmin').style.display='none'">
+                                        Batal
+                                    </button>
+
                                     <button type="submit"
                                         name="tambah"
                                         class="btn-add"
-                                        style="background-color: var(--primary-blue); color: white;">
+                                        style="background-color:var(--primary-blue);color:white;">
                                         Simpan Data
                                     </button>
                                 </div>
+
                             </form>
+
                         </div>
                     </div>
 
                     <script>
                         function toggleAkun(checkbox) {
-                            var fields = document.getElementById('akunFields');
+                            const fields = document.getElementById('akunFields');
+
                             if (checkbox.checked) {
-                                fields.style.display = 'block';
+                                fields.style.display = "block";
+                                fields.style.visibility = "visible";
                             } else {
-                                fields.style.display = 'none';
+                                fields.style.display = "none";
                             }
                         }
                     </script>
@@ -426,37 +474,6 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
                 </div>
 
             <?php endwhile; ?>
-        </div>
-    </div>
-
-    <div id="modalJemaat" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Registrasi Akun Jemaat Baru</h3>
-            </div>
-            <div class="form-group"><label>Nama Lengkap</label><input type="text"></div>
-            <div class="form-group"><label>Email (Untuk Login)</label><input type="email"></div>
-            <div class="form-group"><label>Password Default</label><input type="text" value="churchsync123" disabled>
-            </div>
-            <div class="form-group">
-                <label>Cabang Penempatan</label>
-
-                <select name="id_cabang">
-                    <option value="1">GBI Maranatha Pusat</option>
-                    <option value="2">GBI Maranatha Dago</option>
-                    <option value="3">GBI Maranatha Pasteur</option>
-                    <option value="4">GBI Maranatha Buah Batu</option>
-                    <option value="5">GBI Maranatha Cimahi</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button type="button"
-                    class="btn-cancel"
-                    onclick="document.getElementById('modalTambahDataAdmin').style.display='none'">
-                    Batal
-                </button>
-                <button class="btn-add">Buat Akun</button>
-            </div>
         </div>
     </div>
 </body>

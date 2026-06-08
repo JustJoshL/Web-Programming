@@ -205,4 +205,5 @@ ADD CONSTRAINT fk_jemaat_cabang
 FOREIGN KEY (id_cabang)
 REFERENCES cabang_gereja(id_cabang);
 
-DESCRIBE jemaat;
+ALTER TABLE jemaat
+DROP FOREIGN KEY jemaat_ibfk_1;
