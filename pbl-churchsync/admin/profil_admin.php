@@ -1,3 +1,67 @@
+<?php
+session_start();
+
+/** @var mysqli $conn */
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+
+include '../koneksi.php';
+
+$id_jemaat = $_SESSION['id_jemaat'];
+
+if (isset($_POST['simpan'])) {
+
+    $nama = $_POST['nama_lengkap'];
+    $email = $_POST['email'];
+    $password_baru = $_POST['password_baru'];
+
+    $no_telp = $_POST['no_telp'];
+    $tanggal_lahir = $_POST['tanggal_lahir'];
+    $alamat = $_POST['alamat'];
+
+    if (!empty($password_baru)) {
+
+        mysqli_query($conn, "
+            UPDATE jemaat
+            SET nama_lengkap='$nama',
+                email='$email',
+                password='$password_baru',
+                no_telp='$no_telp',
+                tanggal_lahir='$tanggal_lahir',
+                alamat='$alamat'
+            WHERE id_jemaat='$id_jemaat'
+        ");
+    } else {
+
+        mysqli_query($conn, "
+            UPDATE jemaat
+            SET nama_lengkap='$nama',
+                email='$email',
+                no_telp='$no_telp',
+                tanggal_lahir='$tanggal_lahir',
+                alamat='$alamat'
+            WHERE id_jemaat='$id_jemaat'
+        ");
+    }
+
+    echo "<script>
+            alert('Profil berhasil diperbarui');
+            window.location='profil_admin.php';
+          </script>";
+    exit();
+}
+
+$query = mysqli_query(
+    $conn,
+    "SELECT * FROM jemaat WHERE id_jemaat='$id_jemaat'"
+);
+
+$data = mysqli_fetch_assoc($query);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -89,6 +153,16 @@
             color: var(--text-dark);
         }
 
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: #f8fafc;
+            font-size: 14px;
+            color: var(--text-dark);
+            resize: vertical;
+        }
+
         .form-actions {
             display: flex;
             justify-content: space-between;
@@ -136,7 +210,9 @@
                 <div class="noti-icon">🔔<span class="noti-badge"></span></div>
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
-                    <div class="nav-user-name">Halan Walker (Admin)</div>▼
+                    <div class="nav-user-name">
+                        <?= $data['nama_lengkap']; ?> (<?= ucfirst($data['role']); ?>)
+                    </div>
                     <div class="dropdown-content"><a href="login.php">Logout</a></div>
                 </div>
             </div>
@@ -151,31 +227,58 @@
                 <div class="profile-user-info">
                     <div class="big-avatar">⚡</div>
                     <div class="user-meta">
-                        <h3>Halan Walker</h3>
-                        <p>admin.pusat@churchsync.com</p>
-                        <span class="role-badge">Super Admin Pusat</span>
+                        <h3><?= $data['nama_lengkap']; ?></h3>
+                        <p><?= $data['email']; ?></p>
+                        <span class="role-badge"><?= ucfirst($data['role']); ?></span>
                     </div>
                 </div>
 
-                <form>
+                <form method="POST">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nama Lengkap</label>
-                            <input type="text" value="Halan Walker">
+                            <input type="text"
+                                name="nama_lengkap"
+                                value="<?= $data['nama_lengkap']; ?>">
                         </div>
                         <div class="form-group">
                             <label>Email Admin</label>
-                            <input type="email" value="admin.pusat@churchsync.com">
+                            <input type="email"
+                                name="email"
+                                value="<?= $data['email']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="text"
+                                name="no_telp"
+                                value="<?= $data['no_telp']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Lahir</label>
+                            <input type="date"
+                                name="tanggal_lahir"
+                                value="<?= $data['tanggal_lahir']; ?>">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Alamat</label>
+                            <textarea name="alamat"
+                                rows="4"><?= $data['alamat']; ?></textarea>
                         </div>
                         <div class="form-group full-width">
                             <label>Kata Sandi Baru (Opsional)</label>
-                            <input type="password" placeholder="Masukkan password baru jika ingin mengubah...">
+                            <input type="password"
+                                name="password_baru"
+                                placeholder="Masukkan password baru">
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <a href="../login.php" class="btn-logout">Logout</a>
-                        <button type="button" class="btn-submit">Simpan Profil Admin</button>
+                        <button type="submit"
+                            name="simpan"
+                            class="btn-submit">
+                            Simpan Profil Admin
+                        </button>
                     </div>
                 </form>
             </div>
