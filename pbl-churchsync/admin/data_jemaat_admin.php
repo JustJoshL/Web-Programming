@@ -46,12 +46,26 @@ if (isset($_POST['tambah'])) {
     exit();
 }
 
-$query_jemaat = mysqli_query($conn, "
-    SELECT *
-    FROM jemaat
-    WHERE role='jemaat'
-    ORDER BY nama_lengkap ASC
-");
+$id_cabang_filter = $_GET['id_cabang'] ?? '';
+
+if ($id_cabang_filter != '') {
+
+    $query_jemaat = mysqli_query($conn, "
+        SELECT *
+        FROM jemaat
+        WHERE role='jemaat'
+        AND id_cabang='$id_cabang_filter'
+        ORDER BY nama_lengkap ASC
+    ");
+} else {
+
+    $query_jemaat = mysqli_query($conn, "
+        SELECT *
+        FROM jemaat
+        WHERE role='jemaat'
+        ORDER BY nama_lengkap ASC
+    ");
+}
 
 $query_cabang = mysqli_query($conn, "
     SELECT *
@@ -311,13 +325,41 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
         <div class="main-content">
             <div class="header-toolbar">
                 <div class="page-title">
-                    <h2>Data Jemaat Global</h2>
+                    <h2>Data Jemaat</h2>
                     <div class="toolbar-actions">
                         <input type="text" class="search-box" placeholder="Cari jemaat...">
-                        <select class="filter-box">
-                            <option>Semua Cabang</option>
-                            <option>GBI Pusat</option>
-                        </select>
+                        <form method="GET">
+
+                            <select
+                                name="id_cabang"
+                                class="filter-box"
+                                onchange="this.form.submit()">
+
+                                <option value="">Semua Cabang</option>
+
+                                <?php
+                                $filter_cabang = mysqli_query($conn, "
+                                    SELECT *
+                                    FROM cabang_gereja
+                                    ORDER BY nama_cabang
+                                ");
+
+                                while ($cabang = mysqli_fetch_assoc($filter_cabang)) :
+                                ?>
+
+                                    <option
+                                        value="<?= $cabang['id_cabang']; ?>"
+                                        <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
+
+                                        <?= $cabang['nama_cabang']; ?>
+
+                                    </option>
+
+                                <?php endwhile; ?>
+
+                            </select>
+
+                        </form>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
