@@ -51,19 +51,21 @@ $id_cabang_filter = $_GET['id_cabang'] ?? '';
 if ($id_cabang_filter != '') {
 
     $query_jemaat = mysqli_query($conn, "
-        SELECT *
-        FROM jemaat
-        WHERE role='jemaat'
-        AND id_cabang='$id_cabang_filter'
-        ORDER BY nama_lengkap ASC
+        SELECT j.*, c.nama_cabang
+        FROM jemaat j
+        LEFT JOIN cabang_gereja c
+        ON j.id_cabang = c.id_cabang
+        WHERE j.id_cabang = '$id_cabang_filter'
+        ORDER BY j.role, j.nama_lengkap
     ");
 } else {
 
     $query_jemaat = mysqli_query($conn, "
-        SELECT *
-        FROM jemaat
-        WHERE role='jemaat'
-        ORDER BY nama_lengkap ASC
+        SELECT j.*, c.nama_cabang
+        FROM jemaat j
+        LEFT JOIN cabang_gereja c
+        ON j.id_cabang = c.id_cabang
+        ORDER BY j.role, j.nama_lengkap
     ");
 }
 
@@ -317,7 +319,7 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
                     </div>
                     <div class="dropdown-content">
                         <a href="profil_admin.php">Profil Saya</a>
-                        <a href="login.php" class="logout-item">Logout</a>
+                        <a href="../login.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
@@ -502,22 +504,80 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
                             <p>
                                 <?= $row['email']; ?>
                                 • <?= $row['no_telp']; ?>
+                                • <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
                             </p>
                         </div>
                     </div>
 
                     <div class="action-btns">
+
+                        <button
+                            class="btn-edit"
+                            onclick="viewJemaat(
+                                '<?= addslashes($row['nama_lengkap']); ?>',
+                                '<?= htmlspecialchars($row['email']); ?>',
+                                '<?= htmlspecialchars($row['no_telp']); ?>',
+                                '<?= htmlspecialchars($row['tanggal_lahir']); ?>',
+                                '<?= addslashes($row['alamat']); ?>',
+                                '<?= addslashes($row['nama_cabang']); ?>',
+                                '<?= htmlspecialchars($row['role']); ?>'
+                            )">
+                            👁️
+                        </button>
+
                         <a href="edit_jemaat.php?id=<?= $row['id_jemaat']; ?>"
                             class="btn-edit"
                             style="text-decoration:none;padding:8px 12px;border-radius:6px;">
                             Edit Data
                         </a>
+
                     </div>
                 </div>
 
             <?php endwhile; ?>
         </div>
     </div>
+
+    <div id="modalViewData" class="modal-overlay">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3>Detail Pengguna</h3>
+            </div>
+
+            <p><b>Nama:</b> <span id="view_nama"></span></p>
+            <p><b>Email:</b> <span id="view_email"></span></p>
+            <p><b>No Telepon:</b> <span id="view_telp"></span></p>
+            <p><b>Tanggal Lahir:</b> <span id="view_tgl"></span></p>
+            <p><b>Alamat:</b> <span id="view_alamat"></span></p>
+            <p><b>Cabang:</b> <span id="view_cabang"></span></p>
+            <p><b>Role:</b> <span id="view_role"></span></p>
+
+            <div class="modal-actions">
+                <button
+                    class="btn-cancel"
+                    onclick="document.getElementById('modalViewData').style.display='none'">
+                    Tutup
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function viewJemaat(nama, email, telp, tgl, alamat, cabang, role) {
+
+            document.getElementById('view_nama').innerText = nama;
+            document.getElementById('view_email').innerText = email;
+            document.getElementById('view_telp').innerText = telp;
+            document.getElementById('view_tgl').innerText = tgl;
+            document.getElementById('view_alamat').innerText = alamat;
+            document.getElementById('view_cabang').innerText = cabang;
+            document.getElementById('view_role').innerText = role;
+
+            document.getElementById('modalViewData').style.display = 'flex';
+        }
+    </script>
 </body>
 
 </html>
