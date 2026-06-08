@@ -185,3 +185,24 @@ insert  into `temp_update_jemaat`(`id_pengajuan`,`id_jemaat`,`no_hp_baru`,`alama
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+ALTER TABLE jemaat
+ADD id_cabang INT NOT NULL;
+
+UPDATE jemaat
+SET id_cabang = 1
+WHERE id_cabang = 0 OR id_cabang IS NULL;
+
+UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 1;
+UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 2;
+UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 3;
+UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 4;
+UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 5;
+
+ALTER TABLE jemaat
+ADD CONSTRAINT fk_jemaat_cabang
+FOREIGN KEY (id_cabang)
+REFERENCES cabang_gereja(id_cabang);
+
+DESCRIBE jemaat;

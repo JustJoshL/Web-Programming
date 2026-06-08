@@ -1,3 +1,69 @@
+<?php
+session_start();
+include '../koneksi.php';
+
+/** @var mysqli $conn */
+
+/* PROSES SETUJUI */
+if (isset($_GET['setujui'])) {
+
+    $id_pengajuan = $_GET['setujui'];
+
+    $q = mysqli_query($conn, "
+        SELECT *
+        FROM temp_update_jemaat
+        WHERE id_pengajuan='$id_pengajuan'
+    ");
+
+    $data = mysqli_fetch_assoc($q);
+
+    mysqli_query($conn, "
+        UPDATE jemaat
+        SET
+            no_telp='" . $data['no_hp_baru'] . "',
+            alamat='" . $data['alamat_baru'] . "'
+        WHERE id_jemaat='" . $data['id_jemaat'] . "'
+    ");
+
+    mysqli_query($conn, "
+        UPDATE temp_update_jemaat
+        SET status_pengajuan='disetujui'
+        WHERE id_pengajuan='$id_pengajuan'
+    ");
+
+    header("Location: verifikasi_admin.php");
+    exit();
+}
+
+/* PROSES TOLAK */
+if (isset($_GET['tolak'])) {
+
+    $id_pengajuan = $_GET['tolak'];
+
+    mysqli_query($conn, "
+        UPDATE temp_update_jemaat
+        SET status_pengajuan='ditolak'
+        WHERE id_pengajuan='$id_pengajuan'
+    ");
+
+    header("Location: verifikasi_admin.php");
+    exit();
+}
+
+$query_pengajuan = mysqli_query($conn, "
+    SELECT
+        t.*,
+        j.nama_lengkap,
+        j.no_telp,
+        j.alamat
+    FROM temp_update_jemaat t
+    JOIN jemaat j
+        ON t.id_jemaat = j.id_jemaat
+    WHERE t.status_pengajuan='pending'
+    ORDER BY t.tanggal_pengajuan DESC
+");
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -168,43 +234,124 @@
                     Jemaat</a>
             </div>
 
-            <div class="req-card">
-                <div class="req-info">
-                    <h4>Justin Bieber</h4>
-                    <p>Pengajuan: Pembaruan Alamat & Nomor Telepon • 2 Jam yang lalu</p>
+            <?php while ($row = mysqli_fetch_assoc($query_pengajuan)) : ?>
+
+                <div class="req-card">
+
+                    <div class="req-info">
+                        <h4><?= $row['nama_lengkap']; ?></h4>
+
+                        <p>
+                            Pengajuan Perubahan Data
+                            • <?= $row['tanggal_pengajuan']; ?>
+                        </p>
+                    </div>
+
+                    <button
+                        class="btn-tinjau"
+                        onclick="bukaModal(
+            '<?= $row['id_pengajuan']; ?>',
+            '<?= htmlspecialchars($row['nama_lengkap']); ?>',
+            '<?= htmlspecialchars($row['no_telp']); ?>',
+            '<?= htmlspecialchars($row['alamat']); ?>',
+            '<?= htmlspecialchars($row['no_hp_baru']); ?>',
+            '<?= htmlspecialchars($row['alamat_baru']); ?>'
+        )">
+                        Tinjau Perubahan
+                    </button>
+
                 </div>
-                <button class="btn-tinjau" onclick="document.getElementById('modalTinjau').style.display='flex'">Tinjau
-                    Perubahan</button>
-            </div>
+
+            <?php endwhile; ?>
         </div>
     </div>
 
     <div id="modalTinjau" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="color: var(--primary-blue); border-bottom: 1px solid #eee; padding-bottom: 15px;">Tinjau
-                Perubahan: Justin Bieber</h3>
+
+            <h3 id="modalNama"
+                style="color: var(--primary-blue); border-bottom:1px solid #eee; padding-bottom:15px;">
+            </h3>
 
             <div class="diff-grid">
+
                 <div class="diff-box diff-old">
-                    <strong style="color: #dc3545;">❌ Data Lama</strong><br><br>
-                    <strong>No. Telepon:</strong> 08123456789<br>
-                    <strong>Alamat:</strong> Jl. Lama No 1, Bandung
+                    <strong style="color:#dc3545;">❌ Data Lama</strong>
+                    <br><br>
+
+                    <strong>No. Telepon:</strong>
+                    <span id="oldTelp"></span>
+
+                    <br>
+
+                    <strong>Alamat:</strong>
+                    <span id="oldAlamat"></span>
                 </div>
+
                 <div class="diff-box diff-new">
-                    <strong style="color: #28a745;">✅ Pengajuan Data Baru</strong><br><br>
-                    <strong>No. Telepon:</strong> 08199998888<br>
-                    <strong>Alamat:</strong> Jl. Senopati No 2, Cimahi, Jawa Barat
+                    <strong style="color:#28a745;">✅ Pengajuan Data Baru</strong>
+                    <br><br>
+
+                    <strong>No. Telepon:</strong>
+                    <span id="newTelp"></span>
+
+                    <br>
+
+                    <strong>Alamat:</strong>
+                    <span id="newAlamat"></span>
                 </div>
+
             </div>
 
             <div class="modal-actions">
-                <button class="btn-cancel" style="margin-right: auto;"
-                    onclick="document.getElementById('modalTinjau').style.display='none'">Tutup</button>
-                <button class="btn-tolak">Tolak Ajuan</button>
-                <button class="btn-terima">Verifikasi & Simpan</button>
+
+                <button
+                    class="btn-cancel"
+                    style="margin-right:auto;"
+                    onclick="document.getElementById('modalTinjau').style.display='none'">
+                    Tutup
+                </button>
+
+                <a id="btnTolak" class="btn-tolak">
+                    Tolak Ajuan
+                </a>
+
+                <a id="btnSetujui" class="btn-terima">
+                    Verifikasi & Simpan
+                </a>
+
             </div>
+
         </div>
     </div>
+    <script>
+        function bukaModal(
+            id,
+            nama,
+            telpLama,
+            alamatLama,
+            telpBaru,
+            alamatBaru
+        ) {
+
+            document.getElementById('modalTinjau').style.display = 'flex';
+
+            document.getElementById('modalNama').innerHTML =
+                'Tinjau Perubahan : ' + nama;
+
+            document.getElementById('oldTelp').innerHTML = telpLama;
+            document.getElementById('oldAlamat').innerHTML = alamatLama;
+
+            document.getElementById('newTelp').innerHTML = telpBaru;
+            document.getElementById('newAlamat').innerHTML = alamatBaru;
+
+            document.getElementById('btnSetujui').href =
+                'verifikasi_admin.php?setujui=' + id;
+
+            document.getElementById('btnTolak').href =
+                'verifikasi_admin.php?tolak=' + id;
+        }
+    </script>
 </body>
 
 </html>
