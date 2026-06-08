@@ -5,30 +5,20 @@ session_start();
 
 include '../koneksi.php';
 
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
     header("location:../login.php?pesan=belum_login");
     exit();
 }
 
-if (isset($_POST['aksi']) && $_POST['aksi'] == 'tambah_jemaat') {
-    $nama = mysqli_real_escape_string($conn, $_POST['nama_lengkap']);
-    $telp = mysqli_real_escape_string($conn, $_POST['no_telp']);
-    $tgl_lahir = mysqli_real_escape_string($conn, $_POST['tanggal_lahir']);
-    $alamat = mysqli_real_escape_string($conn, $_POST['alamat']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    
-    $password_default = password_hash('jemaat123', PASSWORD_DEFAULT); // Password default
-    $role = 'jemaat';
 
-    $query_insert = "INSERT INTO jemaat (nama_lengkap, tanggal_lahir, no_telp, alamat, email, password, role) 
-                     VALUES ('$nama', '$tgl_lahir', '$telp', '$alamat', '$email', '$password_default', '$role')";
-    
-    mysqli_query($conn, $query_insert);
-    header("Location: data_jemaat_gembala.php");
-    exit();
-}
-
-$query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DESC");
+$query_jemaat = mysqli_query($conn, "
+    SELECT j.*, c.nama_cabang
+    FROM jemaat j
+    LEFT JOIN cabang_gereja c
+    ON j.id_cabang = c.id_cabang
+    ORDER BY j.id_jemaat DESC
+");
 ?>
 
 <!DOCTYPE html>
@@ -226,85 +216,75 @@ $query_jemaat = mysqli_query($conn, "SELECT * FROM jemaat ORDER BY id_jemaat DES
         </nav>
     </div>
 
-<div class="content-wrapper">
+    <div class="content-wrapper">
         <div class="main-content">
             <div class="header-toolbar">
                 <div class="page-title">
                     <h2>Daftar Jemaat</h2>
                 </div>
-                <button class="btn-add" onclick="document.getElementById('modalTambahData').style.display='flex'">+ Tambah Jemaat</button>
             </div>
 
             <div class="list-container">
-            <?php while($row = mysqli_fetch_assoc($query_jemaat)) { ?>
-            <div class="list-item">
-                <div class="item-info">
-                    <div class="avatar">👤</div>
-                    <div class="item-text">
-                        <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
-                        <p>
-                            <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?> 
-                            <br>
-                            <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
-                                <?= htmlspecialchars($row['role']); ?>
-                            </span>
-                        </p>
+                <?php while ($row = mysqli_fetch_assoc($query_jemaat)) { ?>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <div class="avatar">👤</div>
+                            <div class="item-text">
+                                <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
+                                <p>
+                                    <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?>
+                                    <br>
+                                    <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+                                        <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <button class="btn-view"
+                            onclick="viewJemaat(
+                                '<?= addslashes($row['nama_lengkap']); ?>',
+                                '<?= htmlspecialchars($row['no_telp']); ?>',
+                                '<?= htmlspecialchars($row['tanggal_lahir']); ?>',
+                                '<?= addslashes($row['alamat']); ?>',
+                                '<?= htmlspecialchars($row['email']); ?>',
+                                '<?= addslashes($row['nama_cabang']); ?>'
+                            )">👁️</button>
                     </div>
-                </div>
-                <button class="btn-view" onclick="viewJemaat(
-                    '<?= addslashes($row['nama_lengkap']); ?>', 
-                    '<?= htmlspecialchars($row['no_telp']); ?>', 
-                    '<?= htmlspecialchars($row['tanggal_lahir']); ?>', 
-                    '<?= addslashes($row['alamat']); ?>', 
-                    '<?= htmlspecialchars($row['email']); ?>',
-                    '<?= htmlspecialchars($row['role']); ?>' 
-                )">👁️</button>
+                <?php } ?>
             </div>
-            <?php } ?>
-        </div>
         </div>
     </div>
 
     <div id="modalViewData" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header"><h3>Detail Jemaat</h3></div>
+            <div class="modal-header">
+                <h3>Detail Jemaat</h3>
+            </div>
             <div class="detail-row"><label>Nama Lengkap: </label><span id="view_nama"></span></div>
             <div class="detail-row"><label>Email: </label><span id="view_email"></span></div>
             <div class="detail-row"><label>No. Telepon: </label><span id="view_telp"></span></div>
             <div class="detail-row"><label>Tanggal Lahir: </label><span id="view_tgl"></span></div>
             <div class="detail-row"><label>Alamat: </label><span id="view_alamat"></span></div>
+            <div class="detail-row"><label>Cabang: </label><span id="view_cabang"></span></div>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="document.getElementById('modalViewData').style.display='none'">Tutup</button>
             </div>
         </div>
     </div>
 
-    <div id="modalTambahData" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Tambah Data Jemaat</h3>
-            <form action="" method="POST">
-                <div class="form-group"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" required></div>
-                <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-                <div class="form-group"><label>Nomor Telepon</label><input type="text" name="no_telp" required></div>
-                <div class="form-group"><label>Tanggal Lahir</label><input type="date" name="tanggal_lahir" required></div>
-                <div class="form-group"><label>Alamat Domisili</label><input type="text" name="alamat" required></div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="document.getElementById('modalTambahData').style.display='none'">Batal</button>
-                    <button type="submit" name="aksi" value="tambah_jemaat" class="btn-save" style="background: var(--primary-blue); color:white;">Simpan Data</button>
-                </div>
-            </form>
-        </div>
-    </div>
     <script>
-        function viewJemaat(nama, telp, tgl, alamat, email) {
+        function viewJemaat(nama, telp, tgl, alamat, email, cabang) {
+
             document.getElementById('view_nama').innerText = nama;
             document.getElementById('view_telp').innerText = telp;
             document.getElementById('view_tgl').innerText = tgl;
             document.getElementById('view_alamat').innerText = alamat;
             document.getElementById('view_email').innerText = email;
+            document.getElementById('view_cabang').innerText = cabang;
+
             document.getElementById('modalViewData').style.display = 'flex';
         }
     </script>
 </body>
+
 </html>
