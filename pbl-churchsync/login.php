@@ -119,6 +119,16 @@
             color: var(--primary-yellow);
             letter-spacing: 2px;
         }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -127,7 +137,11 @@
         <div class="login-box">
             <h1>Login</h1>
             <p>Login to your account.</p>
-
+            <?php if (isset($_GET['error'])) : ?>
+                <div class="error-message">
+                    Email atau password salah.
+                </div>
+            <?php endif; ?>
             <form action="proses_login.php" method="POST">
                 <div class="form-group">
                     <label for="email">E-mail Address</label>
