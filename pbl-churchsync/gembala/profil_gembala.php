@@ -1,3 +1,50 @@
+<?php
+session_start();
+include '../koneksi.php';
+
+/** @var mysqli $conn */
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
+    header("location:../login.php");
+    exit();
+}
+
+$id_jemaat = $_SESSION['id_jemaat'];
+
+$query = mysqli_query($conn, "
+    SELECT j.*, c.nama_cabang
+    FROM jemaat j
+    LEFT JOIN cabang_gereja c
+    ON j.id_cabang = c.id_cabang
+    WHERE j.id_jemaat = '$id_jemaat'
+");
+
+$data = mysqli_fetch_assoc($query);
+
+if (isset($_POST['simpan'])) {
+
+    $nama = $_POST['nama_lengkap'];
+    $email = $_POST['email'];
+    $telp = $_POST['no_telp'];
+    $tgl = $_POST['tanggal_lahir'];
+    $alamat = $_POST['alamat'];
+
+    mysqli_query($conn, "
+        UPDATE jemaat
+        SET
+            nama_lengkap='$nama',
+            email='$email',
+            no_telp='$telp',
+            tanggal_lahir='$tgl',
+            alamat='$alamat'
+        WHERE id_jemaat='$id_jemaat'
+    ");
+
+    header("Location: profil_gembala.php?status=sukses");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -152,16 +199,21 @@
 
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name">Kristian Tohalim, S.Th.</div>
+
+                    <div class="nav-user-name">
+                        <?= $_SESSION['nama_lengkap']; ?>
+                    </div>
+
                     ▼
+
                     <div class="dropdown-content">
-                        <a href="profil-gembala.html">Profil Saya</a>
-                        <a href="login.html" class="logout-item">Logout</a>
+                        <a href="profil_gembala.php">Profil Saya</a>
+                        <a href="../login.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="main-content">
             <div class="page-header">
                 <h2>Profil Saya</h2>
@@ -172,44 +224,62 @@
                 <div class="profile-user-info">
                     <div class="big-avatar">👨🏽‍💼</div>
                     <div class="user-meta">
-                        <h3>Kristian Tohalim, S.Th.</h3>
-                        <p>kristian.tohalim@gmail.com</p>
-                        <span class="role-badge">Gembala Cabang</span>
+                        <h3><?= htmlspecialchars($data['nama_lengkap']); ?></h3>
+                        <p><?= htmlspecialchars($data['email']); ?></p>
+                        <span class="role-badge">
+                            <?= str_replace('_', ' ', strtoupper($data['role'])); ?>
+                        </span>
                     </div>
                 </div>
 
-                <form>
+                <form method="POST">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" value="kristian.tohalim@gmail.com">
+                            <input type="email"
+                                name="email"
+                                value="<?= htmlspecialchars($data['email']); ?>">
                         </div>
                         <div class="form-group">
                             <label>Nama Lengkap</label>
-                            <input type="text" value="Kristian Tohalim, S.Th.">
+                            <input type="text"
+                                name="nama_lengkap"
+                                value="<?= htmlspecialchars($data['nama_lengkap']); ?>">
                         </div>
                         <div class="form-group">
                             <label>Telepon</label>
-                            <input type="text" value="08198765432">
+                            <input type="text"
+                                name="no_telp"
+                                value="<?= htmlspecialchars($data['no_telp']); ?>">
                         </div>
                         <div class="form-group">
                             <label>Tanggal Lahir</label>
-                            <input type="text" value="15/08/1980">
+                            <input type="date"
+                                name="tanggal_lahir"
+                                value="<?= $data['tanggal_lahir']; ?>">
                         </div>
                         <div class="form-group full-width">
                             <label>Alamat</label>
-                            <input type="text" value="Perumahan Timur Indah Blok C2, Bandung">
+                            <input type="text"
+                                name="alamat"
+                                value="<?= htmlspecialchars($data['alamat']); ?>">
                         </div>
                         <div class="form-group full-width">
                             <label>Cabang Penugasan (Tidak bisa diedit)</label>
-                            <input type="text" value="GBI Maranatha Timur" disabled
-                                style="background-color: #e2e8f0; cursor: not-allowed;">
+                            <input type="text"
+                                value="<?= htmlspecialchars($data['nama_cabang']); ?>"
+                                disabled
+                                style="background-color:#e2e8f0;cursor:not-allowed;">
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <a href="login.html" class="btn-logout">Logout</a>
-                        <button type="button" class="btn-submit">Simpan Perubahan</button>
+                        <button type="submit"
+                            name="simpan"
+                            class="btn-submit">
+                            Simpan Perubahan
+                        </button>
                     </div>
                 </form>
             </div>
