@@ -44,6 +44,57 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
     <title>Daftar Jemaat - ChurchSync</title>
     <link rel="stylesheet" href="../style.css">
     <style>
+        .user-profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 100;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #334155;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8fafc;
+            color: var(--primary-blue);
+        }
+
+        .dropdown-content .logout-item {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .dropdown-content .logout-item:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+
         .header-toolbar {
             display: flex;
             justify-content: space-between;
@@ -237,63 +288,63 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
                     🔔<span class="noti-badge"></span>
                 </div>
 
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name"><?= $gembala['nama_lengkap']; ?></div>
-                    ▼
-                    <div class="dropdown-content">
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap'] ?? 'Gembala'; ?> ▼</div>
+                    
+                    <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_gembala.php">Profil Saya</a>
-                        <a href="../logout.php" class="logout-item">Logout</a>
+                        <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau logout?');">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
 
-    <div class="content-wrapper">
-        <div class="main-content">
-            <div class="header-toolbar">
-                <div class="page-title">
-                    <h2>Daftar Jemaat</h2>
-                    <div class="toolbar-actions">
-                        <form method="GET" style="display: flex; gap: 15px;">
-                        <input type="text" name="search" class="search-box" 
-                            placeholder="Cari nama atau email..." 
-                            value="<?= htmlspecialchars($search); ?>">
+        <div class="content-wrapper">
+            <div class="main-content">
+                <div class="header-toolbar">
+                    <div class="page-title">
+                        <h2>Daftar Jemaat</h2>
+                        <div class="toolbar-actions">
+                            <form method="GET" style="display: flex; gap: 15px;">
+                                <input type="text" name="search" class="search-box"
+                                    placeholder="Cari nama atau email..."
+                                    value="<?= htmlspecialchars($search); ?>">
 
-                        <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
-                            <option value="">Semua Cabang</option>
-                            <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
-                                <option value="<?= $cabang['id_cabang']; ?>" 
-                                    <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
-                                    <?= $cabang['nama_cabang']; ?>
-                                </option>
-                            <?php } ?>
-                        </select>
-                        
-                        <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
-                    </form>
-                    </div>             
-                </div>
-            </div>
+                                <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
+                                    <option value="">Semua Cabang</option>
+                                    <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
+                                        <option value="<?= $cabang['id_cabang']; ?>"
+                                            <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
+                                            <?= $cabang['nama_cabang']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
 
-            <div class="list-container">
-                <?php while ($row = mysqli_fetch_assoc($query_jemaat)) { ?>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <div class="avatar">👤</div>
-                            <div class="item-text">
-                                <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
-                                <p>
-                                    <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?>
-                                    <br>
-                                    <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
-                                        <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
-                                    </span>
-                                </p>
-                            </div>
+                                <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
+                            </form>
                         </div>
-                        <button class="btn-view"
-                            onclick="viewJemaat(
+                    </div>
+                </div>
+
+                <div class="list-container">
+                    <?php while ($row = mysqli_fetch_assoc($query_jemaat)) { ?>
+                        <div class="list-item">
+                            <div class="item-info">
+                                <div class="avatar">👤</div>
+                                <div class="item-text">
+                                    <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
+                                    <p>
+                                        <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?>
+                                        <br>
+                                        <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+                                            <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <button class="btn-view"
+                                onclick="viewJemaat(
                                 '<?= addslashes($row['nama_lengkap']); ?>',
                                 '<?= htmlspecialchars($row['no_telp']); ?>',
                                 '<?= htmlspecialchars($row['tanggal_lahir']); ?>',
@@ -301,42 +352,58 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
                                 '<?= htmlspecialchars($row['email']); ?>',
                                 '<?= addslashes($row['nama_cabang']); ?>'
                             )">👁️</button>
-                    </div>
-                <?php } ?>
+                        </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="modalViewData" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detail Jemaat</h3>
-            </div>
-            <div class="detail-row"><label>Nama Lengkap: </label><span id="view_nama"></span></div>
-            <div class="detail-row"><label>Email: </label><span id="view_email"></span></div>
-            <div class="detail-row"><label>No. Telepon: </label><span id="view_telp"></span></div>
-            <div class="detail-row"><label>Tanggal Lahir: </label><span id="view_tgl"></span></div>
-            <div class="detail-row"><label>Alamat: </label><span id="view_alamat"></span></div>
-            <div class="detail-row"><label>Cabang: </label><span id="view_cabang"></span></div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="document.getElementById('modalViewData').style.display='none'">Tutup</button>
+        <div id="modalViewData" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Detail Jemaat</h3>
+                </div>
+                <div class="detail-row"><label>Nama Lengkap: </label><span id="view_nama"></span></div>
+                <div class="detail-row"><label>Email: </label><span id="view_email"></span></div>
+                <div class="detail-row"><label>No. Telepon: </label><span id="view_telp"></span></div>
+                <div class="detail-row"><label>Tanggal Lahir: </label><span id="view_tgl"></span></div>
+                <div class="detail-row"><label>Alamat: </label><span id="view_alamat"></span></div>
+                <div class="detail-row"><label>Cabang: </label><span id="view_cabang"></span></div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="document.getElementById('modalViewData').style.display='none'">Tutup</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        function viewJemaat(nama, telp, tgl, alamat, email, cabang) {
+        <script>
+            function viewJemaat(nama, telp, tgl, alamat, email, cabang) {
 
-            document.getElementById('view_nama').innerText = nama;
-            document.getElementById('view_telp').innerText = telp;
-            document.getElementById('view_tgl').innerText = tgl;
-            document.getElementById('view_alamat').innerText = alamat;
-            document.getElementById('view_email').innerText = email;
-            document.getElementById('view_cabang').innerText = cabang;
+                document.getElementById('view_nama').innerText = nama;
+                document.getElementById('view_telp').innerText = telp;
+                document.getElementById('view_tgl').innerText = tgl;
+                document.getElementById('view_alamat').innerText = alamat;
+                document.getElementById('view_email').innerText = email;
+                document.getElementById('view_cabang').innerText = cabang;
 
-            document.getElementById('modalViewData').style.display = 'flex';
+                document.getElementById('modalViewData').style.display = 'flex';
+            }
+
+            function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("show");
         }
-    </script>
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+        </script>
 </body>
 
 </html>

@@ -74,14 +74,6 @@ $query_cabang = mysqli_query($conn, "
     FROM cabang_gereja
     ORDER BY nama_cabang
 ");
-
-$query_verifikasi = mysqli_query($conn, "
-    SELECT COUNT(*) AS total
-    FROM temp_update_jemaat
-    WHERE status_pengajuan='pending'
-");
-
-$verifikasi = mysqli_fetch_assoc($query_verifikasi);
 ?>
 
 <!DOCTYPE html>
@@ -365,9 +357,6 @@ $verifikasi = mysqli_fetch_assoc($query_verifikasi);
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <a href="verifikasi_admin.php" class="btn-verifikasi">
-                        Lihat Antrean Verifikasi (<?= $verifikasi['total']; ?>)
-                    </a>
                     <button class="btn-add"
                         onclick="document.getElementById('modalTambahDataAdmin').style.display='flex'">
                         + Tambah Data Jemaat
