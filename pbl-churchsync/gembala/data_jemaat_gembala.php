@@ -1,24 +1,38 @@
 <?php
 session_start();
-
 /** @var mysqli $conn */
 
 include '../koneksi.php';
-
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
     header("location:../login.php?pesan=belum_login");
     exit();
 }
 
+$id_cabang_filter = $_GET['id_cabang'] ?? '';
+$search = $_GET['search'] ?? '';
+
+$where = [];
+if ($id_cabang_filter != '') {
+    $id = mysqli_real_escape_string($conn, $id_cabang_filter);
+    $where[] = "j.id_cabang = '$id'";
+}
+if ($search != '') {
+    $s = mysqli_real_escape_string($conn, $search);
+    $where[] = "(j.nama_lengkap LIKE '%$s%' OR j.email LIKE '%$s%')";
+}
+
+$where_sql = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
 
 $query_jemaat = mysqli_query($conn, "
-    SELECT j.*, c.nama_cabang
-    FROM jemaat j
-    LEFT JOIN cabang_gereja c
-    ON j.id_cabang = c.id_cabang
+    SELECT j.*, c.nama_cabang 
+    FROM jemaat j 
+    LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang 
+    $where_sql 
     ORDER BY j.id_jemaat DESC
 ");
+
+$query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_cabang");
 ?>
 
 <!DOCTYPE html>
@@ -221,6 +235,25 @@ $query_jemaat = mysqli_query($conn, "
             <div class="header-toolbar">
                 <div class="page-title">
                     <h2>Daftar Jemaat</h2>
+                    <div class="toolbar-actions">
+                        <form method="GET" style="display: flex; gap: 15px;">
+                        <input type="text" name="search" class="search-box" 
+                            placeholder="Cari nama atau email..." 
+                            value="<?= htmlspecialchars($search); ?>">
+
+                        <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
+                            <option value="">Semua Cabang</option>
+                            <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
+                                <option value="<?= $cabang['id_cabang']; ?>" 
+                                    <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
+                                    <?= $cabang['nama_cabang']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                        
+                        <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
+                    </form>
+                    </div>             
                 </div>
             </div>
 
