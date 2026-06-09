@@ -183,7 +183,7 @@ if (isset($_POST['simpan'])) {
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
-            <a href="../admin/jadwal_admin_up.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="jadwal_gembala.php" class="nav-link">Jadwal Ibadah</a>
             <a href="data_jemaat_gembala.php" class="nav-link">Data Jemaat</a>
             <a href="profil_gembala.php" class="nav-link active">Profil Saya</a>
         </nav>
