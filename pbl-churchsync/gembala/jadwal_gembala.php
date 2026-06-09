@@ -77,7 +77,7 @@
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
-            <a href="../admin/jadwal_admin_up.php" class="nav-link active">Jadwal Ibadah</a>
+            <a href="jadwal_gembala.php" class="nav-link active">Jadwal Ibadah</a>
             <a href="data_jemaat_gembala.php" class="nav-link">Data Jemaat</a>
             <a href="profil_gembala.php" class="nav-link">Profil Saya</a>
         </nav>

@@ -386,7 +386,13 @@ if (isset($_GET['edit_id'])) {
 
                 <div class="modal-actions">
                     <a href="pengumuman_admin.php" class="btn-cancel" style="text-decoration: none; text-align: center;">Batal</a>
-                    <button type="submit" name="status_publikasi" value="<?= $data_edit['status_publikasi'] ?? 'Published'; ?>" class="btn-add">Simpan Perubahan</button>
+                    <button type="submit" name="status_publikasi" value="Draft" class="btn-draft">
+                        Simpan sebagai Draft
+                    </button>
+                    
+                    <button type="submit" name="status_publikasi" value="Published" class="btn-add">
+                        Publikasikan
+                    </button>
                 </div>
 
             </form>
