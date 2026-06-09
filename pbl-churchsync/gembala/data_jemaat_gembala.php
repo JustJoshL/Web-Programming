@@ -230,6 +230,26 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
     </div>
 
     <div class="content-wrapper">
+
+        <div class="top-navbar">
+            <div class="navbar-right">
+                <div class="noti-icon">
+                    🔔<span class="noti-badge"></span>
+                </div>
+
+                <div class="user-profile-dropdown">
+                    <div class="nav-avatar">👨🏽‍💼</div>
+                    <div class="nav-user-name"><?= $gembala['nama_lengkap']; ?></div>
+                    ▼
+                    <div class="dropdown-content">
+                        <a href="profil_gembala.php">Profil Saya</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="content-wrapper">
         <div class="main-content">
             <div class="header-toolbar">
                 <div class="page-title">
