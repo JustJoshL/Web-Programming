@@ -228,6 +228,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
     <div class="sidebar">
         <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
         <nav>
+<<<<<<< HEAD
             <nav>
                 <a href="dashboard_gembala.php" class="nav-link active">Dashboard</a>
                 <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
@@ -236,6 +237,15 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                 <a href="laporan_ibadah_gembala.php" class="nav-link">Laporan Ibadah</a>
                 <a href="profil_gembala.php" class="nav-link">Profil Saya</a>
             </nav>
+=======
+           <nav>
+            <a href="dashboard_gembala.php" class="nav-link active">Dashboard</a>
+            <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
+            <a href="../admin/jadwal_admin_up.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="data_jemaat_gembala.php" class="nav-link">Data Jemaat</a>
+            <a href="profil_gembala.php" class="nav-link">Profil Saya</a>
+        </nav>
+>>>>>>> 9fcaeea28d1baad1f234051dffce346bc5a801dc
         </nav>
     </div>
 
