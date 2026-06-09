@@ -45,9 +45,8 @@ CREATE TABLE `jadwal_ibadah` (
   `kategori_ibadah` varchar(255) NOT NULL,
   `waktu_pelaksanaan` datetime(6) NOT NULL,
   `id_cabang` int(11) NOT NULL,
-  PRIMARY KEY (`id_jadwal`),
-  CONSTRAINT `kd_jadwal` FOREIGN KEY (`id_jadwal`) REFERENCES `cabang_gereja` (`id_cabang`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id_jadwal`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `jadwal_ibadah` */
 
@@ -56,7 +55,12 @@ insert  into `jadwal_ibadah`(`id_jadwal`,`kategori_ibadah`,`waktu_pelaksanaan`,`
 (2,'Ibadah Raya 2 Dago','2026-06-07 09:30:00.000000',2),
 (3,'Ibadah Youth Pasteur','2026-06-06 17:00:00.000000',3),
 (4,'Ibadah Raya 1 Buah Batu','2026-06-07 08:00:00.000000',4),
-(5,'Ibadah Tengah Minggu Cimahi','2026-06-10 18:30:00.000000',5);
+(5,'Ibadah Tengah Minggu Cimahi','2026-06-10 18:30:00.000000',5),
+(7,'Ibadah Raya Youth 1','2026-06-08 11:00:00.000000',1),
+(8,'Ibadah Raya Youth 1','2026-06-08 11:00:00.000000',1),
+(9,'Ibadah Raya Youth 1','2026-06-08 11:00:00.000000',1),
+(10,'Ibadah Raya Youth 1','2026-06-08 11:00:00.000000',1),
+(11,'Ibadah Kenaikan Tuhan Yesus','2026-06-14 11:00:00.000000',1);
 
 /*Table structure for table `jemaat` */
 
@@ -71,18 +75,20 @@ CREATE TABLE `jemaat` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `role` enum('jemaat','gembala_cabang','admin') NOT NULL,
+  `id_cabang` int(11) NOT NULL,
   PRIMARY KEY (`id_jemaat`),
-  CONSTRAINT `jemaat_ibfk_1` FOREIGN KEY (`id_jemaat`) REFERENCES `cabang_gereja` (`id_cabang`)
+  KEY `fk_jemaat_cabang` (`id_cabang`),
+  CONSTRAINT `fk_jemaat_cabang` FOREIGN KEY (`id_cabang`) REFERENCES `cabang_gereja` (`id_cabang`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `jemaat` */
 
-insert  into `jemaat`(`id_jemaat`,`nama_lengkap`,`tanggal_lahir`,`no_telp`,`alamat`,`email`,`password`,`role`) values 
-(1,'Halan Walker','1985-10-12','08111222333','Jl. Setiabudi No. 12','halan@churchsync.com','admin123','admin'),
-(2,'Pdt. Samuel','1970-05-20','08222333444','Jl. Cihampelas No. 8','samuel@churchsync.com','gembala123','gembala_cabang'),
-(3,'Pdt. Andreas','1975-08-15','08333444555','Jl. Dipatiukur No. 45','andreas@churchsync.com','gembala123','gembala_cabang'),
-(4,'Justin Bieber','1994-03-01','08444555666','Jl. Dago Asri No. 2','justin@gmail.com','churchsync123','jemaat'),
-(5,'Vanessa Felicia','1998-11-25','08555666777','Jl. Lengkong No. 9','vanessa@gmail.com','churchsync123','jemaat');
+insert  into `jemaat`(`id_jemaat`,`nama_lengkap`,`tanggal_lahir`,`no_telp`,`alamat`,`email`,`password`,`role`,`id_cabang`) values 
+(1,'Halan Walker','1985-10-12','08111222333','Jl. Setiabudi No. 12','halan@churchsync.com','admin123','admin',1),
+(2,'Pdt. Samuel','1970-05-20','08222333444','Jl. Cihampelas No. 8','samuel@churchsync.com','gembala123','gembala_cabang',1),
+(3,'Pdt. Andreas','1975-08-15','08333444555','Jl. Dipatiukur No. 45','andreas@churchsync.com','gembala123','gembala_cabang',2),
+(4,'Justin Bieber','1994-03-01','08444555666','Jl. Dago Asri No. 2','justin@gmail.com','churchsync123','jemaat',2),
+(5,'Vanessa Felicia','1998-11-25','08555666777','Jl. Lengkong No. 9','vanessa@gmail.com','churchsync123','jemaat',1);
 
 /*Table structure for table `pendataan` */
 
@@ -90,6 +96,7 @@ DROP TABLE IF EXISTS `pendataan`;
 
 CREATE TABLE `pendataan` (
   `id_pendataan` int(20) NOT NULL AUTO_INCREMENT,
+  `id_jadwal` int(11) NOT NULL,
   `jumlah_kehadiran` int(5) NOT NULL,
   `total_persembahan` bigint(15) NOT NULL,
   `total_perpuluhan` bigint(15) NOT NULL,
@@ -101,12 +108,12 @@ CREATE TABLE `pendataan` (
 
 /*Data for the table `pendataan` */
 
-insert  into `pendataan`(`id_pendataan`,`jumlah_kehadiran`,`total_persembahan`,`total_perpuluhan`,`waktu_pelaporan`) values 
-(1,250,5000000,15000000,'2026-06-07 10:00:00.000000'),
-(2,300,6500000,20000000,'2026-06-07 12:30:00.000000'),
-(3,120,2000000,5000000,'2026-06-06 19:00:00.000000'),
-(4,80,800000,1000000,'2026-06-07 11:00:00.000000'),
-(5,45,500000,0,'2026-06-10 21:00:00.000000');
+insert  into `pendataan`(`id_pendataan`,`id_jadwal`,`jumlah_kehadiran`,`total_persembahan`,`total_perpuluhan`,`waktu_pelaporan`) values 
+(1,0,250,5000000,15000000,'2026-06-07 10:00:00.000000'),
+(2,0,300,6500000,20000000,'2026-06-07 12:30:00.000000'),
+(3,0,120,2000000,5000000,'2026-06-06 19:00:00.000000'),
+(4,0,80,800000,1000000,'2026-06-07 11:00:00.000000'),
+(5,0,45,500000,0,'2026-06-10 21:00:00.000000');
 
 /*Table structure for table `pengumuman` */
 
@@ -185,25 +192,3 @@ insert  into `temp_update_jemaat`(`id_pengajuan`,`id_jemaat`,`no_hp_baru`,`alama
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
-
-ALTER TABLE jemaat
-ADD id_cabang INT NOT NULL;
-
-UPDATE jemaat
-SET id_cabang = 1
-WHERE id_cabang = 0 OR id_cabang IS NULL;
-
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 1;
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 2;
-UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 3;
-UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 4;
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 5;
-
-ALTER TABLE jemaat
-ADD CONSTRAINT fk_jemaat_cabang
-FOREIGN KEY (id_cabang)
-REFERENCES cabang_gereja(id_cabang);
-
-ALTER TABLE jemaat
-DROP FOREIGN KEY jemaat_ibfk_1;
