@@ -18,11 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
         $nama = mysqli_real_escape_string($conn, $_POST['nama_cabang']);
         $alamat = mysqli_real_escape_string($conn, $_POST['alamat_cabang']);
+        $id_gembala = !empty($_POST['id_gembala']) ? "'".mysqli_real_escape_string($conn, $_POST['id_gembala'])."'" : "NULL";
 
         if (empty($id_cabang)) {
-            $query = "INSERT INTO cabang_gereja (nama_cabang, alamat_cabang) VALUES ('$nama', '$alamat')";
+            $query = "INSERT INTO cabang_gereja (nama_cabang, alamat_cabang, id_gembala) VALUES ('$nama', '$alamat', $id_gembala)";
         } else {
-            $query = "UPDATE cabang_gereja SET nama_cabang='$nama', alamat_cabang='$alamat' WHERE id_cabang='$id_cabang'";
+            $query = "UPDATE cabang_gereja SET nama_cabang='$nama', alamat_cabang='$alamat', id_gembala=$id_gembala WHERE id_cabang='$id_cabang'";
         }
         mysqli_query($conn, $query);
         
@@ -39,7 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$query_tampil = "SELECT * FROM cabang_gereja ORDER BY id_cabang DESC";
+$query_tampil = "
+    SELECT c.*, j.nama_lengkap AS nama_gembala 
+    FROM cabang_gereja c 
+    LEFT JOIN jemaat j ON c.id_gembala = j.id_jemaat 
+    ORDER BY c.id_cabang DESC
+";
 $result_cabang = mysqli_query($conn, $query_tampil);
 ?>
 
@@ -123,8 +129,11 @@ $result_cabang = mysqli_query($conn, $query_tampil);
                 <div class="branch-card">
                     <h3><?= htmlspecialchars($row['nama_cabang']) ?></h3>
                     <div class="branch-detail">📍 <?= htmlspecialchars($row['alamat_cabang']) ?></div>
+                    <div class="branch-detail" style="margin-top: 5px; color: #166534; font-weight: 600;">
+                        👤 Gembala: <?= $row['nama_gembala'] ? htmlspecialchars($row['nama_gembala']) : '<em>Belum ditunjuk</em>' ?>
+                    </div>
                     <div class="action-btns">
-                        <button class="btn-edit" onclick="editCabang('<?= $row['id_cabang'] ?>', '<?= addslashes($row['nama_cabang']) ?>', '<?= addslashes($row['alamat_cabang']) ?>')">Edit</button>
+                        <button class="btn-edit" onclick="editCabang('<?= $row['id_cabang'] ?>', '<?= addslashes($row['nama_cabang']) ?>', '<?= addslashes($row['alamat_cabang']) ?>', '<?= $row['id_gembala'] ?>', '<?= addslashes($row['nama_gembala'] ?? '') ?>')">Edit</button>
                         
                         <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang ini? Perhatian: Menghapus cabang akan menghapus jadwal ibadah yang terkait dengan cabang ini (Cascade).');">
                             <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">
@@ -149,7 +158,6 @@ $result_cabang = mysqli_query($conn, $query_tampil);
             </div>
             <form action="" method="POST">
                 <input type="hidden" name="id_cabang" id="input_id_cabang">
-                
                 <div class="form-group">
                     <label>Nama Cabang</label>
                     <input type="text" name="nama_cabang" id="input_nama" placeholder="Contoh: GBI Maranatha Cimahi" required>
@@ -158,7 +166,12 @@ $result_cabang = mysqli_query($conn, $query_tampil);
                     <label>Alamat Lengkap</label>
                     <input type="text" name="alamat_cabang" id="input_alamat" placeholder="Masukkan alamat..." required>
                 </div>
-                
+                <div class="form-group">
+                    <label>Gembala Cabang</label>
+                    <input type="text" id="search_gembala" placeholder="Cari nama jemaat..." onkeyup="cariJemaat(this.value)">
+                    <div id="hasil_cari" style="border:1px solid #ccc; max-height:100px; overflow-y:auto; display:none;"></div>
+                    <input type="hidden" name="id_gembala" id="input_id_gembala">
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalCabang').style.display='none'">Batal</button>
                     <button type="submit" name="aksi" value="simpan" class="btn-add">Simpan Data</button>
@@ -168,7 +181,6 @@ $result_cabang = mysqli_query($conn, $query_tampil);
     </div>
 
     <script>
-        // Fungsi untuk membuka modal dalam mode Tambah (Mengosongkan form)
         function tambahCabang() {
             document.getElementById('modalTitle').innerText = 'Tambah Data Cabang';
             document.getElementById('input_id_cabang').value = '';
@@ -177,13 +189,31 @@ $result_cabang = mysqli_query($conn, $query_tampil);
             document.getElementById('modalCabang').style.display = 'flex';
         }
 
-        // Fungsi untuk membuka modal dalam mode Edit (Mengisi form dengan data dari database)
-        function editCabang(id, nama, alamat) {
+        function editCabang(id, nama, alamat, id_gembala, nama_gembala) {
             document.getElementById('modalTitle').innerText = 'Edit Data Cabang';
             document.getElementById('input_id_cabang').value = id;
             document.getElementById('input_nama').value = nama;
             document.getElementById('input_alamat').value = alamat;
+            document.getElementById('search_gembala').value = nama_gembala;
+            document.getElementById('input_id_gembala').value = id_gembala;
             document.getElementById('modalCabang').style.display = 'flex';
+        }
+
+        function cariJemaat(str) {
+            if (str.length == 0) { document.getElementById("hasil_cari").style.display = "none"; return; }
+            fetch('search_jemaat.php?q=' + str)
+            .then(res => res.text())
+            .then(data => {
+                let box = document.getElementById("hasil_cari");
+                box.innerHTML = data;
+                box.style.display = "block";
+            });
+        }
+
+        function pilihGembala(id, nama) {
+            document.getElementById("search_gembala").value = nama;
+            document.getElementById("input_id_gembala").value = id;
+            document.getElementById("hasil_cari").style.display = "none";
         }
     </script>
 </body>
