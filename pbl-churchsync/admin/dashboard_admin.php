@@ -18,9 +18,6 @@ $data_jemaat = mysqli_fetch_assoc($query_jemaat);
 $query_laporan = mysqli_query($conn, "SELECT COUNT(*) as total_laporan FROM pendataan");
 $data_laporan = mysqli_fetch_assoc($query_laporan);
 
-$query_verifikasi = mysqli_query($conn, "SELECT COUNT(*) as butuh_verif FROM temp_update_jemaat WHERE status_pengajuan = 'pending'");
-$data_verifikasi = mysqli_fetch_assoc($query_verifikasi);
-
 $query_jadwal_terdekat = mysqli_query($conn, "
     SELECT kategori_ibadah, waktu_pelaksanaan 
     FROM jadwal_ibadah 
@@ -68,9 +65,9 @@ $query_aktivitas = mysqli_query($conn, "
             font-size: 14px;
         }
 
-        .stat-grid-4 {
+        .stat-grid-3 {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -83,6 +80,12 @@ $query_aktivitas = mysqli_query($conn, "
             align-items: center;
             gap: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-admin ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .icon-box-admin {
@@ -192,7 +195,7 @@ $query_aktivitas = mysqli_query($conn, "
                 <p>Sistem Informasi Administrasi Gereja Terpusat — Akun Admin Utama</p>
             </div>
 
-            <div class="stat-grid-4">
+            <div class="stat-grid-3">
                 <div class="stat-card-admin">
                     <div class="icon-box-admin">⛪</div>
                     <div class="data-box-admin">
@@ -212,13 +215,6 @@ $query_aktivitas = mysqli_query($conn, "
                     <div class="data-box-admin">
                         <p>Laporan Masuk</p>
                         <h3><?= $data_laporan['total_laporan']; ?> Laporan</h3>
-                    </div>
-                </div>
-                <div class="stat-card-admin">
-                    <div class="icon-box-admin">⏳</div>
-                    <div class="data-box-admin">
-                        <p>Butuh Verifikasi</p>
-                        <h3 style="color: #dc3545;">5 Data</h3>
                     </div>
                 </div>
             </div>
@@ -253,7 +249,14 @@ $query_aktivitas = mysqli_query($conn, "
                         </div>
                     <?php else : ?>
                         <?php while ($row_jdwal = mysqli_fetch_assoc($query_jadwal_terdekat)) : ?>
-                            <li style="background: #f8fafc; margin-bottom: 8px; padding: 10px 15px; border-radius: 8px; border-left: 4px solid var(--primary-yellow);">
+                            <li style="
+                                        list-style: none;
+                                        background: #f8fafc;
+                                        margin-bottom: 8px;
+                                        padding: 10px 15px;
+                                        border-radius: 8px;
+                                        border-left: 4px solid var(--primary-yellow);
+                                    ">
                                 <div>
                                     <strong style="color: var(--primary-blue); d-block;"><?= $row_jdwal['kategori_ibadah']; ?></strong>
                                     <div style="font-size: 12px; color: #666; margin-top: 3px;">
