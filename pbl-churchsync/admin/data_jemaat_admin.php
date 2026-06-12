@@ -18,6 +18,7 @@ if (isset($_POST['tambah'])) {
     $alamat = $_POST['alamat'];
     $email = $_POST['email'] ?? '';
     $id_cabang = $_POST['id_cabang'];
+    $role = $_POST['role'];
 
     mysqli_query($conn, "
         INSERT INTO jemaat (
@@ -37,7 +38,7 @@ if (isset($_POST['tambah'])) {
             '$alamat',
             '$email',
             'churchsync123',
-            'jemaat',
+            '$role',
             '$id_cabang'
         )
     ");
@@ -47,27 +48,29 @@ if (isset($_POST['tambah'])) {
 }
 
 $id_cabang_filter = $_GET['id_cabang'] ?? '';
+$search = $_GET['search'] ?? '';
+
+$where = [];
 
 if ($id_cabang_filter != '') {
-
-    $query_jemaat = mysqli_query($conn, "
-        SELECT j.*, c.nama_cabang
-        FROM jemaat j
-        LEFT JOIN cabang_gereja c
-        ON j.id_cabang = c.id_cabang
-        WHERE j.id_cabang = '$id_cabang_filter'
-        ORDER BY j.role, j.nama_lengkap
-    ");
-} else {
-
-    $query_jemaat = mysqli_query($conn, "
-        SELECT j.*, c.nama_cabang
-        FROM jemaat j
-        LEFT JOIN cabang_gereja c
-        ON j.id_cabang = c.id_cabang
-        ORDER BY j.role, j.nama_lengkap
-    ");
+    $id = mysqli_real_escape_string($conn, $id_cabang_filter);
+    $where[] = "j.id_cabang = '$id'";
 }
+
+if ($search != '') {
+    $s = mysqli_real_escape_string($conn, $search);
+    $where[] = "(j.nama_lengkap LIKE '%$s%' OR j.email LIKE '%$s%')";
+}
+
+$where_sql = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+
+$query_jemaat = mysqli_query($conn, "
+    SELECT j.*, c.nama_cabang 
+    FROM jemaat j 
+    LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang 
+    $where_sql 
+    ORDER BY j.id_jemaat DESC
+");
 
 $query_cabang = mysqli_query($conn, "
     SELECT *
@@ -321,39 +324,23 @@ $query_cabang = mysqli_query($conn, "
                 <div class="page-title">
                     <h2>Data Jemaat</h2>
                     <div class="toolbar-actions">
-                        <input type="text" class="search-box" placeholder="Cari jemaat...">
-                        <form method="GET">
+                         <form method="GET" style="display: flex; gap: 15px;">
+                                <input type="text" name="search" class="search-box"
+                                    placeholder="Cari nama atau email..."
+                                    value="<?= htmlspecialchars($search); ?>">
 
-                            <select
-                                name="id_cabang"
-                                class="filter-box"
-                                onchange="this.form.submit()">
+                                <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
+                                    <option value="">Semua Cabang</option>
+                                    <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
+                                        <option value="<?= $cabang['id_cabang']; ?>"
+                                            <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
+                                            <?= $cabang['nama_cabang']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
 
-                                <option value="">Semua Cabang</option>
-
-                                <?php
-                                $filter_cabang = mysqli_query($conn, "
-                                    SELECT *
-                                    FROM cabang_gereja
-                                    ORDER BY nama_cabang
-                                ");
-
-                                while ($cabang = mysqli_fetch_assoc($filter_cabang)) :
-                                ?>
-
-                                    <option
-                                        value="<?= $cabang['id_cabang']; ?>"
-                                        <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
-
-                                        <?= $cabang['nama_cabang']; ?>
-
-                                    </option>
-
-                                <?php endwhile; ?>
-
-                            </select>
-
-                        </form>
+                                <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
+                            </form>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -388,6 +375,16 @@ $query_cabang = mysqli_query($conn, "
                                                 <?= $cabang['nama_cabang']; ?>
                                             </option>
                                         <?php endwhile; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Role</label>
+
+                                    <select name="role" id="role" required>
+                                        <option value="jemaat">Jemaat</option>
+                                        <option value="gembala_cabang">Gembala Cabang</option>
+                                        <option value="admin">Admin</option>
                                     </select>
                                 </div>
 
