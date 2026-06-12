@@ -41,7 +41,7 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Jemaat - ChurchSync</title>
+    <title>Data Jemaat - ChurchSync</title>
     <link rel="stylesheet" href="../style.css">
     <style>
         .user-profile-dropdown {
@@ -304,7 +304,7 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
             <div class="main-content">
                 <div class="header-toolbar">
                     <div class="page-title">
-                        <h2>Daftar Jemaat</h2>
+                        <h2>Data Jemaat</h2>
                         <div class="toolbar-actions">
                             <form method="GET" style="display: flex; gap: 15px;">
                                 <input type="text" name="search" class="search-box"
@@ -335,12 +335,36 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
                                 <div class="item-text">
                                     <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
                                     <p>
-                                        <?= htmlspecialchars($row['alamat']); ?> • <?= htmlspecialchars($row['email']); ?>
-                                        <br>
-                                        <span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
-                                            <?= ucwords(str_replace('_', ' ', strtolower($row['role']))); ?>
-                                        </span>
+                                        <?= $row['email']; ?>
+                                        • <?= $row['no_telp']; ?>
                                     </p>
+                                    <?php
+                                    $role = $row['role'];
+
+                                    if ($role == 'admin') {
+                                        $bg = '#fee2e2';
+                                        $color = '#dc2626';
+                                    } elseif ($role == 'gembala_cabang') {
+                                        $bg = '#dbeafe';
+                                        $color = '#2563eb';
+                                    } else {
+                                        $bg = '#dcfce7';
+                                        $color = '#16a34a';
+                                    }
+                                    ?>
+
+                                    <span style="
+                                        display:inline-block;
+                                        margin-top:5px;
+                                        background:<?= $bg ?>;
+                                        color:<?= $color ?>;
+                                        padding:4px 10px;
+                                        border-radius:20px;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        <?= ucwords(str_replace('_', ' ', strtolower($role))); ?>
+                                    </span>
                                 </div>
                             </div>
                             <button class="btn-view"
