@@ -78,7 +78,7 @@ $query_pengumuman = mysqli_query($conn, "SELECT * FROM pengumuman WHERE status_p
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link active">Pengumuman</a>
-            <a href="jadwal_gembala.php" class="nav-link">Jadwal Ibadah</a>
+            <a href="../admin/jadwal_admin_up.php" class="nav-link">Jadwal Ibadah</a>
             <a href="data_jemaat_gembala.php" class="nav-link">Data Jemaat</a>
             <a href="profil_gembala.php" class="nav-link">Profil Saya</a>
         </nav>
