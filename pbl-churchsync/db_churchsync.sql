@@ -195,38 +195,6 @@ insert  into `temp_update_jemaat`(`id_pengajuan`,`id_jemaat`,`no_hp_baru`,`alama
 (4,4,'08123456789','Jl. Dago Asri No. 10','2026-06-04 11:45:00.000000','pending'),
 (5,5,'08198765432','Jl. Asia Afrika No. 5','2026-06-04 16:20:00.000000','pending');
 
-ALTER TABLE jemaat
-ADD id_cabang INT NOT NULL;
-
-UPDATE jemaat
-SET id_cabang = 1
-WHERE id_cabang = 0 OR id_cabang IS NULL;
-
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 1;
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 2;
-UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 3;
-UPDATE jemaat SET id_cabang = 2 WHERE id_jemaat = 4;
-UPDATE jemaat SET id_cabang = 1 WHERE id_jemaat = 5;
-
-ALTER TABLE jemaat
-ADD CONSTRAINT fk_jemaat_cabang
-FOREIGN KEY (id_cabang)
-REFERENCES cabang_gereja(id_cabang);
-
-ALTER TABLE jemaat
-DROP FOREIGN KEY jemaat_ibfk_1;
-
-ALTER TABLE `pendataan` ADD `id_jadwal` INT(11) NOT NULL AFTER `id_pendataan`;`db_churchsync`
-ALTER TABLE `pendataan` ADD `catatan` TEXT NULL AFTER `total_perpuluhan`;
-
--- 2. Bersihin relasi sesat di tabel penugasan_pelayan
-ALTER TABLE `penugasan_pelayan` DROP FOREIGN KEY `penugasan_pelayan_ibfk_3`;
-ALTER TABLE `penugasan_pelayan` DROP FOREIGN KEY `penugasan_pelayan_ibfk_4`;
-
--- 3. Tambahin kolom yang hilang di tabel penugasan_pelayan
-ALTER TABLE `penugasan_pelayan` ADD `id_jadwal` INT(11) NOT NULL AFTER `id_penugasan`;
-ALTER TABLE `penugasan_pelayan` ADD `nama_pelayan` VARCHAR(255) NOT NULL AFTER `id_jadwal`;
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
