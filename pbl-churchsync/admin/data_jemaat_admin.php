@@ -18,6 +18,7 @@ if (isset($_POST['tambah'])) {
     $alamat = $_POST['alamat'];
     $email = $_POST['email'] ?? '';
     $id_cabang = $_POST['id_cabang'];
+    $role = $_POST['role'];
 
     mysqli_query($conn, "
         INSERT INTO jemaat (
@@ -37,7 +38,7 @@ if (isset($_POST['tambah'])) {
             '$alamat',
             '$email',
             'churchsync123',
-            'jemaat',
+            '$role',
             '$id_cabang'
         )
     ");
@@ -374,6 +375,16 @@ $query_cabang = mysqli_query($conn, "
                                                 <?= $cabang['nama_cabang']; ?>
                                             </option>
                                         <?php endwhile; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Role</label>
+
+                                    <select name="role" id="role" required>
+                                        <option value="jemaat">Jemaat</option>
+                                        <option value="gembala_cabang">Gembala Cabang</option>
+                                        <option value="admin">Admin</option>
                                     </select>
                                 </div>
 
