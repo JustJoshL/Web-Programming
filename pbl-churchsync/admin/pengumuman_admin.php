@@ -96,14 +96,35 @@ if (isset($_GET['edit_id'])) {
             margin-left: 5px;
         }
 
+        .btn-edit,
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .2s ease;
+        }
+
         .btn-edit {
-            background-color: #eef2f6;
-            color: var(--primary-blue);
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
         }
 
         .btn-delete {
-            background-color: #fef2f2;
-            color: #dc3545;
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
         }
 
         .modal-overlay {
@@ -205,6 +226,23 @@ if (isset($_GET['edit_id'])) {
         .btn-draft:hover {
             background: #cbd5e1;
         }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btns a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .2s ease;
+        }
     </style>
 </head>
 
@@ -263,8 +301,20 @@ if (isset($_GET['edit_id'])) {
                             </p>
                         </div>
                         <div class="action-btns">
-                            <a href="pengumuman_admin.php?edit_id=<?= $row['id_pengumuman']; ?>" class="btn-edit" style="text-decoration: none; display: inline-block;">Edit</a>
-                            <a href="hapus_pengumuman.php?id=<?= $row['id_pengumuman']; ?>" class="btn-delete" onclick="return confirm('Yakin mau hapus pengumuman ini?');">Hapus</a>
+                            <div class="action-btns">
+
+                                <a href="pengumuman_admin.php?edit_id=<?= $row['id_pengumuman']; ?>"
+                                    class="btn-edit">
+                                    ✏️ Edit
+                                </a>
+
+                                <a href="hapus_pengumuman.php?id=<?= $row['id_pengumuman']; ?>"
+                                    class="btn-delete"
+                                    onclick="return confirm('Yakin mau hapus pengumuman ini?');">
+                                    🗑️ Hapus
+                                </a>
+
+                            </div>
                         </div>
                     </div>
             <?php
@@ -337,22 +387,22 @@ if (isset($_GET['edit_id'])) {
             <div class="modal-header">
                 <h3>Form Edit Pengumuman</h3>
             </div>
-            
+
             <form action="proses_edit_pengumuman.php" method="POST" enctype="multipart/form-data">
-                
+
                 <input type="hidden" name="id_pengumuman" value="<?= $data_edit['id_pengumuman'] ?? ''; ?>">
                 <input type="hidden" name="gambar_lama" value="<?= $data_edit['gambar_pendukung'] ?? ''; ?>">
-                
+
                 <div class="form-group">
                     <label>Judul Pengumuman</label>
                     <input type="text" name="judul_pengumuman" value="<?= $data_edit['judul_pengumuman'] ?? ''; ?>" placeholder="Masukkan judul..." required>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Dibuat Oleh</label>
                     <input type="text" value="<?= $_SESSION['nama_lengkap']; ?>" readonly style="background-color: #f1f5f9;">
                 </div>
-                
+
                 <div style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1;">
                         <label>Kategori</label>
@@ -367,16 +417,16 @@ if (isset($_GET['edit_id'])) {
                         <input type="date" name="tanggal_publikasi" value="<?= $data_edit['tanggal_publikasi'] ?? ''; ?>" required>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Isi Pengumuman</label>
                     <textarea name="isi_pengumuman" rows="4" placeholder="Tulis rincian pengumuman..." required><?= $data_edit['isi_pengumuman'] ?? ''; ?></textarea>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Ganti Gambar Pendukung (Kosongkan jika tidak ingin ganti)</label>
                     <span id="namaFileEditPilihan" style="font-size: 13px; color: #666; margin-bottom: 8px; display: block;">
-                        <?= (!empty($data_edit['gambar_pendukung'])) ? "Gambar saat ini: <strong>".$data_edit['gambar_pendukung']."</strong>" : "Belum ada gambar yang dipilih."; ?>
+                        <?= (!empty($data_edit['gambar_pendukung'])) ? "Gambar saat ini: <strong>" . $data_edit['gambar_pendukung'] . "</strong>" : "Belum ada gambar yang dipilih."; ?>
                     </span>
                     <button type="button" class="btn-upload" onclick="document.getElementById('uploadGambarEdit').click()">
                         📷 Pilih Gambar Baru
@@ -389,7 +439,7 @@ if (isset($_GET['edit_id'])) {
                     <button type="submit" name="status_publikasi" value="Draft" class="btn-draft">
                         Simpan sebagai Draft
                     </button>
-                    
+
                     <button type="submit" name="status_publikasi" value="Published" class="btn-add">
                         Publikasikan
                     </button>
