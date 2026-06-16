@@ -270,7 +270,6 @@ $query_cabang = mysqli_query($conn, "
 
         .akun-wrapper.aktif {
             display: block !important;
-            /* Paksa muncul */
         }
 
         .modal-content {
@@ -281,6 +280,57 @@ $query_cabang = mysqli_query($conn, "
 
             max-height: 90vh;
             overflow-y: auto;
+        }
+
+        .user-profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 100;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #334155;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8fafc;
+            color: var(--primary-blue);
+        }
+
+        .logout-item {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+
+        .logout-item:hover {
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
         }
     </style>
 </head>
@@ -307,12 +357,12 @@ $query_cabang = mysqli_query($conn, "
         <div class="top-navbar">
             <div class="navbar-right">
                 <div class="noti-icon">🔔<span class="noti-badge"></span></div>
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">
                         <?= $_SESSION['nama_lengkap']; ?> (Admin) ▼
                     </div>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_admin.php">Profil Saya</a>
                         <a href="../login.php" class="logout-item">Logout</a>
                     </div>
