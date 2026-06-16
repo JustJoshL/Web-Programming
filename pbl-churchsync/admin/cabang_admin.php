@@ -15,24 +15,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $aksi = $_POST['aksi'] ?? '';
 
     if ($aksi == 'simpan') {
+
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
         $nama = mysqli_real_escape_string($conn, $_POST['nama_cabang']);
         $alamat = mysqli_real_escape_string($conn, $_POST['alamat_cabang']);
-        $id_gembala = !empty($_POST['id_gembala']) ? "'" . mysqli_real_escape_string($conn, $_POST['id_gembala']) . "'" : "NULL";
 
         if (empty($id_cabang)) {
-            $query = "INSERT INTO cabang_gereja (nama_cabang, alamat_cabang, id_gembala) VALUES ('$nama', '$alamat', $id_gembala)";
-        } else {
-            $query = "UPDATE cabang_gereja SET nama_cabang='$nama', alamat_cabang='$alamat', id_gembala=$id_gembala WHERE id_cabang='$id_cabang'";
-        }
-        mysqli_query($conn, $query);
 
-        header("Location: cabang_admin.php");
-        exit;
-    } elseif ($aksi == 'hapus') {
-        $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
-        $query = "DELETE FROM cabang_gereja WHERE id_cabang='$id_cabang'";
-        mysqli_query($conn, $query);
+            $query = "INSERT INTO cabang_gereja
+            (nama_cabang, alamat_cabang)
+            VALUES
+            ('$nama', '$alamat')";
+
+            mysqli_query($conn, $query);
+
+            $id_cabang = mysqli_insert_id($conn);
+        } else {
+
+            $query = "UPDATE cabang_gereja
+            SET nama_cabang='$nama',
+                alamat_cabang='$alamat'
+            WHERE id_cabang='$id_cabang'";
+
+            mysqli_query($conn, $query);
+        }
+
+        if (!empty($_POST['id_gembala'])) {
+
+            $id_gembala = mysqli_real_escape_string(
+                $conn,
+                $_POST['id_gembala']
+            );
+
+            mysqli_query($conn, "
+            UPDATE jemaat
+            SET id_cabang = NULL
+            WHERE role='gembala_cabang'
+            AND id_cabang='$id_cabang'
+        ");
+
+            mysqli_query($conn, "
+            UPDATE jemaat
+            SET id_cabang='$id_cabang'
+            WHERE id_jemaat='$id_gembala'
+        ");
+        }
 
         header("Location: cabang_admin.php");
         exit;
@@ -40,14 +67,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $query_tampil = "
-    SELECT c.*, (
-        SELECT nama_lengkap 
-        FROM jemaat 
-        WHERE id_cabang = c.id_cabang AND role = 'gembala_cabang' 
-        LIMIT 1
-    ) AS nama_gembala 
-    FROM cabang_gereja c 
-    ORDER BY c.id_cabang DESC
+SELECT
+    c.*,
+    j.id_jemaat AS id_gembala,
+    j.nama_lengkap AS nama_gembala
+FROM cabang_gereja c
+LEFT JOIN jemaat j
+    ON j.id_cabang = c.id_cabang
+    AND j.role = 'gembala_cabang'
+ORDER BY c.id_cabang DESC
 ";
 $result_cabang = mysqli_query($conn, $query_tampil);
 
@@ -265,6 +293,13 @@ $query_gembala = mysqli_query($conn, "
             background-color: #fef2f2 !important;
             color: #b91c1c !important;
         }
+
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+        }
     </style>
 </head>
 
@@ -318,7 +353,15 @@ $query_gembala = mysqli_query($conn, "
                                 👤 Gembala: <?= $row['nama_gembala'] ? htmlspecialchars($row['nama_gembala']) : '<em>Belum ditunjuk</em>' ?>
                             </div>
                             <div class="action-btns">
-                                <button class="btn-edit" onclick="editCabang('<?= $row['id_cabang'] ?>', '<?= addslashes($row['nama_cabang']) ?>', '<?= addslashes($row['alamat_cabang']) ?>', '<?= $row['id_gembala'] ?>', '<?= addslashes($row['nama_gembala'] ?? '') ?>')">Edit</button>
+                                <button class="btn-edit"
+                                    onclick="editCabang(
+                                        '<?= $row['id_cabang']; ?>',
+                                        '<?= addslashes($row['nama_cabang']); ?>',
+                                        '<?= addslashes($row['alamat_cabang']); ?>',
+                                        '<?= $row['id_gembala']; ?>'
+                                    )">
+                                    Edit
+                                </button>
 
                                 <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang ini? Perhatian: Menghapus cabang akan menghapus jadwal ibadah yang terkait dengan cabang ini (Cascade).');">
                                     <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">

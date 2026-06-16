@@ -1,3 +1,46 @@
+<?php
+session_start();
+include '../koneksi.php';
+
+/** @var mysqli $conn */
+
+$id_cabang = $_SESSION['id_cabang'];
+
+$filter = $_GET['filter'] ?? 'semua';
+$cari   = $_GET['cari'] ?? '';
+
+$where = "
+status_publikasi='Published'
+AND (
+    target_tipe='umum'
+    OR id_cabang='$id_cabang'
+)
+";
+
+if ($filter == 'umum') {
+    $where .= " AND target_tipe='umum'";
+}
+
+if ($filter == 'cabang') {
+    $where .= " AND id_cabang='$id_cabang'";
+}
+
+if (!empty($cari)) {
+    $where .= "
+    AND (
+        judul_pengumuman LIKE '%$cari%'
+        OR isi_pengumuman LIKE '%$cari%'
+    )";
+}
+
+$query_pengumuman = mysqli_query($conn, "
+    SELECT *
+    FROM pengumuman
+    WHERE $where
+    ORDER BY tanggal_publikasi DESC
+");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -106,43 +149,128 @@
                 <h2>Pengumuman</h2>
                 <p>Informasi dan berita terbaru dari gereja</p>
             </div>
+            <form method="GET" id="formFilter" style="
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:wrap;
+align-items:center;
+">
 
+                <input
+                    type="text"
+                    name="cari"
+                    placeholder="Cari pengumuman..."
+                    value="<?= htmlspecialchars($cari); ?>"
+                    style="
+        padding:10px;
+        border:1px solid #ccc;
+        border-radius:6px;
+        min-width:250px;
+        ">
+
+                <button
+                    type="submit"
+                    style="
+        background:var(--primary-yellow);
+        color:var(--primary-blue);
+        border:none;
+        padding:10px 20px;
+        border-radius:6px;
+        font-weight:bold;
+        cursor:pointer;
+        ">
+                    Cari
+                </button>
+
+                <select
+                    name="filter"
+                    onchange="document.getElementById('formFilter').submit()"
+                    style="
+        padding:10px;
+        border:1px solid #ccc;
+        border-radius:6px;
+        ">
+
+                    <option value="semua" <?= $filter == 'semua' ? 'selected' : ''; ?>>
+                        Semua
+                    </option>
+
+                    <option value="umum" <?= $filter == 'umum' ? 'selected' : ''; ?>>
+                        Umum
+                    </option>
+
+                    <option value="cabang" <?= $filter == 'cabang' ? 'selected' : ''; ?>>
+                        Cabang Saya
+                    </option>
+
+                </select>
+
+            </form>
             <div class="announcement-container">
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge important">Penting</span>
-                        <span class="date">28 April 2026</span>
-                    </div>
-                    <h3>Ibadah Natal Bersama 2026</h3>
-                    <p>Ibadah Natal Bersama akan dilaksanakan pada tanggal 25 Desember 2026 pukul 09.00 WIB di Gedung
-                        Utama
-                        GBI Maranatha Pusat. Seluruh jemaat dari semua cabang diundang untuk hadir bersama keluarga.</p>
-                </div>
+                <?php if (mysqli_num_rows($query_pengumuman) > 0): ?>
 
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge activity">Kegiatan</span>
-                        <span class="date">23 April 2026</span>
-                    </div>
-                    <h3>Pendaftaran Pelayanan Worship Team</h3>
-                    <p>Dibuka pendaftaran untuk bergabung dalam tim pujian dan penyembahan gereja. Bagi jemaat yang
-                        memiliki
-                        talenta di bidang musik dan vokal, silakan mendaftarkan diri melalui sekretariat masing-masing
-                        cabang.</p>
-                </div>
+                    <?php while ($row = mysqli_fetch_assoc($query_pengumuman)): ?>
 
-                <div class="announcement-card">
-                    <div class="card-meta">
-                        <span class="badge worship">Ibadah</span>
-                        <span class="date">20 April 2026</span>
+                        <div class="announcement-card">
+
+                            <div class="card-meta">
+
+                                <span class="badge general">
+                                    <?= $row['kategori_pengumuman']; ?>
+                                </span>
+
+                                <?php if ($row['target_tipe'] == 'umum'): ?>
+
+                                    <span class="badge activity">
+                                        UMUM
+                                    </span>
+
+                                <?php else: ?>
+
+                                    <span class="badge important">
+                                        CABANG
+                                    </span>
+
+                                <?php endif; ?>
+
+                                <span class="date">
+                                    <?= date('d F Y', strtotime($row['tanggal_publikasi'])); ?>
+                                </span>
+
+                            </div>
+
+                            <h3>
+                                <?= htmlspecialchars($row['judul_pengumuman']); ?>
+                            </h3>
+
+                            <p>
+                                <?= nl2br(htmlspecialchars($row['isi_pengumuman'])); ?>
+                            </p>
+
+                            <?php if (!empty($row['gambar_pendukung'])): ?>
+
+                                <img
+                                    src="../uploads/<?= $row['gambar_pendukung']; ?>"
+                                    style="
+                    margin-top:15px;
+                    max-width:300px;
+                    border-radius:8px;
+                    ">
+
+                            <?php endif; ?>
+
+                        </div>
+
+                    <?php endwhile; ?>
+
+                <?php else: ?>
+
+                    <div class="announcement-card">
+                        Tidak ada pengumuman ditemukan.
                     </div>
-                    <h3>Jadwal Ibadah Bulan Mei 2026</h3>
-                    <p>Informasi jadwal ibadah untuk bulan Mei 2026 telah diperbarui. Terdapat perubahan waktu ibadah
-                        pada
-                        Ibadah sesi kedua di cabang Dago. Silakan cek halaman jadwal ibadah untuk informasi
-                        selengkapnya.
-                    </p>
-                </div>
+
+                <?php endif; ?>
             </div>
         </div>
     </div>

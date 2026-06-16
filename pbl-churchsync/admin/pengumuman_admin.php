@@ -340,6 +340,54 @@ if (isset($_GET['edit_id'])) {
                     <label>Dibuat Oleh</label>
                     <input type="text" value="<?= $_SESSION['nama_lengkap']; ?>" readonly style="background-color: #f1f5f9;">
                 </div>
+                <div class="form-group">
+                    <label>Target Pengumuman</label>
+
+                    <select
+                        name="target_tipe"
+                        id="targetTipe"
+                        onchange="toggleCabangPengumuman()"
+                        required>
+
+                        <option value="umum">
+                            Untuk Semua Cabang
+                        </option>
+
+                        <option value="cabang">
+                            Cabang Tertentu
+                        </option>
+
+                    </select>
+                </div>
+
+                <div
+                    id="pilihanCabang"
+                    class="form-group"
+                    style="display:none;">
+
+                    <label>Pilih Cabang</label>
+
+                    <select name="id_cabang">
+
+                        <?php
+                        $qcabang = mysqli_query($conn, "
+                            SELECT *
+                            FROM cabang_gereja
+                            ORDER BY nama_cabang
+                        ");
+
+                        while ($cabang = mysqli_fetch_assoc($qcabang)):
+                        ?>
+
+                            <option value="<?= $cabang['id_cabang']; ?>">
+                                <?= $cabang['nama_cabang']; ?>
+                            </option>
+
+                        <?php endwhile; ?>
+
+                    </select>
+
+                </div>
 
                 <div style="display: flex; gap: 10px;">
                     <div class="form-group" style="flex: 1;">
@@ -509,6 +557,21 @@ if (isset($_GET['edit_id'])) {
             if (input.files && input.files[0]) {
                 textIndikator.innerHTML = "Gambar baru dipilih: <strong>" + input.files[0].name + "</strong>";
                 textIndikator.style.color = "#166534";
+            }
+        }
+
+        function toggleCabangPengumuman() {
+
+            let tipe =
+                document.getElementById('targetTipe').value;
+
+            let cabang =
+                document.getElementById('pilihanCabang');
+
+            if (tipe === 'cabang') {
+                cabang.style.display = 'block';
+            } else {
+                cabang.style.display = 'none';
             }
         }
     </script>

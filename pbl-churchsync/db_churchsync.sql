@@ -199,3 +199,7 @@ insert  into `temp_update_jemaat`(`id_pengajuan`,`id_jemaat`,`no_hp_baru`,`alama
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+ALTER TABLE pengumuman
+ADD COLUMN target_tipe ENUM('umum','cabang') NOT NULL DEFAULT 'umum',
+ADD COLUMN id_cabang INT NULL;
