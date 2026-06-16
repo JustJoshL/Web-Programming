@@ -203,3 +203,11 @@ insert  into `temp_update_jemaat`(`id_pengajuan`,`id_jemaat`,`no_hp_baru`,`alama
 ALTER TABLE pengumuman
 ADD COLUMN target_tipe ENUM('umum','cabang') NOT NULL DEFAULT 'umum',
 ADD COLUMN id_cabang INT NULL;
+
+CREATE TABLE ucapan_ultah (
+  id_ucapan INT AUTO_INCREMENT PRIMARY KEY,
+  id_pengirim INT NOT NULL,
+  id_penerima INT NOT NULL,
+  tahun INT NOT NULL,
+  waktu_kirim DATETIME DEFAULT CURRENT_TIMESTAMP
+);

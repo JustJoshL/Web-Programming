@@ -39,7 +39,8 @@ $query_aktivitas = mysqli_query($conn, "
 
 $bulan_angka = date('m');
 $q_ultah = mysqli_query($conn, "
-    SELECT j.nama_lengkap, DAY(j.tanggal_lahir) as tgl, MONTH(j.tanggal_lahir) as bln, c.nama_cabang 
+    SELECT j.id_jemaat, j.nama_lengkap, DAY(j.tanggal_lahir) as tgl, MONTH(j.tanggal_lahir) as bln, c.nama_cabang,
+    (SELECT COUNT(*) FROM ucapan_ultah WHERE id_penerima = j.id_jemaat AND tahun = YEAR(NOW())) as total_ucapan
     FROM jemaat j
     LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang
     WHERE 
@@ -369,10 +370,14 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                                 
                                 <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $ultah['tgl'] . ' ' . $bulan_indo[$ultah['bln'] - 1]; ?></p>
                                 
-                                <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0;">
+                                <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
                                     📍 <?= $ultah['nama_cabang'] ? htmlspecialchars($ultah['nama_cabang']) : 'Pusat'; ?>
                                 </p>
-                                <button class="btn-ucapan">Kirim Ucapan</button>
+                                
+                                <button class="btn-ucapan" onclick="kirimUcapanIni(<?= $ultah['id_jemaat']; ?>, this)">Kirim Ucapan</button>
+                                <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
+                                    🎉 <?= $ultah['total_ucapan']; ?> orang mengucapkan
+                                </p>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
@@ -456,6 +461,29 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                     }
                 }
             }
+        }
+        
+        function kirimUcapanIni(idPenerima, tombol) {
+            let teksAsli = tombol.innerText;
+            tombol.innerText = "Mengirim...";
+            tombol.disabled = true;
+
+            fetch('../proses_kirim_ucapan.php?id_penerima=' + idPenerima)
+                .then(response => response.text())
+                .then(hasil => {
+                    if (hasil.trim() === 'sukses') {
+                        alert('🎉 Ucapan selamat ulang tahun berhasil dikirim!');
+                        location.reload(); // Refresh halaman biar angka notifnya nambah
+                    } else if (hasil.trim() === 'udah_pernah') {
+                        alert('Waduh, kamu udah ngirim ucapan ke jemaat ini tahun ini!');
+                        tombol.innerText = "Sudah Terkirim";
+                    } else {
+                        alert('Error: Gagal mengirim ucapan.');
+                        console.log(hasil);
+                        tombol.innerText = teksAsli;
+                        tombol.disabled = false;
+                    }
+                });
         }
     </script>
 </body>
