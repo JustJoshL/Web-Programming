@@ -270,7 +270,6 @@ $query_cabang = mysqli_query($conn, "
 
         .akun-wrapper.aktif {
             display: block !important;
-            /* Paksa muncul */
         }
 
         .modal-content {
@@ -281,6 +280,57 @@ $query_cabang = mysqli_query($conn, "
 
             max-height: 90vh;
             overflow-y: auto;
+        }
+
+        .user-profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 100;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #334155;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8fafc;
+            color: var(--primary-blue);
+        }
+
+        .logout-item {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+
+        .logout-item:hover {
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
         }
     </style>
 </head>
@@ -307,12 +357,12 @@ $query_cabang = mysqli_query($conn, "
         <div class="top-navbar">
             <div class="navbar-right">
                 <div class="noti-icon">🔔<span class="noti-badge"></span></div>
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">
-                        <?= $_SESSION['nama_lengkap']; ?> (Admin)
+                        <?= $_SESSION['nama_lengkap']; ?> (Admin) ▼
                     </div>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_admin.php">Profil Saya</a>
                         <a href="../login.php" class="logout-item">Logout</a>
                     </div>
@@ -324,23 +374,23 @@ $query_cabang = mysqli_query($conn, "
                 <div class="page-title">
                     <h2>Data Jemaat</h2>
                     <div class="toolbar-actions">
-                         <form method="GET" style="display: flex; gap: 15px;">
-                                <input type="text" name="search" class="search-box"
-                                    placeholder="Cari nama atau email..."
-                                    value="<?= htmlspecialchars($search); ?>">
+                        <form method="GET" style="display: flex; gap: 15px;">
+                            <input type="text" name="search" class="search-box"
+                                placeholder="Cari nama atau email..."
+                                value="<?= htmlspecialchars($search); ?>">
 
-                                <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
-                                    <option value="">Semua Cabang</option>
-                                    <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
-                                        <option value="<?= $cabang['id_cabang']; ?>"
-                                            <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
-                                            <?= $cabang['nama_cabang']; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                            <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
+                                <option value="">Semua Cabang</option>
+                                <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
+                                    <option value="<?= $cabang['id_cabang']; ?>"
+                                        <?= ($id_cabang_filter == $cabang['id_cabang']) ? 'selected' : ''; ?>>
+                                        <?= $cabang['nama_cabang']; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
 
-                                <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
-                            </form>
+                            <button type="submit" class="btn-add" style="padding: 10px 15px;">Cari</button>
+                        </form>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -370,7 +420,9 @@ $query_cabang = mysqli_query($conn, "
                                     <label>Cabang Penempatan</label>
 
                                     <select name="id_cabang" required>
-                                        <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) : ?>
+                                        <?php
+                                        mysqli_data_seek($query_cabang, 0);
+                                        while ($cabang = mysqli_fetch_assoc($query_cabang)) : ?>
                                             <option value="<?= $cabang['id_cabang']; ?>">
                                                 <?= $cabang['nama_cabang']; ?>
                                             </option>
@@ -489,7 +541,7 @@ $query_cabang = mysqli_query($conn, "
 
                             <p>
                                 <?= $row['email']; ?>
-                                • <?= $row['no_telp']; ?>
+                                • 📍 <?= $row['nama_cabang'] ? htmlspecialchars($row['nama_cabang']) : 'Belum ada cabang'; ?>
                             </p>
 
                             <?php
@@ -589,6 +641,22 @@ $query_cabang = mysqli_query($conn, "
             document.getElementById('view_role').innerText = role;
 
             document.getElementById('modalViewData').style.display = 'flex';
+        }
+
+        function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
         }
     </script>
 </body>

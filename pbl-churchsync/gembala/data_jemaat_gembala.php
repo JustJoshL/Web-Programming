@@ -290,7 +290,7 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
 
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap'] ?? 'Gembala'; ?> ▼</div>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap'] ?? 'Gembala'; ?> (Gembala) ▼</div>
                     
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_gembala.php">Profil Saya</a>
