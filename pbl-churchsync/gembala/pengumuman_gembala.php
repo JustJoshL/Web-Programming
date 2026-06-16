@@ -211,6 +211,22 @@ $query_pengumuman = mysqli_query($conn, "
             padding: 10px 20px;
             border-radius: 6px;
         }
+
+        .btn-upload {
+            background: #eef2f6;
+            color: var(--primary-blue);
+            border: 1px dashed var(--primary-blue);
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload:hover {
+            background: #dbeafe;
+        }
     </style>
 </head>
 
@@ -420,10 +436,9 @@ align-items:center;
                 <div class="form-group">
                     <label>Gambar (Opsional)</label>
 
-                    <input
-                        type="file"
-                        name="gambar_pendukung"
-                        accept="image/*">
+                    <button type="button" class="btn-upload" onclick="document.getElementById('uploadGambar').click()">
+                        📷 Pilih Gambar untuk Diunggah
+                    </button>
                 </div>
 
                 <div class="modal-actions">
