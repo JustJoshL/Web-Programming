@@ -54,3 +54,13 @@ VALUES
     '$target_tipe',
     " . ($id_cabang ? "'$id_cabang'" : "NULL") . "
 )";
+
+$eksekusi = mysqli_query($conn, $query_tambah);
+
+if ($eksekusi) {
+    header("Location: pengumuman_admin.php?status=sukses");
+    exit();
+} else {
+    echo "Waduh, gagal nambahin pengumuman nih cuy: " . mysqli_error($conn);
+}
+?>
