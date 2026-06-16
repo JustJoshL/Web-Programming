@@ -491,7 +491,7 @@ $query_cabang = mysqli_query($conn, "
 
                             <p>
                                 <?= $row['email']; ?>
-                                • <?= $row['no_telp']; ?>
+                                • 📍 <?= $row['nama_cabang'] ? htmlspecialchars($row['nama_cabang']) : 'Belum ada cabang'; ?>
                             </p>
 
                             <?php

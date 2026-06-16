@@ -12,13 +12,13 @@ include '../koneksi.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $aksi = $_POST['aksi'];
+    $aksi = $_POST['aksi'] ?? '';
 
     if ($aksi == 'simpan') {
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
         $nama = mysqli_real_escape_string($conn, $_POST['nama_cabang']);
         $alamat = mysqli_real_escape_string($conn, $_POST['alamat_cabang']);
-        $id_gembala = !empty($_POST['id_gembala']) ? "'".mysqli_real_escape_string($conn, $_POST['id_gembala'])."'" : "NULL";
+        $id_gembala = !empty($_POST['id_gembala']) ? "'" . mysqli_real_escape_string($conn, $_POST['id_gembala']) . "'" : "NULL";
 
         if (empty($id_cabang)) {
             $query = "INSERT INTO cabang_gereja (nama_cabang, alamat_cabang, id_gembala) VALUES ('$nama', '$alamat', $id_gembala)";
@@ -26,27 +26,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $query = "UPDATE cabang_gereja SET nama_cabang='$nama', alamat_cabang='$alamat', id_gembala=$id_gembala WHERE id_cabang='$id_cabang'";
         }
         mysqli_query($conn, $query);
-        
+
         header("Location: cabang_admin.php");
         exit;
-
     } elseif ($aksi == 'hapus') {
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
         $query = "DELETE FROM cabang_gereja WHERE id_cabang='$id_cabang'";
         mysqli_query($conn, $query);
-        
+
         header("Location: cabang_admin.php");
         exit;
     }
 }
 
 $query_tampil = "
-    SELECT c.*, j.nama_lengkap AS nama_gembala 
+    SELECT c.*, (
+        SELECT nama_lengkap 
+        FROM jemaat 
+        WHERE id_cabang = c.id_cabang AND role = 'gembala_cabang' 
+        LIMIT 1
+    ) AS nama_gembala 
     FROM cabang_gereja c 
-    LEFT JOIN jemaat j ON c.id_gembala = j.id_jemaat 
     ORDER BY c.id_cabang DESC
 ";
 $result_cabang = mysqli_query($conn, $query_tampil);
+
+$query_gembala = mysqli_query($conn, "
+    SELECT id_jemaat, nama_lengkap 
+    FROM jemaat 
+    WHERE role = 'gembala_cabang' 
+    ORDER BY nama_lengkap ASC
+");
 ?>
 
 <!DOCTYPE html>
@@ -58,28 +68,152 @@ $result_cabang = mysqli_query($conn, $query_tampil);
     <title>Cabang Gereja - Admin ChurchSync</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        .header-toolbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
-        .page-title h2 { color: var(--primary-blue); font-size: 28px; }
-        .page-title p { color: var(--text-gray); font-size: 14px; }
-        .btn-add { background-color: var(--primary-yellow); color: var(--primary-blue); border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .branch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .branch-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); position: relative; border-top: 4px solid var(--primary-yellow); }
-        .branch-card h3 { color: var(--primary-blue); font-size: 20px; margin-bottom: 15px; }
-        .branch-detail { margin-bottom: 8px; font-size: 14px; color: var(--text-gray); display: flex; gap: 10px; }
-        .action-btns { margin-top: 20px; display: flex; gap: 10px; }
-        .action-btns button { border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; flex: 1; }
-        .btn-edit { background-color: #eef2f6; color: var(--primary-blue); }
-        .btn-delete { background-color: #fef2f2; color: #dc3545; }
-        
+        .header-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .page-title h2 {
+            color: var(--primary-blue);
+            font-size: 28px;
+        }
+
+        .page-title p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .branch-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .branch-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            border-top: 4px solid var(--primary-yellow);
+        }
+
+        .branch-card h3 {
+            color: var(--primary-blue);
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .branch-detail {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-gray);
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btns {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btns button {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .btn-edit {
+            background-color: #eef2f6;
+            color: var(--primary-blue);
+        }
+
+        .btn-delete {
+            background-color: #fef2f2;
+            color: #dc3545;
+        }
+
         /* Modal Style */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; width: 500px; border-radius: 12px; padding: 30px; }
-        .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; color: var(--primary-blue); }
-        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-        .form-group label { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
-        .form-group input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-        .btn-cancel { background: black; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -121,28 +255,28 @@ $result_cabang = mysqli_query($conn, $query_tampil);
             </div>
 
             <div class="branch-grid">
-                <?php 
+                <?php
                 // Melakukan looping data dari database
-                if(mysqli_num_rows($result_cabang) > 0) {
-                    while($row = mysqli_fetch_assoc($result_cabang)) { 
+                if (mysqli_num_rows($result_cabang) > 0) {
+                    while ($row = mysqli_fetch_assoc($result_cabang)) {
                 ?>
-                <div class="branch-card">
-                    <h3><?= htmlspecialchars($row['nama_cabang']) ?></h3>
-                    <div class="branch-detail">📍 <?= htmlspecialchars($row['alamat_cabang']) ?></div>
-                    <div class="branch-detail" style="margin-top: 5px; color: #166534; font-weight: 600;">
-                        👤 Gembala: <?= $row['nama_gembala'] ? htmlspecialchars($row['nama_gembala']) : '<em>Belum ditunjuk</em>' ?>
-                    </div>
-                    <div class="action-btns">
-                        <button class="btn-edit" onclick="editCabang('<?= $row['id_cabang'] ?>', '<?= addslashes($row['nama_cabang']) ?>', '<?= addslashes($row['alamat_cabang']) ?>', '<?= $row['id_gembala'] ?>', '<?= addslashes($row['nama_gembala'] ?? '') ?>')">Edit</button>
-                        
-                        <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang ini? Perhatian: Menghapus cabang akan menghapus jadwal ibadah yang terkait dengan cabang ini (Cascade).');">
-                            <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">
-                            <button type="submit" name="aksi" value="hapus" class="btn-delete" style="width: 100%;">Hapus</button>
-                        </form>
-                    </div>
-                </div>
-                <?php 
-                    } 
+                        <div class="branch-card">
+                            <h3><?= htmlspecialchars($row['nama_cabang']) ?></h3>
+                            <div class="branch-detail">📍 <?= htmlspecialchars($row['alamat_cabang']) ?></div>
+                            <div class="branch-detail" style="margin-top: 5px; color: #166534; font-weight: 600;">
+                                👤 Gembala: <?= $row['nama_gembala'] ? htmlspecialchars($row['nama_gembala']) : '<em>Belum ditunjuk</em>' ?>
+                            </div>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="editCabang('<?= $row['id_cabang'] ?>', '<?= addslashes($row['nama_cabang']) ?>', '<?= addslashes($row['alamat_cabang']) ?>', '<?= $row['id_gembala'] ?>', '<?= addslashes($row['nama_gembala'] ?? '') ?>')">Edit</button>
+
+                                <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus cabang ini? Perhatian: Menghapus cabang akan menghapus jadwal ibadah yang terkait dengan cabang ini (Cascade).');">
+                                    <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">
+                                    <button type="submit" name="aksi" value="hapus" class="btn-delete" style="width: 100%;">Hapus</button>
+                                </form>
+                            </div>
+                        </div>
+                <?php
+                    }
                 } else {
                     echo "<p style='grid-column: span 2; text-align: center; color: var(--text-gray);'>Belum ada data cabang gereja.</p>";
                 }
@@ -158,6 +292,8 @@ $result_cabang = mysqli_query($conn, $query_tampil);
             </div>
             <form action="" method="POST">
                 <input type="hidden" name="id_cabang" id="input_id_cabang">
+                <input type="hidden" name="aksi" value="simpan">
+
                 <div class="form-group">
                     <label>Nama Cabang</label>
                     <input type="text" name="nama_cabang" id="input_nama" placeholder="Contoh: GBI Maranatha Cimahi" required>
@@ -168,13 +304,21 @@ $result_cabang = mysqli_query($conn, $query_tampil);
                 </div>
                 <div class="form-group">
                     <label>Gembala Cabang</label>
-                    <input type="text" id="search_gembala" placeholder="Cari nama jemaat..." onkeyup="cariJemaat(this.value)">
-                    <div id="hasil_cari" style="border:1px solid #ccc; max-height:100px; overflow-y:auto; display:none;"></div>
-                    <input type="hidden" name="id_gembala" id="input_id_gembala">
-                </div>
+                    <select name="id_gembala" id="input_id_gembala">
+                        <option value="">-- Pilih Gembala Cabang --</option>
+                        <?php 
+                        mysqli_data_seek($query_gembala, 0);
+                        while ($gembala = mysqli_fetch_assoc($query_gembala)) : 
+                        ?>
+                            <option value="<?= $gembala['id_jemaat']; ?>">
+                                <?= $gembala['nama_lengkap']; ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                    </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalCabang').style.display='none'">Batal</button>
-                    <button type="submit" name="aksi" value="simpan" class="btn-add">Simpan Data</button>
+                    <button type="submit" class="btn-add">Simpan Data</button>
                 </div>
             </form>
         </div>
@@ -186,34 +330,19 @@ $result_cabang = mysqli_query($conn, $query_tampil);
             document.getElementById('input_id_cabang').value = '';
             document.getElementById('input_nama').value = '';
             document.getElementById('input_alamat').value = '';
+            document.getElementById('input_id_gembala').value = ''; // Kosongin dropdown
             document.getElementById('modalCabang').style.display = 'flex';
         }
 
-        function editCabang(id, nama, alamat, id_gembala, nama_gembala) {
+        function editCabang(id, nama, alamat, id_gembala) {
             document.getElementById('modalTitle').innerText = 'Edit Data Cabang';
             document.getElementById('input_id_cabang').value = id;
             document.getElementById('input_nama').value = nama;
             document.getElementById('input_alamat').value = alamat;
-            document.getElementById('search_gembala').value = nama_gembala;
-            document.getElementById('input_id_gembala').value = id_gembala;
+            
+            document.getElementById('input_id_gembala').value = id_gembala; 
+            
             document.getElementById('modalCabang').style.display = 'flex';
-        }
-
-        function cariJemaat(str) {
-            if (str.length == 0) { document.getElementById("hasil_cari").style.display = "none"; return; }
-            fetch('search_jemaat.php?q=' + str)
-            .then(res => res.text())
-            .then(data => {
-                let box = document.getElementById("hasil_cari");
-                box.innerHTML = data;
-                box.style.display = "block";
-            });
-        }
-
-        function pilihGembala(id, nama) {
-            document.getElementById("search_gembala").value = nama;
-            document.getElementById("input_id_gembala").value = id;
-            document.getElementById("hasil_cari").style.display = "none";
         }
     </script>
 </body>
