@@ -234,12 +234,12 @@ $query_gembala = mysqli_query($conn, "
         <div class="top-navbar">
             <div class="navbar-right">
                 <div class="noti-icon">🔔<span class="noti-badge"></span></div>
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">⚡</div>
-                    <div class="nav-user-name">Admin ChurchSync</div>▼
-                    <div class="dropdown-content">
-                        <a href="profil-admin.html">Profil Saya</a>
-                        <a href="../logout.php" class="logout-item">Logout</a>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin) ▼</div>
+                    <div class="dropdown-content" id="profileDropdown">
+                        <a href="profil_admin.php">Profil Saya</a>
+                        <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau keluar?');">Logout</a>
                     </div>
                 </div>
             </div>
@@ -306,16 +306,16 @@ $query_gembala = mysqli_query($conn, "
                     <label>Gembala Cabang</label>
                     <select name="id_gembala" id="input_id_gembala">
                         <option value="">-- Pilih Gembala Cabang --</option>
-                        <?php 
+                        <?php
                         mysqli_data_seek($query_gembala, 0);
-                        while ($gembala = mysqli_fetch_assoc($query_gembala)) : 
+                        while ($gembala = mysqli_fetch_assoc($query_gembala)) :
                         ?>
                             <option value="<?= $gembala['id_jemaat']; ?>">
                                 <?= $gembala['nama_lengkap']; ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
-                    </div>
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalCabang').style.display='none'">Batal</button>
                     <button type="submit" class="btn-add">Simpan Data</button>
@@ -339,10 +339,26 @@ $query_gembala = mysqli_query($conn, "
             document.getElementById('input_id_cabang').value = id;
             document.getElementById('input_nama').value = nama;
             document.getElementById('input_alamat').value = alamat;
-            
-            document.getElementById('input_id_gembala').value = id_gembala; 
-            
+
+            document.getElementById('input_id_gembala').value = id_gembala;
+
             document.getElementById('modalCabang').style.display = 'flex';
+        }
+
+        function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
         }
     </script>
 </body>

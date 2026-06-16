@@ -310,7 +310,7 @@ $query_cabang = mysqli_query($conn, "
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">
-                        <?= $_SESSION['nama_lengkap']; ?> (Admin)
+                        <?= $_SESSION['nama_lengkap']; ?> (Admin) ▼
                     </div>
                     <div class="dropdown-content">
                         <a href="profil_admin.php">Profil Saya</a>
@@ -370,7 +370,7 @@ $query_cabang = mysqli_query($conn, "
                                     <label>Cabang Penempatan</label>
 
                                     <select name="id_cabang" required>
-                                        <?php 
+                                        <?php
                                         mysqli_data_seek($query_cabang, 0);
                                         while ($cabang = mysqli_fetch_assoc($query_cabang)) : ?>
                                             <option value="<?= $cabang['id_cabang']; ?>">
@@ -591,6 +591,22 @@ $query_cabang = mysqli_query($conn, "
             document.getElementById('view_role').innerText = role;
 
             document.getElementById('modalViewData').style.display = 'flex';
+        }
+
+        function toggleDropdown() {
+            document.getElementById("profileDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
         }
     </script>
 </body>

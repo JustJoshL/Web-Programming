@@ -4,7 +4,7 @@ include '../koneksi.php';
 
 /** @var mysqli $conn */
 
-// Satpam Pintu: Hanya Admin & Gembala yang boleh masuk
+// 1. SATPAM PINTU: Hanya Admin & Gembala yang boleh masuk
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'gembala_cabang')) {
     header("location:../login.php?pesan=belum_login");
     exit();
@@ -13,6 +13,7 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 $is_admin = ($_SESSION['role'] == 'admin');
 $is_gembala = ($_SESSION['role'] == 'gembala_cabang');
 
+// 2. FILTER JADWAL: Gembala cuma liat cabangnya sendiri, Admin liat semua cabang
 if ($is_gembala) {
     $id_cabang_gembala = $_SESSION['id_cabang'];
     $query_jadwal = mysqli_query($conn, "
@@ -32,7 +33,7 @@ if ($is_gembala) {
 }
 
 $data_edit = null;
-if ($is_gembala && isset($_GET['edit_id'])) {
+if ($is_admin && isset($_GET['edit_id'])) {
     $edit_id = $_GET['edit_id'];
     $query_edit = mysqli_query($conn, "SELECT * FROM jadwal_ibadah WHERE id_jadwal = '$edit_id'");
     $data_edit = mysqli_fetch_assoc($query_edit);
@@ -246,7 +247,6 @@ if ($is_gembala && isset($_GET['edit_id'])) {
 
         .modal-content {
             background: white;
-            width: 550px;
             border-radius: 12px;
             padding: 30px;
             max-height: 90vh;
@@ -380,8 +380,8 @@ if ($is_gembala && isset($_GET['edit_id'])) {
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (<?= $is_admin ? 'Admin' : 'Gembala'; ?>) ▼</div>
                     <div class="dropdown-content" id="profileDropdown">
-                        <a href="<?= $is_admin ? 'profil_admin.php' : '../gembala/profil_gembala.php'; ?>">👤 Profil Saya</a>
-                        <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau keluar?');">🚪 Logout</a>
+                        <a href="<?= $is_admin ? 'profil_admin.php' : '../gembala/profil_gembala.php'; ?>">Profil Saya</a>
+                        <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau keluar?');">Logout</a>
                     </div>
                 </div>
             </div>
@@ -511,27 +511,27 @@ if ($is_gembala && isset($_GET['edit_id'])) {
 
                         <?php if ($is_gembala): ?>
                             <div id="modalEditLaporan_<?= $row['id_jadwal']; ?>" class="modal-overlay">
-                                <div class="modal-content" style="max-width: 600px;">
+                                <div class="modal-content" style="max-width: 750px;">
                                     <div class="modal-header">
                                         <h3>Form Edit Laporan Ibadah</h3>
                                     </div>
                                     <form action="proses_edit_laporan.php" method="POST">
                                         <input type="hidden" name="id_jadwal" value="<?= $row['id_jadwal']; ?>">
-                                        <div style="display: flex; gap: 10px;">
-                                            <div class="form-group" style="flex: 1;">
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                                            <div class="form-group" style="margin-bottom: 0;">
                                                 <label>Total Kehadiran</label>
                                                 <input type="number" name="kehadiran" value="<?= $data_laporan['jumlah_kehadiran']; ?>" required>
                                             </div>
-                                            <div class="form-group" style="flex: 1;">
+                                            <div class="form-group" style="margin-bottom: 0;">
                                                 <label>Persembahan (Rp)</label>
                                                 <input type="number" name="persembahan" value="<?= $data_laporan['total_persembahan']; ?>" required>
                                             </div>
-                                            <div class="form-group" style="flex: 1;">
+                                            <div class="form-group" style="margin-bottom: 0;">
                                                 <label>Perpuluhan (Rp)</label>
                                                 <input type="number" name="perpuluhan" value="<?= $data_laporan['total_perpuluhan']; ?>" required>
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="margin-top: 15px;">
                                             <label>Catatan / Evaluasi Ibadah</label>
                                             <textarea name="catatan" rows="3"><?= $data_laporan['catatan']; ?></textarea>
                                         </div>
@@ -592,7 +592,10 @@ if ($is_gembala && isset($_GET['edit_id'])) {
             }
             ?>
         </div>
-    </div> <div id="modalJadwal" class="modal-overlay">
+    </div>
+
+    <?php if ($is_admin): ?>
+        <div id="modalJadwal" class="modal-overlay">
             <div class="modal-content" style="max-width: 500px;">
                 <div class="modal-header">
                     <h3>Form Jadwal Ibadah</h3>
@@ -677,8 +680,9 @@ if ($is_gembala && isset($_GET['edit_id'])) {
                 </div>
             </div>
         <?php endif; ?>
-        <?php if ($is_gembala): ?>
-    
+    <?php endif; ?>
+
+    <?php if ($is_gembala): ?>
         <div id="modalLaporan" class="modal-overlay">
             <div class="modal-content" style="max-width: 750px;">
                 <div class="modal-header">
@@ -686,7 +690,7 @@ if ($is_gembala && isset($_GET['edit_id'])) {
                 </div>
                 <form action="proses_tambah_laporan.php" method="POST">
                     <input type="hidden" name="id_jadwal" id="laporan_id_jadwal" value="">
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Total Kehadiran Jemaat</label>
@@ -706,7 +710,6 @@ if ($is_gembala && isset($_GET['edit_id'])) {
                         <label>Catatan / Evaluasi Ibadah</label>
                         <textarea name="catatan" rows="3" placeholder="Masukkan ringkasan kesaksian atau kendala selama ibadah..."></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label>Penugasan Pelayan Ibadah</label>
                         <div id="container-pelayan-laporan">
@@ -733,11 +736,9 @@ if ($is_gembala && isset($_GET['edit_id'])) {
                 </form>
             </div>
         </div>
-
     <?php endif; ?>
 
     <script>
-        // Modal Umum
         function bukaModal(idModal) {
             document.getElementById(idModal).style.display = 'flex';
         }
@@ -751,7 +752,6 @@ if ($is_gembala && isset($_GET['edit_id'])) {
             document.getElementById(idModal).style.display = 'flex';
         }
 
-        // Navbar Dropdown
         function toggleDropdown() {
             document.getElementById("profileDropdown").classList.toggle("show");
         }
@@ -767,7 +767,6 @@ if ($is_gembala && isset($_GET['edit_id'])) {
             }
         }
 
-        // Script Pelayan Laporan Baru
         function tambahBarisLaporan() {
             const container = document.getElementById('container-pelayan-laporan');
             const rowBaru = document.createElement('div');
@@ -797,7 +796,6 @@ if ($is_gembala && isset($_GET['edit_id'])) {
             }
         }
 
-        // Script Pelayan Edit
         function tambahBarisEdit(containerId) {
             const container = document.getElementById(containerId);
             const rowBaru = document.createElement('div');
