@@ -295,9 +295,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
     <div class="content-wrapper">
         <div class="top-navbar">
             <div class="navbar-right">
-                <div class="noti-icon">
-                    🔔<span class="noti-badge"></span>
-                </div>
+                <?php include '../widget_notif.php'; ?>
 
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">👨🏽‍💼</div>

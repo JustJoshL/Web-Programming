@@ -219,13 +219,13 @@ if (isset($_POST['simpan'])) {
     <div class="content-wrapper">
         <div class="top-navbar">
             <div class="navbar-right">
-                <div class="noti-icon">🔔<span class="noti-badge"></span></div>
+                <?php include '../widget_notif.php'; ?>
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">
                         <?= $data['nama_lengkap']; ?> (<?= ucfirst($data['role']);?>) ▼
                     </div>
-                    <div class="dropdown-content"><a href="login.php">Logout</a></div>
+                    <div class="dropdown-content"><a href="../logout.php">Logout</a></div>
                 </div>
             </div>
         </div>
@@ -312,7 +312,7 @@ if (isset($_POST['simpan'])) {
                     </div>
 
                     <div class="form-actions">
-                        <a href="../login.php" class="btn-logout">Logout</a>
+                        <a href="../logout.php" class="btn-logout">Logout</a>
                         <button type="submit"
                             name="simpan"
                             class="btn-submit">

@@ -356,7 +356,7 @@ $query_cabang = mysqli_query($conn, "
     <div class="content-wrapper">
         <div class="top-navbar">
             <div class="navbar-right">
-                <div class="noti-icon">🔔<span class="noti-badge"></span></div>
+                <?php include '../widget_notif.php'; ?> 
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">
@@ -364,7 +364,7 @@ $query_cabang = mysqli_query($conn, "
                     </div>
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_admin.php">Profil Saya</a>
-                        <a href="../login.php" class="logout-item">Logout</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>

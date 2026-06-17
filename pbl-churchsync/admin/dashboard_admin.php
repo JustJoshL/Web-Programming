@@ -311,18 +311,15 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
         <div class="top-navbar">
             <div class="navbar-right">
-                <div class="noti-icon">
-                    🔔<span class="noti-badge"></span>
-                </div>
+                <?php include '../widget_notif.php'; ?>
 
-                <!-- 🚨 Saklar JS udah dipasang di sini -->
-                <div class="user-profile-dropdown" onclick="toggleDropdown()">
+                <div class="user-profile-dropdown" onclick="toggleDropdown(event)">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin) ▼</div>
 
                     <div class="dropdown-content" id="profileDropdown">
-                        <a href="profil_admin.php">👤 Profil Saya</a>
-                        <a href="../logout.php" class="logout-item">🚪 Logout</a>
+                        <a href="profil_admin.php">Profil Saya</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
@@ -367,13 +364,13 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                             <div class="birthday-item">
                                 <div class="avatar">🧑🏽</div>
                                 <p style="font-weight: bold; margin-bottom: 5px; color: var(--text-dark);"><?= htmlspecialchars($ultah['nama_lengkap']); ?></p>
-                                
+
                                 <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $ultah['tgl'] . ' ' . $bulan_indo[$ultah['bln'] - 1]; ?></p>
-                                
+
                                 <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
                                     📍 <?= $ultah['nama_cabang'] ? htmlspecialchars($ultah['nama_cabang']) : 'Pusat'; ?>
                                 </p>
-                                
+
                                 <button class="btn-ucapan" onclick="kirimUcapanIni(<?= $ultah['id_jemaat']; ?>, this)">Kirim Ucapan</button>
                                 <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
                                     🎉 <?= $ultah['total_ucapan']; ?> orang mengucapkan
@@ -447,8 +444,16 @@ $bulan_nama = $bulan_indo[date('n') - 1];
     </div>
 
     <script>
-        function toggleDropdown() {
+        function toggleDropdown(event) {
             document.getElementById("profileDropdown").classList.toggle("show");
+            document.getElementById("notifDropdown").classList.remove("show"); // Otomatis tutup notif
+            event.stopPropagation();
+        }
+
+        function toggleNotif(event) {
+            document.getElementById("notifDropdown").classList.toggle("show");
+            document.getElementById("profileDropdown").classList.remove("show"); // Otomatis tutup profil
+            event.stopPropagation();
         }
 
         window.onclick = function(event) {
@@ -461,8 +466,11 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                     }
                 }
             }
+            if (!event.target.closest('.noti-icon')) {
+                document.getElementById("notifDropdown").classList.remove('show');
+            }
         }
-        
+
         function kirimUcapanIni(idPenerima, tombol) {
             let teksAsli = tombol.innerText;
             tombol.innerText = "Mengirim...";

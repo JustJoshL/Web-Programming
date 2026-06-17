@@ -375,14 +375,15 @@ if ($is_admin && isset($_GET['edit_id'])) {
     <div class="content-wrapper">
         <div class="top-navbar">
             <div class="navbar-right">
-                <div class="noti-icon">
-                    🔔<span class="noti-badge"></span>
-                </div>
+                <?php include '../widget_notif.php'; ?>
 
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
-                    <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap'] ?? 'Gembala'; ?> (Gembala) ▼</div>
-
+                    <div class="nav-avatar">
+                        <?= ($_SESSION['role'] == 'admin') ? '⚡' : '👨🏽‍💼'; ?>
+                    </div>
+                    <div class="nav-user-name">
+                        <?= $_SESSION['nama_lengkap'] ?? 'User'; ?> (<?= ($_SESSION['role'] == 'admin') ? 'Admin' : 'Gembala'; ?>) ▼
+                    </div>
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_gembala.php">Profil Saya</a>
                         <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau logout?');">Logout</a>

@@ -23,8 +23,9 @@ if (isset($_GET['id_penerima'])) {
         $data_pengirim = mysqli_fetch_assoc($q_cari_pengirim);
         $id_pengirim = $data_pengirim['id_jemaat'];
     } else {
-        // Backup plan kalau dia bener-bener gak ada di tabel jemaat
-        $id_pengirim = 0; 
+        ob_clean();
+        echo "Error: Akun kamu ($nama_pengirim) belum terdaftar di tabel data jemaat!";
+        exit();
     }
 
     // Cek apakah udah pernah ngucapin
