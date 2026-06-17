@@ -322,20 +322,29 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
             <div class="card">
                 <div class="card-header">
-                    <h3>Ulang Tahun Jemaat (Bulan <?= $bulan_nama . ' ' . date('Y'); ?>)</h3>
+                    <h3>Ulang Tahun Jemaat (7 Hari Mendatang)</h3>
                 </div>
                 <div class="birthday-list">
                     <?php if (mysqli_num_rows($q_ultah) > 0): ?>
                         <?php while ($ultah = mysqli_fetch_assoc($q_ultah)): ?>
                             <div class="birthday-item">
                                 <div class="avatar">🧑🏽</div>
-                                <p style="font-weight: bold; margin-bottom: 5px;"><?= htmlspecialchars($ultah['nama_lengkap']); ?></p>
-                                <p style="font-size: 12px; color: #64748b; margin-top: 0;"><?= $ultah['tgl'] . ' ' . $bulan_nama; ?></p>
-                                <button class="btn-ucapan">Kirim Ucapan</button>
+                                <p style="font-weight: bold; margin-bottom: 5px; color: var(--text-dark);"><?= htmlspecialchars($ultah['nama_lengkap']); ?></p>
+
+                                <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $ultah['tgl'] . ' ' . $bulan_indo[$ultah['bln'] - 1]; ?></p>
+
+                                <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
+                                    📍 <?= $ultah['nama_cabang'] ? htmlspecialchars($ultah['nama_cabang']) : 'Pusat'; ?>
+                                </p>
+
+                                <button class="btn-ucapan" onclick="kirimUcapanIni(<?= $ultah['id_jemaat']; ?>, this)">Kirim Ucapan</button>
+                                <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
+                                    🎉 <?= $ultah['total_ucapan']; ?> orang mengucapkan
+                                </p>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <p style="color: #64748b; padding: 10px;">Tidak ada jemaat di cabang ini yang berulang tahun bulan ini.</p>
+                        <p style="color: #64748b; padding: 10px;">Tidak ada jemaat yang berulang tahun dalam 7 hari ke depan.</p>
                     <?php endif; ?>
                 </div>
             </div>

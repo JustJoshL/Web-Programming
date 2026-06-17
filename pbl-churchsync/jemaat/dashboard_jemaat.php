@@ -1,10 +1,41 @@
 <?php
 session_start();
 
+/** @var mysqli $conn */
+
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
     header("location:../login.php?pesan=belum_login");
     exit();
 }
+
+include "../koneksi.php";
+
+$id_cabang_user = $_SESSION['id_cabang'];
+$query_cabang = mysqli_query($conn, "SELECT nama_cabang FROM cabang_gereja WHERE id_cabang = '$id_cabang_user'");
+$data_cabang = mysqli_fetch_assoc($query_cabang);
+$nama_cabang_asli = $data_cabang['nama_cabang'];
+$bulan_angka = date('m');
+
+$id_jemaat_login = $_SESSION['id_jemaat'] ?? 0;
+$q_ultah = mysqli_query($conn, "
+    SELECT j.id_jemaat, j.nama_lengkap, DAY(j.tanggal_lahir) as tgl, MONTH(j.tanggal_lahir) as bln, c.nama_cabang,
+    (SELECT COUNT(*) FROM ucapan_ultah WHERE id_penerima = j.id_jemaat AND tahun = YEAR(NOW())) as total_ucapan
+    FROM jemaat j
+    LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang
+    WHERE 
+        (DATE_FORMAT(j.tanggal_lahir, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d'))
+        OR 
+        (DATE_FORMAT(NOW(), '%m-%d') > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d') AND 
+        (DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') OR DATE_FORMAT(j.tanggal_lahir, '%m-%d') <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d')))
+    ORDER BY 
+        CASE WHEN DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 0 ELSE 1 END,
+        DATE_FORMAT(j.tanggal_lahir, '%m-%d') ASC
+    LIMIT 5
+");
+$bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+$bulan_nama = $bulan_indo[date('n') - 1];
+
 ?>
 
 <!DOCTYPE html>
@@ -151,11 +182,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
 
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name">Justin Bieber</div>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?></div>
                     ▼
                     <div class="dropdown-content">
                         <a href="profil_jemaat.php">Profil Saya</a>
-                        <a href="login.php" class="logout-item">Logout</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
@@ -167,33 +198,36 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
                 <div class="profile-info">
                     <div class="avatar">👨🏽</div>
                     <div class="profile-text">
-                        <h2>Justin Bieber</h2>
-                        <p>Jemaat GBI Maranatha Dago</p>
+                        <h2><?= $_SESSION['nama_lengkap'] ?></h2>
+                        <p>Jemaat <?= $nama_cabang_asli ?></p>
                     </div>
                 </div>
-                <button class="btn-profile">Profile</button>
+                <button class="btn-profile" href="profil_jemaat.php">Profile</button>
             </div>
 
             <div class="card" style="margin-bottom: 20px;">
                 <div class="card-header">
-                    <h3>Ulang Tahun (30 April 2026)</h3>
+                    <h3>🎉 Ulang Tahun Jemaat (7 Hari Mendatang)</h3>
                 </div>
                 <div class="birthday-list">
-                    <div class="birthday-item">
-                        <div class="avatar">🧑🏽</div>
-                        <p>Jemaat 1</p>
-                        <button class="btn-ucapan">Kirim Ucapan</button>
-                    </div>
-                    <div class="birthday-item">
-                        <div class="avatar">🧑🏽</div>
-                        <p>Jemaat 2</p>
-                        <button class="btn-ucapan">Kirim Ucapan</button>
-                    </div>
-                    <div class="birthday-item">
-                        <div class="avatar">🧑🏽</div>
-                        <p>Jemaat 3</p>
-                        <button class="btn-ucapan">Kirim Ucapan</button>
-                    </div>
+                    <?php if (mysqli_num_rows($q_ultah) > 0): ?>
+                        <?php while ($row_ultah = mysqli_fetch_assoc($q_ultah)): ?>
+                        <div class="birthday-item">
+                            <div class="avatar">🧑🏽</div>
+                            <p style="font-weight: bold; margin-bottom: 5px; color: var(--text-dark);"><?= htmlspecialchars($row_ultah['nama_lengkap']); ?></p>
+                            <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $row_ultah['tgl'] . ' ' . $bulan_indo[$row_ultah['bln'] - 1]; ?></p>
+                            <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
+                                    📍 <?= $row_ultah['nama_cabang'] ? htmlspecialchars($row_ultah['nama_cabang']) : 'Pusat'; ?>
+                                </p>
+                            <button class="btn-ucapan" onclick="kirimUcapanJemaat(<?= $row_ultah['id_jemaat'] ?>, this">Kirim Ucapan</button>
+                            <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
+                                    🎉 <?= $row_ultah['total_ucapan']; ?> orang mengucapkan
+                                </p>
+                        </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <p style="color: #64748b; padding: 10px; width: 100%; text-align: center;">Tidak ada jemaat yang berulang tahun dalam 7 hari ke depan.</p>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -223,6 +257,29 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
 
         </div>
     </div>
+    <script>
+        function kirimUcapanJemaat(idPenerima, tombol) {
+            let teksAsli = tombol.innerText;
+            tombol.innerText = "Mengirim...";
+            tombol.disabled = true;
+            // Si kurir Fetch jalan keluar folder jemaat (../) menuju folder utama
+            fetch('../proses_kirim_ucapan.php?id_penerima=' + idPenerima)
+                .then(response => response.text())
+                .then(hasil => {
+                    if (hasil.trim() === 'sukses') {
+                        alert('🎉 Ucapan selamat ulang tahun berhasil dikirim!');
+                        location.reload(); // Refresh halaman biar data notifnya ke-update
+                    } else if (hasil.trim() === 'udah_pernah') {
+                        alert('Waduh, kamu udah ngirim ucapan ke jemaat ini tahun ini!');
+                        tombol.innerText = "Sudah Terkirim";
+                    } else {
+                        alert('Error dari server: ' + hasil);
+                        tombol.innerText = teksAsli;
+                        tombol.disabled = false;
+                    }
+                });
+        }
+    </script>
 </body>
 
 </html>

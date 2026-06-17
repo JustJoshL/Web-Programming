@@ -233,7 +233,7 @@ if (isset($_POST['simpan'])) {
                     <div class="nav-avatar">👨🏽‍💼</div>
 
                     <div class="nav-user-name">
-                        <?= $_SESSION['nama_lengkap']; ?>
+                        <?= $_SESSION['nama_lengkap']; ?> (Gembala)
                     </div>
 
                     ▼
@@ -337,7 +337,7 @@ if (isset($_POST['simpan'])) {
                         </div>                    
 
                     <div class="form-actions">
-                        <a href="login.html" class="btn-logout">Logout</a>
+                        <a href="../logout.php" class="btn-logout">Logout</a>
                         <button type="submit"
                             name="simpan"
                             class="btn-submit">

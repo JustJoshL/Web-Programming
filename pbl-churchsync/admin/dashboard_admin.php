@@ -328,7 +328,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
         <div class="main-content">
             <div class="admin-banner">
                 <h2>Selamat Datang Kembali, <?= $_SESSION['nama_lengkap']; ?>!</h2>
-                <p>Sistem Informasi Administrasi Gereja Terpusat — Akun Admin Utama</p>
+                <p>Sistem Informasi Administrasi Gereja Terpusat — Akun Admin</p>
             </div>
 
             <div class="stat-grid-3">
@@ -356,7 +356,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
             </div>
             <div class="card-admin" style="margin-bottom: 25px;">
                 <div class="card-admin-header">
-                    <span>🎉 Ulang Tahun Jemaat (7 Hari Mendatang)</span>
+                    <span>Ulang Tahun Jemaat (7 Hari Mendatang)</span>
                 </div>
                 <div class="birthday-list">
                     <?php if (mysqli_num_rows($q_ultah) > 0): ?>
