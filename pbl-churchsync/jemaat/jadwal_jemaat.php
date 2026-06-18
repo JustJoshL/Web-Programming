@@ -12,6 +12,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
 
 $id_cabang_user = $_SESSION['id_cabang'];
 
+// Kueri ke tabel cabang_gereja buat nyari nama cabangnya
+$query_cabang = mysqli_query($conn, "SELECT nama_cabang FROM cabang_gereja WHERE id_cabang = '$id_cabang_user'");
+
+// Tarik datanya jadi array
+$data_cabang = mysqli_fetch_assoc($query_cabang);
+
+// Simpan nama cabangnya ke variabel biar gampang dipanggil di HTML
+$nama_cabang_asli = $data_cabang['nama_cabang'];
+
 $query_semua_jadwal = mysqli_query($conn, "
     SELECT * FROM jadwal_ibadah 
     WHERE waktu_pelaksanaan >= CURDATE() 
@@ -177,9 +186,8 @@ if ($query_semua_jadwal && mysqli_num_rows($query_semua_jadwal) > 0) {
                                 <div class="schedule-details">
                                     <h4><?= htmlspecialchars($jadwal['kategori_ibadah']); ?></h4>
                                     <p class="location">
-                                        📍 <?= htmlspecialchars($jadwal['lokasi'] ?? 'Gereja Lokal'); ?> • <?= date('H:i', strtotime($jadwal['waktu_pelaksanaan'])); ?> WIB
+                                        📍 <?= htmlspecialchars($nama_cabang_asli); ?> • <?= date('H:i', strtotime($jadwal['waktu_pelaksanaan'])); ?> WIB
                                     </p>
-                                    <p class="session">Jadwal Rutin Jemaat</p>
                                 </div>
                             </div>
                         <?php } ?>

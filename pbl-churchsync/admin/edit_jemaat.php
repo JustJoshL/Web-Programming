@@ -115,10 +115,14 @@ if (isset($_POST['simpan'])) {
 
     <div class="sidebar">
         <div class="sidebar-logo">
-            ChurchSync
-            <span>ALL ABOUT OUR CHURCH</span>
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
         </div>
-
         <nav>
             <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>

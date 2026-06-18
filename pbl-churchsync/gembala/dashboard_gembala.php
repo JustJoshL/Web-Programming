@@ -30,12 +30,23 @@ $q_total_laporan = mysqli_query($conn, "SELECT COUNT(p.id_pendataan) as total
 $total_laporan = mysqli_fetch_assoc($q_total_laporan)['total'];
 
 $bulan_angka = date('m');
-$q_ultah = mysqli_query($conn, "SELECT nama_lengkap, DAY(tanggal_lahir) as tgl 
-                                FROM jemaat 
-                                WHERE id_cabang = '$id_cabang_gembala' 
-                                AND MONTH(tanggal_lahir) = '$bulan_angka' 
-                                ORDER BY DAY(tanggal_lahir) ASC LIMIT 3");
-
+$q_ultah = mysqli_query($conn, "
+    SELECT j.id_jemaat, j.nama_lengkap, DAY(j.tanggal_lahir) as tgl, MONTH(j.tanggal_lahir) as bln, c.nama_cabang,
+    (SELECT COUNT(*) FROM ucapan_ultah WHERE id_penerima = j.id_jemaat AND tahun = YEAR(NOW())) as total_ucapan
+    FROM jemaat j
+    LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang
+    WHERE j.id_cabang = '$id_cabang_gembala' 
+    AND (
+        (DATE_FORMAT(j.tanggal_lahir, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d'))
+        OR 
+        (DATE_FORMAT(NOW(), '%m-%d') > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d') AND 
+        (DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') OR DATE_FORMAT(j.tanggal_lahir, '%m-%d') <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d')))
+    )
+    ORDER BY 
+        CASE WHEN DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 0 ELSE 1 END,
+        DATE_FORMAT(j.tanggal_lahir, '%m-%d') ASC
+    LIMIT 10
+");
 $q_pengumuman = mysqli_query($conn, "SELECT judul_pengumuman, tanggal_publikasi 
                                      FROM pengumuman 
                                      WHERE status_publikasi = 'Published' 
@@ -120,24 +131,6 @@ $bulan_nama = $bulan_indo[date('n') - 1];
             margin-bottom: 15px;
             color: var(--primary-blue);
             font-weight: bold;
-        }
-
-        .birthday-list {
-            display: flex;
-            gap: 20px;
-            justify-content: space-around;
-        }
-
-        .birthday-item {
-            background-color: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            width: 32%;
-        }
-
-        .birthday-item .avatar {
-            margin: 0 auto 10px;
         }
 
         .btn-ucapan {

@@ -31,7 +31,7 @@ $q_ultah = mysqli_query($conn, "
     ORDER BY 
         CASE WHEN DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 0 ELSE 1 END,
         DATE_FORMAT(j.tanggal_lahir, '%m-%d') ASC
-    LIMIT 5
+    LIMIT 10
 ");
 $bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 $bulan_nama = $bulan_indo[date('n') - 1];
@@ -133,24 +133,6 @@ $query_pengumuman_dash = mysqli_query($conn, "
             color: var(--primary-blue);
         }
 
-        .birthday-list {
-            display: flex;
-            gap: 20px;
-            justify-content: space-around;
-        }
-
-        .birthday-item {
-            background-color: #f8fafc;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            width: 30%;
-        }
-
-        .birthday-item .avatar {
-            margin: 0 auto 10px;
-        }
-
         .btn-ucapan {
             margin-top: 10px;
             background-color: var(--primary-yellow);
@@ -187,7 +169,6 @@ $query_pengumuman_dash = mysqli_query($conn, "
                 </span>
             </div>
         </div>
-    </div>
     <nav>
         <a href="dashboard_jemaat.php" class="nav-link active">Dashboard</a>
         <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
@@ -224,7 +205,7 @@ $query_pengumuman_dash = mysqli_query($conn, "
                         <p>Jemaat <?= $nama_cabang_asli ?></p>
                     </div>
                 </div>
-                <button class="btn-profile" href="profil_jemaat.php">Profile</button>
+                <button class="btn-profile" onclick="window.location.href='profil_jemaat.php'">Profile</button>
             </div>
 
             <div class="card" style="margin-bottom: 20px;">
@@ -241,7 +222,7 @@ $query_pengumuman_dash = mysqli_query($conn, "
                                 <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
                                     📍 <?= $row_ultah['nama_cabang'] ? htmlspecialchars($row_ultah['nama_cabang']) : 'Pusat'; ?>
                                 </p>
-                                <button class="btn-ucapan" onclick="kirimUcapanJemaat(<?= $row_ultah['id_jemaat'] ?>, this">Kirim Ucapan</button>
+                                <button class="btn-ucapan" onclick="kirimUcapanJemaat(<?= $row_ultah['id_jemaat'] ?>, this)">Kirim Ucapan</button>
                                 <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
                                     🎉 <?= $row_ultah['total_ucapan']; ?> orang mengucapkan
                                 </p>

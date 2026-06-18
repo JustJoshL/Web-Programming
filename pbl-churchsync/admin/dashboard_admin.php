@@ -51,7 +51,7 @@ $q_ultah = mysqli_query($conn, "
     ORDER BY 
         CASE WHEN DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 0 ELSE 1 END,
         DATE_FORMAT(j.tanggal_lahir, '%m-%d') ASC
-    LIMIT 5
+    LIMIT 10
 ");
 
 $bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -174,44 +174,6 @@ $bulan_nama = $bulan_indo[date('n') - 1];
         .activity-time {
             color: #94a3b8;
             font-size: 12px;
-        }
-
-        .birthday-list {
-            display: flex;
-            gap: 20px;
-            justify-content: flex-start;
-            overflow-x: auto;
-            padding-bottom: 15px;
-            scroll-behavior: smooth;
-        }
-
-        .birthday-list::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .birthday-list::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-
-        .birthday-list::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        .birthday-list::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        .birthday-item {
-            background-color: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-            width: 250px;
-            min-width: 250px;
-            flex: 0 0 auto;
         }
 
         .avatar {
