@@ -64,36 +64,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: cabang_admin.php");
         exit;
     } elseif ($aksi == 'hapus') {
-        
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
-        
+
         if (!empty($id_cabang)) {
+            // CEK: Ada jemaatnya nggak di cabang ini?
+            $cek_jemaat = mysqli_query($conn, "SELECT id_jemaat FROM jemaat WHERE id_cabang = '$id_cabang'");
+
+            if (mysqli_num_rows($cek_jemaat) > 0) {
+                // Kalau masih ada jemaat, TENDANG BALIK! Ga boleh hapus sembarangan.
+                header("Location: cabang_admin.php?pesan=gagal_hapus_berisi");
+                exit();
+            }
+
+            // Hapus Pendataan Ibadah yang nyangkut di cabang ini (udah diperbaikin typo kuerinya)
             mysqli_query($conn, "
-                UPDATE jemaat 
-                SET id_cabang = NULL 
+                DELETE FROM pendataan 
+                WHERE id_jadwal IN (
+                    SELECT id_jadwal FROM jadwal_ibadah WHERE id_cabang = '$id_cabang'
+                )
+            ");
+
+            // Hapus Jadwal Ibadah di cabang ini
+            mysqli_query($conn, "
+                DELETE FROM jadwal_ibadah 
                 WHERE id_cabang = '$id_cabang'
             ");
 
-            mysqli_query($conn, "
-                DELETE FROM pendataan 
-                WHERE id_pendataan IN (
-                    SELECT id_jadwal FROM jadwal_ibadah WHERE id_jadwal = '$id_cabang'
-                )
-            ");
-            
-            mysqli_query($conn, "
-                DELETE FROM jadwal_ibadah 
-                WHERE id_jadwal = '$id_cabang'
-            ");
-            
+            // Terakhir, baru hapus Gedung Cabangnya
             mysqli_query($conn, "
                 DELETE FROM cabang_gereja 
                 WHERE id_cabang='$id_cabang'
             ");
-        }
 
-        header("Location: cabang_admin.php");
-        exit;
+            header("Location: cabang_admin.php?pesan=sukses_hapus");
+            exit();
+        }
     }
 }
 
@@ -378,7 +383,17 @@ $query_gembala = mysqli_query($conn, "
                 </div>
                 <button class="btn-add" onclick="tambahCabang()">+ Tambah Cabang</button>
             </div>
-
+            <?php if (isset($_GET['pesan'])): ?>
+                <?php if ($_GET['pesan'] == 'gagal_hapus_berisi'): ?>
+                    <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        🚨 Gagal: Cabang tidak bisa dihapus karena masih ada Jemaat yang terdaftar di dalamnya! Pindahkan jemaat ke cabang lain terlebih dahulu.
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'sukses_hapus'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ✅ Berhasil: Cabang gereja beserta jadwal ibadahnya telah dihapus permanen.
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
             <div class="branch-grid">
                 <?php
                 // Melakukan looping data dari database
@@ -402,10 +417,10 @@ $query_gembala = mysqli_query($conn, "
                                     Edit
                                 </button>
 
-                            <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('PERINGATAN KERAS!\n\nApakah Anda yakin ingin menghapus Cabang ini?\nTindakan ini TIDAK DAPAT DIBATALKAN dan akan menghapus data berikut secara permanen:\n\n1. Seluruh Jadwal Ibadah di cabang ini\n2. Seluruh riwayat Laporan Ibadah pada jadwal tersebut\n3. Melepaskan ikatan Gembala Cabang yang bertugas\n\nTetap lanjutkan menghapus?');">
-                                <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">
-                                <button type="submit" name="aksi" value="hapus" class="btn-delete" style="width: 100%;">Hapus Cabang</button>
-                            </form>
+                                <form action="" method="POST" style="flex: 1;" onsubmit="return confirm('PERINGATAN KERAS!\n\nApakah Anda yakin ingin menghapus Cabang ini?\nTindakan ini TIDAK DAPAT DIBATALKAN dan akan menghapus data berikut secara permanen:\n\n1. Seluruh Jadwal Ibadah di cabang ini\n2. Seluruh riwayat Laporan Ibadah pada jadwal tersebut\n3. Melepaskan ikatan Gembala Cabang yang bertugas\n\nTetap lanjutkan menghapus?');">
+                                    <input type="hidden" name="id_cabang" value="<?= $row['id_cabang'] ?>">
+                                    <button type="submit" name="aksi" value="hapus" class="btn-delete" style="width: 100%;">Hapus Cabang</button>
+                                </form>
                             </div>
                         </div>
                 <?php

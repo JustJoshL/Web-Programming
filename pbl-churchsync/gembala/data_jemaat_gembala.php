@@ -342,7 +342,7 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
                                     <h4><?= htmlspecialchars($row['nama_lengkap']); ?></h4>
                                     <p>
                                         <?= $row['email']; ?>
-                                        • <?= $row['no_telp']; ?>
+                                        • 📍 <?= $row['nama_cabang'] ? htmlspecialchars($row['nama_cabang']) : 'Belum ada cabang'; ?>
                                     </p>
                                     <?php
                                     $role = $row['role'];

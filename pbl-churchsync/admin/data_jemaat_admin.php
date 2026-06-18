@@ -404,7 +404,6 @@ $query_cabang = mysqli_query($conn, "
                             <input type="text" name="search" class="search-box"
                                 placeholder="Cari nama atau email..."
                                 value="<?= htmlspecialchars($search); ?>">
-
                             <select name="id_cabang" class="filter-box" onchange="this.form.submit()">
                                 <option value="">Semua Cabang</option>
                                 <?php while ($cabang = mysqli_fetch_assoc($query_cabang)) { ?>
@@ -428,7 +427,7 @@ $query_cabang = mysqli_query($conn, "
                     <div id="modalTambahDataAdmin" class="modal-overlay">
                         <div class="modal-content">
 
-                            <form method="POST">
+                            <form method="POST" action="proses_tambah_jemaat.php">
 
                                 <div class="modal-header">
                                     <h3>Tambah Data Jemaat</h3>
@@ -491,29 +490,20 @@ $query_cabang = mysqli_query($conn, "
                                 <div style="margin-top:15px;padding:15px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;">
 
                                     <div style="padding:10px;background:#eef2f6;border-radius:8px;">
-                                        <input type="checkbox"
-                                            id="toggleAkun"
-                                            onchange="toggleAkun(this)">
-
-                                        <label for="toggleAkun">
-                                            Buatkan Akun Login Web (Opsional)
-                                        </label>
+                                        <input type="checkbox" id="toggleAkun" name="buat_akun" value="ya" onclick="bukaTutupAkun()">
+                                        <label for="toggleAkun">Buatkan Akun Login Web (Opsional)</label>
                                     </div>
 
-                                    <div id="akunFields" class="akun-wrapper">
+                                    <div id="akunFields" class="akun-wrapper" style="display: none; margin-top: 15px;">
 
                                         <div class="form-group">
                                             <label>Email Login</label>
-                                            <input type="email"
-                                                name="email"
-                                                placeholder="Masukkan email login">
+                                            <input type="email" name="email" id="inputEmail" placeholder="Masukkan email login">
                                         </div>
 
                                         <div class="form-group">
                                             <label>Password Default</label>
-                                            <input type="text"
-                                                value="churchsync123"
-                                                readonly>
+                                            <input type="text" name="password" value="churchsync123" readonly>
                                         </div>
 
                                     </div>
@@ -539,22 +529,23 @@ $query_cabang = mysqli_query($conn, "
 
                         </div>
                     </div>
-
-                    <script>
-                        function toggleAkun(checkbox) {
-                            const fields = document.getElementById('akunFields');
-
-                            if (checkbox.checked) {
-                                fields.style.display = "block";
-                                fields.style.visibility = "visible";
-                            } else {
-                                fields.style.display = "none";
-                            }
-                        }
-                    </script>
-
                 </div>
             </div>
+            <?php if (isset($_GET['pesan'])): ?>
+                <?php if ($_GET['pesan'] == 'email_terdaftar'): ?>
+                    <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        🚨 Gagal: Email tersebut sudah terdaftar! Silakan gunakan email lain atau kosongkan centang akun.
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'sukses_tambah'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ✅ Berhasil: Data Jemaat baru berhasil ditambahkan!
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'sukses_hapus'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        🗑️ Berhasil: Data Jemaat telah dihapus dari sistem.
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <?php while ($row = mysqli_fetch_assoc($query_jemaat)) : ?>
 
@@ -622,6 +613,12 @@ $query_cabang = mysqli_query($conn, "
                             Edit Data
                         </a>
 
+                        <a href="proses_hapus_jemaat.php?id=<?= $row['id_jemaat']; ?>"
+                            onclick="return confirm('Apakah anda yakin mau hapus data jemaat ini? Data yang dihapus tidak bisa dikembalikan!');"
+                            style="color: #ef4444; font-weight: bold; text-decoration: none; padding: 5px 10px;">
+                            Hapus
+                        </a>
+
                     </div>
                 </div>
 
@@ -682,6 +679,23 @@ $query_cabang = mysqli_query($conn, "
                         openDropdown.classList.remove('show');
                     }
                 }
+            }
+        }
+
+        function bukaTutupAkun() {
+            var checkbox = document.getElementById("toggleAkun");
+            var formDiv = document.getElementById("akunFields");
+            var inputEmail = document.getElementById("inputEmail");
+
+            console.log("Checkbox diklik! Status checked: " + checkbox.checked);
+
+            if (checkbox.checked == true) {
+                formDiv.style.display = "block";
+                inputEmail.required = true;
+            } else {
+                formDiv.style.display = "none";
+                inputEmail.required = false;
+                inputEmail.value = "";
             }
         }
     </script>

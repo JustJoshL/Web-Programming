@@ -513,6 +513,20 @@ if (isset($_GET['edit_id'])) {
                     <input type="text" name="judul_pengumuman" value="<?= $data_edit['judul_pengumuman'] ?? ''; ?>" placeholder="Masukkan judul..." required>
                 </div>
 
+                <div id="pilihanCabangEdit" class="form-group" style="display: <?= (isset($data_edit) && $data_edit['target_tipe'] == 'cabang') ? 'block' : 'none'; ?>;">
+                    <label>Pilih Cabang Target</label>
+                    <select name="id_cabang">
+                        <?php
+                        $qcabang_edit = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_cabang");
+                        while ($cabang_edit = mysqli_fetch_assoc($qcabang_edit)):
+                        ?>
+                            <option value="<?= $cabang_edit['id_cabang']; ?>" <?= (isset($data_edit) && $data_edit['id_cabang'] == $cabang_edit['id_cabang']) ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($cabang_edit['nama_cabang']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>Kategori</label>
                     <select name="kategori_pengumuman" required>

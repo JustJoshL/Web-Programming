@@ -245,7 +245,7 @@ if (isset($_POST['simpan'])) {
 
                     <div class="dropdown-content">
                         <a href="profil_gembala.php">Profil Saya</a>
-                        <a href="../login.php" class="logout-item">Logout</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>

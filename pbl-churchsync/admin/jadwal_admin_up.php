@@ -440,6 +440,26 @@ if ($is_admin && isset($_GET['edit_id'])) {
                 <?php endif; ?>
             </div>
 
+            <?php if (isset($_GET['pesan'])): ?>
+
+                <?php if ($_GET['pesan'] == 'gagal_tanggal_lewat'): ?>
+                    <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold;">
+                        🚨 Gagal: Tidak dapat membuat jadwal untuk tanggal yang sudah berlalu!
+                    </div>
+
+                <?php elseif ($_GET['pesan'] == 'gagal_dobel'): ?>
+                    <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold;">
+                        🚨 Gagal: Jadwal dengan kategori, waktu, dan cabang yang sama persis sudah terdaftar!
+                    </div>
+
+                <?php elseif ($_GET['pesan'] == 'sukses_tambah'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold;">
+                        ✅ Berhasil: Jadwal baru berhasil ditambahkan!
+                    </div>
+
+                <?php endif; ?>
+            <?php endif; ?>
+
             <datalist id="list-jemaat">
                 <?php
                 $q_jemaat = mysqli_query($conn, "SELECT nama_lengkap FROM jemaat");
@@ -538,9 +558,9 @@ if ($is_admin && isset($_GET['edit_id'])) {
 
                                 <div class="modal-actions" style="justify-content: space-between; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px;">
                                     <?php if ($is_gembala): ?>
-                                        <a href="hapus_laporan.php?id_jadwal=<?= $row['id_jadwal']; ?>" style="background: #fef2f2; color: #dc3545; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid #fecaca; font-size: 13px;" onclick="return confirm('Yakin mau hapus laporan ini?');">🗑 Hapus</a>
+                                        <a href="hapus_laporan.php?id_jadwal=<?= $row['id_jadwal']; ?>" style="background: #fef2f2; color: #dc3545; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid #fecaca; font-size: 13px;" onclick="return confirm('Yakin mau hapus laporan ini?');">Hapus</a>
                                         <div style="display: flex; gap: 8px;">
-                                            <button type="button" style="background: #f59e0b; color: white; padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 13px;" onclick="tutupModal('modalDetail_<?= $row['id_jadwal']; ?>'); bukaModal('modalEditLaporan_<?= $row['id_jadwal']; ?>')">✏️ Edit Laporan</button>
+                                            <button type="button" style="background: #ffc107; color: black; padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 13px;" onclick="tutupModal('modalDetail_<?= $row['id_jadwal']; ?>'); bukaModal('modalEditLaporan_<?= $row['id_jadwal']; ?>')">Edit Laporan</button>
                                             <button type="button" class="btn-cancel" onclick="tutupModal('modalDetail_<?= $row['id_jadwal']; ?>')">Tutup</button>
                                         </div>
                                     <?php else: ?>
@@ -671,7 +691,7 @@ if ($is_admin && isset($_GET['edit_id'])) {
                     </div>
                     <div class="modal-actions">
                         <button type="button" class="btn-cancel" onclick="tutupModal('modalJadwal')">Batal</button>
-                        <button type="submit" class="btn-add">Simpan Jadwal</button>
+                        <button type="submit" class="btn-add" name="submit">Simpan Jadwal</button>
                     </div>
                 </form>
             </div>
