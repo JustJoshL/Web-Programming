@@ -282,7 +282,15 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_gembala.php" class="nav-link active">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
@@ -299,7 +307,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">👨🏽‍💼</div>
-                    <div class="nav-user-name"><?= htmlspecialchars($gembala['nama_lengkap']); ?> (Gembala) ▼</div> 
+                    <div class="nav-user-name"><?= htmlspecialchars($gembala['nama_lengkap']); ?> (Gembala) ▼</div>
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_gembala.php">Profil Saya</a>
                         <a href="../logout.php" class="logout-item">Logout</a>
@@ -373,6 +381,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                 <div class="card">
                     <div class="card-header">
                         <h3>Pengumuman Terbaru</h3>
+                        <a href="pengumuman_gembala.php" style="font-size: 12px; text-decoration: none; color: var(--primary-blue); font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
                     <ul class="pengumuman-list">
                         <?php if (mysqli_num_rows($q_pengumuman) > 0): ?>
@@ -391,6 +400,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                 <div class="card">
                     <div class="card-header">
                         <h3>📅 Jadwal Ibadah Mendatang</h3>
+                        <a href="../admin/jadwal_admin_up.php" style="font-size: 12px; text-decoration: none; color: var(--primary-blue); font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
 
                     <?php if (mysqli_num_rows($query_jadwal_terdekat) == 0) : ?>

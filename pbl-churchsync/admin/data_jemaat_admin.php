@@ -342,7 +342,15 @@ $query_cabang = mysqli_query($conn, "
     }
     ?>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>
@@ -356,7 +364,7 @@ $query_cabang = mysqli_query($conn, "
     <div class="content-wrapper">
         <div class="top-navbar">
             <div class="navbar-right">
-                <?php include '../widget_notif.php'; ?> 
+                <?php include '../widget_notif.php'; ?>
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name">

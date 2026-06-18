@@ -289,7 +289,15 @@ if (isset($_GET['edit_id'])) {
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_admin.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_admin.php" class="nav-link active">Pengumuman</a>
@@ -304,7 +312,7 @@ if (isset($_GET['edit_id'])) {
         <div class="top-navbar">
             <div class="navbar-right">
                 <?php include '../widget_notif.php'; ?>
-                
+
                 <div class="user-profile-dropdown" onclick="toggleDropdown(event)">
                     <div class="nav-avatar">⚡</div>
                     <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?> (Admin) ▼</div>
@@ -337,7 +345,7 @@ if (isset($_GET['edit_id'])) {
                                 <h4><?= htmlspecialchars($row['judul_pengumuman']); ?></h4>
                                 <p>
                                     <span class="badge-kategori"><?= htmlspecialchars($row['kategori_pengumuman']); ?></span>
-                                    
+
                                     <?php if ($row['target_tipe'] == 'umum') : ?>
                                         <span class="badge-status" style="background:#e0e7ff; color:#3730a3;">UMUM (SEMUA CABANG)</span>
                                     <?php else : ?>
@@ -496,7 +504,7 @@ if (isset($_GET['edit_id'])) {
         function updateFileName(inputId, textId) {
             let input = document.getElementById(inputId);
             let text = document.getElementById(textId);
-            if(input.files.length > 0) {
+            if (input.files.length > 0) {
                 text.innerText = "File: " + input.files[0].name;
                 text.style.color = "#16a34a"; // Warna hijau tanda sukses
             }
@@ -514,11 +522,11 @@ if (isset($_GET['edit_id'])) {
 
         function toggleDropdown(event) {
             let profil = document.getElementById("profileDropdown");
-            if(profil) profil.classList.toggle("show");
-            
+            if (profil) profil.classList.toggle("show");
+
             let notif = document.getElementById("notifDropdown");
             if (notif) notif.classList.remove("show");
-            
+
             event.stopPropagation();
         }
 

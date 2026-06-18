@@ -353,7 +353,15 @@ if ($is_admin && isset($_GET['edit_id'])) {
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <?php if ($is_admin): ?>
                 <a href="dashboard_admin.php" class="nav-link">Dashboard</a>

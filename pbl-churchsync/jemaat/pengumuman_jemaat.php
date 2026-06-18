@@ -115,7 +115,15 @@ $query_pengumuman = mysqli_query($conn, "
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_jemaat.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_jemaat.php" class="nav-link active">Pengumuman</a>
@@ -132,7 +140,7 @@ $query_pengumuman = mysqli_query($conn, "
 
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name">Justin Bieber</div>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?></div>
                     ▼
                     <div class="dropdown-content">
                         <a href="profil_jemaat.php">Profil Saya</a>

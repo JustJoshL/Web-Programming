@@ -23,7 +23,7 @@ $query_jadwal_terdekat = mysqli_query($conn, "
     FROM jadwal_ibadah 
     WHERE waktu_pelaksanaan >= NOW() 
     ORDER BY waktu_pelaksanaan ASC 
-    LIMIT 3
+    LIMIT 4
 ");
 
 $query_aktivitas = mysqli_query($conn, "
@@ -296,7 +296,15 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_admin.php" class="nav-link active">Dashboard</a>
             <a href="pengumuman_admin.php" class="nav-link">Pengumuman</a>

@@ -270,7 +270,15 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
@@ -289,7 +297,7 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
                 <div class="user-profile-dropdown" onclick="toggleDropdown()">
                     <div class="nav-avatar">👨🏽‍💼</div>
                     <div class="nav-user-name"><?= $_SESSION['nama_lengkap'] ?? 'Gembala'; ?> (Gembala) ▼</div>
-                    
+
                     <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_gembala.php">Profil Saya</a>
                         <a href="../logout.php" class="logout-item" onclick="return confirm('Yakin mau logout?');">Logout</a>
@@ -411,20 +419,20 @@ $query_cabang = mysqli_query($conn, "SELECT * FROM cabang_gereja ORDER BY nama_c
             }
 
             function toggleDropdown() {
-            document.getElementById("profileDropdown").classList.toggle("show");
-        }
+                document.getElementById("profileDropdown").classList.toggle("show");
+            }
 
-        window.onclick = function(event) {
-            if (!event.target.closest('.user-profile-dropdown')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
+            window.onclick = function(event) {
+                if (!event.target.closest('.user-profile-dropdown')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
                     }
                 }
             }
-        }
         </script>
 </body>
 

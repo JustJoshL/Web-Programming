@@ -36,6 +36,22 @@ $q_ultah = mysqli_query($conn, "
 $bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 $bulan_nama = $bulan_indo[date('n') - 1];
 
+$query_jadwal = mysqli_query($conn, "
+    SELECT kategori_ibadah, waktu_pelaksanaan 
+    FROM jadwal_ibadah 
+    WHERE waktu_pelaksanaan >= NOW() 
+    ORDER BY waktu_pelaksanaan ASC 
+    LIMIT 3
+");
+
+$query_pengumuman_dash = mysqli_query($conn, "
+    SELECT judul_pengumuman, tanggal_publikasi 
+    FROM pengumuman 
+    WHERE status_publikasi = 'Published' 
+    AND (target_tipe = 'umum' OR id_cabang = '$id_cabang_user')
+    ORDER BY tanggal_publikasi DESC 
+    LIMIT 4
+");
 ?>
 
 <!DOCTYPE html>
@@ -163,15 +179,21 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 <body>
     <div class="sidebar">
         <div class="sidebar-logo">
-            ChurchSync
-            <span>ALL ABOUT OUR CHURCH</span>
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
         </div>
-        <nav>
-            <a href="dashboard_jemaat.php" class="nav-link active">Dashboard</a>
-            <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
-            <a href="jadwal_jemaat.php" class="nav-link">Jadwal Ibadah</a>
-            <a href="profil_jemaat.php" class="nav-link">Profil Saya</a>
-        </nav>
+    </div>
+    <nav>
+        <a href="dashboard_jemaat.php" class="nav-link active">Dashboard</a>
+        <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
+        <a href="jadwal_jemaat.php" class="nav-link">Jadwal Ibadah</a>
+        <a href="profil_jemaat.php" class="nav-link">Profil Saya</a>
+    </nav>
     </div>
 
     <div class="content-wrapper">
@@ -207,23 +229,23 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
             <div class="card" style="margin-bottom: 20px;">
                 <div class="card-header">
-                    <h3>🎉 Ulang Tahun Jemaat (7 Hari Mendatang)</h3>
+                    <h3>Ulang Tahun Jemaat (7 Hari Mendatang)</h3>
                 </div>
                 <div class="birthday-list">
                     <?php if (mysqli_num_rows($q_ultah) > 0): ?>
                         <?php while ($row_ultah = mysqli_fetch_assoc($q_ultah)): ?>
-                        <div class="birthday-item">
-                            <div class="avatar">🧑🏽</div>
-                            <p style="font-weight: bold; margin-bottom: 5px; color: var(--text-dark);"><?= htmlspecialchars($row_ultah['nama_lengkap']); ?></p>
-                            <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $row_ultah['tgl'] . ' ' . $bulan_indo[$row_ultah['bln'] - 1]; ?></p>
-                            <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
+                            <div class="birthday-item">
+                                <div class="avatar">🧑🏽</div>
+                                <p style="font-weight: bold; margin-bottom: 5px; color: var(--text-dark);"><?= htmlspecialchars($row_ultah['nama_lengkap']); ?></p>
+                                <p style="font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 3px;"><?= $row_ultah['tgl'] . ' ' . $bulan_indo[$row_ultah['bln'] - 1]; ?></p>
+                                <p style="font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 0; margin-bottom: 8px;">
                                     📍 <?= $row_ultah['nama_cabang'] ? htmlspecialchars($row_ultah['nama_cabang']) : 'Pusat'; ?>
                                 </p>
-                            <button class="btn-ucapan" onclick="kirimUcapanJemaat(<?= $row_ultah['id_jemaat'] ?>, this">Kirim Ucapan</button>
-                            <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
+                                <button class="btn-ucapan" onclick="kirimUcapanJemaat(<?= $row_ultah['id_jemaat'] ?>, this">Kirim Ucapan</button>
+                                <p style="font-size: 11px; margin-top: 8px; color: #f59e0b; font-weight: bold;">
                                     🎉 <?= $row_ultah['total_ucapan']; ?> orang mengucapkan
                                 </p>
-                        </div>
+                            </div>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <p style="color: #64748b; padding: 10px; width: 100%; text-align: center;">Tidak ada jemaat yang berulang tahun dalam 7 hari ke depan.</p>
@@ -233,25 +255,76 @@ $bulan_nama = $bulan_indo[date('n') - 1];
 
             <div class="grid-container">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header" style="margin-bottom: 15px;">
                         <h3>Pengumuman</h3>
+                        <!-- Ini tombol Lihat Semuanya! -->
+                        <a href="pengumuman_jemaat.php" style="font-size: 12px; text-decoration: none; color: var(--primary-blue); font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
+
                     <ul class="pengumuman-list">
-                        <li>Jadwal Ibadah Paskah 2026</li>
-                        <li>Rekapitulasi Persembahan Per Wilayah</li>
-                        <li>Pengumuman Pernikahan Pendeta</li>
-                        <li>Update Lokasi Baru</li>
+                        <?php if (mysqli_num_rows($query_pengumuman_dash) > 0) : ?>
+
+                            <?php while ($row_peng = mysqli_fetch_assoc($query_pengumuman_dash)) : ?>
+                                <!-- Mesin fotokopi list pengumuman -->
+                                <li style="display: flex; flex-direction: column; gap: 4px;">
+                                    <strong style="color: var(--primary-blue); font-size: 14px;">
+                                        <?= htmlspecialchars($row_peng['judul_pengumuman']); ?>
+                                    </strong>
+                                    <span style="font-size: 11px; color: #64748b;">
+                                        📅 Dipublikasikan: <?= date('d M Y', strtotime($row_peng['tanggal_publikasi'])); ?>
+                                    </span>
+                                </li>
+                            <?php endwhile; ?>
+
+                        <?php else : ?>
+                            <li style="text-align: center; color: #666; background: transparent; padding: 20px 0;">
+                                Belum ada pengumuman terbaru.
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
-                        <h3>April 2026</h3>
+
+                    <div class="card-header" style="margin-bottom: 15px;">
+                        <h3>Jadwal Mendatang</h3>
+                        <a href="jadwal_jemaat.php" style="font-size: 12px; text-decoration: none; color: var(--primary-blue); font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
-                    <div
-                        style="text-align: center; color: #666; padding: 40px 0; background: #f8fafc; border-radius: 8px;">
-                        [Widget Kalender Placeholder]
+
+                    <div class="jadwal-list" style="display: flex; flex-direction: column; gap: 12px;">
+                        <?php if (mysqli_num_rows($query_jadwal) == 0) : ?>
+                            <div style="text-align: center; color: #666; padding: 40px 0; background: #f8fafc; border-radius: 8px; font-size: 14px;">
+                                [ Tidak ada jadwal ibadah terdekat ]
+                            </div>
+                        <?php else : ?>
+
+                            <?php while ($row_jdwal = mysqli_fetch_assoc($query_jadwal)) : ?>
+                                <div style="display: flex; gap: 15px; align-items: center; padding: 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--primary-yellow); transition: 0.2s;">
+
+                                    <div style="background: white; padding: 8px 12px; border-radius: 6px; text-align: center; min-width: 50px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                        <span style="display: block; font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">
+                                            <?= date('M', strtotime($row_jdwal['waktu_pelaksanaan'])); ?>
+                                        </span>
+                                        <span style="display: block; font-size: 18px; color: var(--primary-blue); font-weight: 800;">
+                                            <?= date('d', strtotime($row_jdwal['waktu_pelaksanaan'])); ?>
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <h4 style="margin: 0 0 4px 0; font-size: 14px; color: var(--text-dark);">
+                                            <?= htmlspecialchars($row_jdwal['kategori_ibadah']); ?>
+                                        </h4>
+                                        <p style="margin: 0; font-size: 12px; color: #64748b;">
+                                            🕒 <?= date('H:i', strtotime($row_jdwal['waktu_pelaksanaan'])); ?> WIB
+                                        </p>
+                                    </div>
+
+                                </div>
+                            <?php endwhile; ?>
+
+                        <?php endif; ?>
                     </div>
+
                 </div>
             </div>
 

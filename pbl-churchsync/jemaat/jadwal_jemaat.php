@@ -1,3 +1,45 @@
+<?php
+
+/** @var mysqli $conn */
+session_start();
+
+include "../koneksi.php";
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+
+$id_cabang_user = $_SESSION['id_cabang'];
+
+$query_semua_jadwal = mysqli_query($conn, "
+    SELECT * FROM jadwal_ibadah 
+    WHERE waktu_pelaksanaan >= CURDATE() 
+    AND id_cabang = '$id_cabang_user'
+    ORDER BY waktu_pelaksanaan ASC
+");
+
+$jadwal_dikelompokkan = [];
+
+$nama_hari_indo = [
+    'Sunday' => 'Minggu',
+    'Monday' => 'Senin',
+    'Tuesday' => 'Selasa',
+    'Wednesday' => 'Rabu',
+    'Thursday' => 'Kamis',
+    'Friday' => 'Jumat',
+    'Saturday' => 'Sabtu'
+];
+
+if ($query_semua_jadwal && mysqli_num_rows($query_semua_jadwal) > 0) {
+    while ($row = mysqli_fetch_assoc($query_semua_jadwal)) {
+        $hari_inggris = date('l', strtotime($row['waktu_pelaksanaan']));
+        $hari_indo = $nama_hari_indo[$hari_inggris];
+        $jadwal_dikelompokkan[$hari_indo][] = $row;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,7 +111,15 @@
 
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_jemaat.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
@@ -85,7 +135,7 @@
 
                 <div class="user-profile-dropdown">
                     <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name">Justin Bieber</div>
+                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?></div>
                     ▼
                     <div class="dropdown-content">
                         <a href="profil_jemaat.php">Profil Saya</a>
@@ -101,49 +151,45 @@
                 <p>Jadwal Ibadah rutin di setiap cabang gereja</p>
             </div>
 
-            <div class="day-section">
-                <div class="day-title">Minggu</div>
+            <?php
+            // Kalau jadwalnya kosong
+            if (empty($jadwal_dikelompokkan)) {
+                echo "<div style='text-align: center; color: #64748b; margin-top: 50px;'>Belum ada jadwal ibadah yang tersedia saat ini.</div>";
+            } else {
+                // Kalau jadwalnya ada, kita looping per Hari-nya dulu (Minggu, Rabu, dst)
+                foreach ($jadwal_dikelompokkan as $hari => $daftar_jadwal) {
+            ?>
+                    <div class="day-section">
+                        <!-- Judul Hari -->
+                        <div class="day-title"><?= $hari; ?></div>
 
-                <div class="schedule-card">
-                    <div class="time-box"><span>07:00</span></div>
-                    <div class="schedule-details">
-                        <h4>Ibadah Raya</h4>
-                        <p class="location">GBI Maranatha Pusat • 07:00 - 09.00 WIB</p>
-                        <p class="session">Ibadah Raya Segmen Wilayah - Sesi 1</p>
+                        <?php
+                        // Looping kotak jadwal di dalam hari tersebut
+                        foreach ($daftar_jadwal as $jadwal) {
+                        ?>
+                            <div class="schedule-card">
+                                <!-- Kotak Jam -->
+                                <div class="time-box">
+                                    <span><?= date('H:i', strtotime($jadwal['waktu_pelaksanaan'])); ?></span>
+                                </div>
+
+                                <!-- Detail -->
+                                <div class="schedule-details">
+                                    <h4><?= htmlspecialchars($jadwal['kategori_ibadah']); ?></h4>
+                                    <p class="location">
+                                        📍 <?= htmlspecialchars($jadwal['lokasi'] ?? 'Gereja Lokal'); ?> • <?= date('H:i', strtotime($jadwal['waktu_pelaksanaan'])); ?> WIB
+                                    </p>
+                                    <p class="session">Jadwal Rutin Jemaat</p>
+                                </div>
+                            </div>
+                        <?php } ?>
+
                     </div>
-                </div>
+            <?php
+                }
+            }
+            ?>
 
-                <div class="schedule-card">
-                    <div class="time-box"><span>10:00</span></div>
-                    <div class="schedule-details">
-                        <h4>Ibadah Raya</h4>
-                        <p class="location">GBI Maranatha Pusat • 10:00 - 12.00 WIB</p>
-                        <p class="session">Ibadah Raya Segmen Wilayah - Sesi 2</p>
-                    </div>
-                </div>
-
-                <div class="schedule-card">
-                    <div class="time-box"><span>09:00</span></div>
-                    <div class="schedule-details">
-                        <h4>Ibadah Raya</h4>
-                        <p class="location">GBI Maranatha Dago • 09:00 - 11.00 WIB</p>
-                        <p class="session">Ibadah Raya Segmen Wilayah</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="day-section">
-                <div class="day-title">Rabu</div>
-
-                <div class="schedule-card">
-                    <div class="time-box"><span>19:00</span></div>
-                    <div class="schedule-details">
-                        <h4>Ibadah Raya</h4>
-                        <p class="location">GBI Maranatha Pusat • 19:00 - 20.30 WIB</p>
-                        <p class="session">Ibadah Ibu Rumah Tangga</p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </body>

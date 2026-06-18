@@ -36,16 +36,14 @@ if (isset($_POST['simpan'])) {
     $update_password = false;
 
     if (!empty($password_lama) || !empty($password_baru) || !empty($konfirmasi_password)) {
-        
+
         if (empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
             $error_msg = "Gagal: Harap lengkapi seluruh kolom kata sandi jika ingin mengubahnya!";
-        } 
-        elseif ($password_lama != $data['password']) {
+        } elseif ($password_lama != $data['password']) {
             $error_msg = "Gagal: Password saat ini salah!";
-        } 
-        elseif ($password_baru != $konfirmasi_password) {
+        } elseif ($password_baru != $konfirmasi_password) {
             $error_msg = "Gagal: Konfirmasi password tidak cocok!";
-        } 
+        }
         // Lolos uji
         else {
             $update_password = true;
@@ -59,7 +57,7 @@ if (isset($_POST['simpan'])) {
                 SET nama_lengkap='$nama', email='$email', password='$password_baru', no_telp='$no_telp', tanggal_lahir='$tanggal_lahir', alamat='$alamat'
                 WHERE id_jemaat='$id_jemaat'
             ");
-            $data['password'] = $password_baru; 
+            $data['password'] = $password_baru;
         } else {
             mysqli_query($conn, "
                 UPDATE jemaat
@@ -69,7 +67,7 @@ if (isset($_POST['simpan'])) {
         }
 
         $success_msg = "Profil berhasil diperbarui!";
-        
+
         $data['nama_lengkap'] = $nama;
         $data['email'] = $email;
         $data['no_telp'] = $no_telp;
@@ -213,7 +211,15 @@ if (isset($_POST['simpan'])) {
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link">Pengumuman</a>
@@ -311,7 +317,7 @@ if (isset($_POST['simpan'])) {
                                 <div id="php_error_msg" style="background-color: #fef2f2; color: #dc2626; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171; font-weight: bold;">
                                     ⚠️ <?= $error_msg; ?>
                                 </div>
-                            <?php endif; ?>         
+                            <?php endif; ?>
                             <?php if ($success_msg != ""): ?>
                                 <div id="php_success_msg" style="background-color: #dcfce7; color: #16a34a; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #4ade80; font-weight: bold;">
                                     ✅ <?= $success_msg; ?>
@@ -322,7 +328,7 @@ if (isset($_POST['simpan'])) {
                                 <div class="form-group full-width">
                                     <label>Kata Sandi Saat Ini</label>
                                     <input type="password" name="password_lama" id="pass_lama" placeholder="Masukkan kata sandi lama Anda" onkeyup="cekAlurPassword()">
-                                    
+
                                     <small id="pesan_pass_lama" style="color: #dc2626; margin-top: 5px; display: none; font-weight: bold;">❌ Kata sandi saat ini salah!</small>
                                 </div>
                                 <div class="form-group">
@@ -334,103 +340,103 @@ if (isset($_POST['simpan'])) {
                                     <input type="password" name="konfirmasi_password" id="pass_konfirm" placeholder="Ketik ulang kata sandi baru" disabled onkeyup="cekAlurPassword()">
                                     <small id="pesan_match" style="color: #dc2626; margin-top: 5px; display: none; font-weight: bold;">❌ Kata sandi tidak cocok!</small>
                                 </div>
-                        </div>                    
+                            </div>
 
-                    <div class="form-actions">
-                        <a href="../logout.php" class="btn-logout">Logout</a>
-                        <button type="submit"
-                            name="simpan"
-                            class="btn-submit">
-                            Simpan Perubahan
-                        </button>
-                    </div>
+                            <div class="form-actions">
+                                <a href="../logout.php" class="btn-logout">Logout</a>
+                                <button type="submit"
+                                    name="simpan"
+                                    class="btn-submit">
+                                    Simpan Perubahan
+                                </button>
+                            </div>
                 </form>
             </div>
         </div>
-    <script>
-        const passwordAsli = "<?= $data['password']; ?>";
+        <script>
+            const passwordAsli = "<?= $data['password']; ?>";
 
-        function cekAlurPassword() {
+            function cekAlurPassword() {
 
-            let phpSuccess = document.getElementById('php_success_msg');
-            if (phpSuccess) {
-                phpSuccess.style.display = "none";
-            }
+                let phpSuccess = document.getElementById('php_success_msg');
+                if (phpSuccess) {
+                    phpSuccess.style.display = "none";
+                }
 
-            let phpError = document.getElementById('php_error_msg');
-            if (phpError) {
-                phpError.style.display = "none";
-            }
+                let phpError = document.getElementById('php_error_msg');
+                if (phpError) {
+                    phpError.style.display = "none";
+                }
 
-            let inputLama = document.getElementById('pass_lama');
-            let inputBaru = document.getElementById('pass_baru');
-            let inputKonfirm = document.getElementById('pass_konfirm');
-            
-            let pesanPassLama = document.getElementById('pesan_pass_lama');
-            let pesanMatch = document.getElementById('pesan_match');
+                let inputLama = document.getElementById('pass_lama');
+                let inputBaru = document.getElementById('pass_baru');
+                let inputKonfirm = document.getElementById('pass_konfirm');
 
-            if (inputLama.value.length > 0) {
-                if (inputLama.value !== passwordAsli) {
-                    // Jika SALAH
-                    pesanPassLama.style.display = "block";
-                    pesanPassLama.style.color = "#dc2626";
-                    pesanPassLama.innerHTML = "❌ Kata sandi saat ini salah!"; 
-                    inputLama.style.borderColor = "#dc2626";
-                    
+                let pesanPassLama = document.getElementById('pesan_pass_lama');
+                let pesanMatch = document.getElementById('pesan_match');
+
+                if (inputLama.value.length > 0) {
+                    if (inputLama.value !== passwordAsli) {
+                        // Jika SALAH
+                        pesanPassLama.style.display = "block";
+                        pesanPassLama.style.color = "#dc2626";
+                        pesanPassLama.innerHTML = "❌ Kata sandi saat ini salah!";
+                        inputLama.style.borderColor = "#dc2626";
+
+                        inputBaru.disabled = true;
+                        inputKonfirm.disabled = true;
+                        inputBaru.value = "";
+                        inputKonfirm.value = "";
+                        pesanMatch.style.display = "none";
+                    } else {
+                        // Jika BENAR
+                        pesanPassLama.style.display = "block";
+                        pesanPassLama.style.color = "#16a34a";
+                        pesanPassLama.innerHTML = "✅ Kata sandi benar!";
+                        inputLama.style.borderColor = "#4ade80";
+
+                        inputBaru.disabled = false;
+                    }
+                } else {
+                    // Jika input dikosongkan kembali
+                    pesanPassLama.style.display = "none";
+                    inputLama.style.borderColor = "#cbd5e1";
+
                     inputBaru.disabled = true;
                     inputKonfirm.disabled = true;
                     inputBaru.value = "";
                     inputKonfirm.value = "";
                     pesanMatch.style.display = "none";
-                } else {
-                    // Jika BENAR
-                    pesanPassLama.style.display = "block"; 
-                    pesanPassLama.style.color = "#16a34a"; 
-                    pesanPassLama.innerHTML = "✅ Kata sandi benar!"; 
-                    inputLama.style.borderColor = "#4ade80"; 
-                    
-                    inputBaru.disabled = false;
                 }
-            } else {
-                // Jika input dikosongkan kembali
-                pesanPassLama.style.display = "none";
-                inputLama.style.borderColor = "#cbd5e1"; 
-                
-                inputBaru.disabled = true;
-                inputKonfirm.disabled = true;
-                inputBaru.value = "";
-                inputKonfirm.value = "";
-                pesanMatch.style.display = "none";
-            }
 
-            if (inputBaru.value.length > 0) {
-                inputKonfirm.disabled = false;
-            } else {
-                inputKonfirm.disabled = true;
-                inputKonfirm.value = "";
-                pesanMatch.style.display = "none";
-            }
-
-            if (inputKonfirm.value.length > 0) {
-                if (inputBaru.value !== inputKonfirm.value) {
-                    // Jika SALAH
-                    pesanMatch.style.display = "block";
-                    pesanMatch.style.color = "#dc2626"; 
-                    pesanMatch.innerHTML = "❌ Kata sandi tidak cocok!";
-                    inputKonfirm.style.borderColor = "#dc2626"; 
+                if (inputBaru.value.length > 0) {
+                    inputKonfirm.disabled = false;
                 } else {
-                    // Jika BENAR
-                    pesanMatch.style.display = "block";
-                    pesanMatch.style.color = "#16a34a"; 
-                    pesanMatch.innerHTML = "✅ Kata sandi cocok!";
-                    inputKonfirm.style.borderColor = "#4ade80"; 
+                    inputKonfirm.disabled = true;
+                    inputKonfirm.value = "";
+                    pesanMatch.style.display = "none";
                 }
-            } else {
-                pesanMatch.style.display = "none";
-                inputKonfirm.style.borderColor = "#cbd5e1";
+
+                if (inputKonfirm.value.length > 0) {
+                    if (inputBaru.value !== inputKonfirm.value) {
+                        // Jika SALAH
+                        pesanMatch.style.display = "block";
+                        pesanMatch.style.color = "#dc2626";
+                        pesanMatch.innerHTML = "❌ Kata sandi tidak cocok!";
+                        inputKonfirm.style.borderColor = "#dc2626";
+                    } else {
+                        // Jika BENAR
+                        pesanMatch.style.display = "block";
+                        pesanMatch.style.color = "#16a34a";
+                        pesanMatch.innerHTML = "✅ Kata sandi cocok!";
+                        inputKonfirm.style.borderColor = "#4ade80";
+                    }
+                } else {
+                    pesanMatch.style.display = "none";
+                    inputKonfirm.style.borderColor = "#cbd5e1";
+                }
             }
-        }
-    </script>
+        </script>
 </body>
 
 </html>

@@ -299,7 +299,15 @@ $query_pengumuman = mysqli_query($conn, "
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_gembala.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_gembala.php" class="nav-link active">Pengumuman</a>

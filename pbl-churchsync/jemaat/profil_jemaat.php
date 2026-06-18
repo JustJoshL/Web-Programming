@@ -31,16 +31,14 @@ if (isset($_POST['simpan'])) {
     $update_password = false;
 
     if (!empty($password_lama) || !empty($password_baru) || !empty($konfirmasi_password)) {
-        
+
         if (empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
             $error_msg = "Gagal: Harap lengkapi seluruh kolom kata sandi jika ingin mengubahnya!";
-        } 
-        elseif ($password_lama != $data['password']) {
+        } elseif ($password_lama != $data['password']) {
             $error_msg = "Gagal: Password saat ini salah!";
-        } 
-        elseif ($password_baru != $konfirmasi_password) {
+        } elseif ($password_baru != $konfirmasi_password) {
             $error_msg = "Gagal: Konfirmasi password tidak cocok!";
-        } 
+        }
         // Lolos uji
         else {
             $update_password = true;
@@ -54,7 +52,7 @@ if (isset($_POST['simpan'])) {
                 SET nama_lengkap='$nama', email='$email', password='$password_baru', no_telp='$no_telp', tanggal_lahir='$tanggal_lahir', alamat='$alamat'
                 WHERE id_jemaat='$id_jemaat'
             ");
-            $data['password'] = $password_baru; 
+            $data['password'] = $password_baru;
         } else {
             mysqli_query($conn, "
                 UPDATE jemaat
@@ -64,7 +62,7 @@ if (isset($_POST['simpan'])) {
         }
 
         $success_msg = "Profil berhasil diperbarui!";
-        
+
         $data['nama_lengkap'] = $nama;
         $data['email'] = $email;
         $data['no_telp'] = $no_telp;
@@ -207,7 +205,15 @@ if (isset($_POST['simpan'])) {
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-logo">ChurchSync<span>ALL ABOUT OUR CHURCH</span></div>
+        <div class="sidebar-logo">
+            <img src="../uploads/churchsync-logo.png" alt="Logo ChurchSync">
+            <div class="logo-text-wrapper">
+                ChurchSync
+                <span>
+                    ALL ABOUT OUR CHURCH
+                </span>
+            </div>
+        </div>
         <nav>
             <a href="dashboard_jemaat.php" class="nav-link">Dashboard</a>
             <a href="pengumuman_jemaat.php" class="nav-link">Pengumuman</a>
@@ -222,30 +228,31 @@ if (isset($_POST['simpan'])) {
             <div class="navbar-right">
                 <?php include '../widget_notif.php'; ?>
                 <div class="user-profile-dropdown">
-                    <div class="nav-avatar">⚡</div>
+                    <div class="nav-avatar">👨🏽</div>
                     <div class="nav-user-name">
-                        <?= $data['nama_lengkap']; ?> (<?= ucfirst($data['role']);?>) ▼
+                        <?= $data['nama_lengkap']; ?>
                     </div>
+                    ▼
                     <div class="dropdown-content"><a href="../logout.php">Logout</a></div>
                 </div>
             </div>
-        </div>    
-
-    <div class="main-content">
-        <div class="page-header">
-            <h2>Profil Saya</h2>
-            <p>Kelola Informasi Pribadi Anda</p>
         </div>
 
-        <div class="profile-card">
-            <div class="profile-user-info">
-                <div class="big-avatar">👨🏽</div>
-                <div class="user-meta">
-                    <h3>Justin Bieber</h3>
-                    <p>justinbieber@gmail.com</p>
-                    <span class="role-badge">Jemaat</span>
-                </div>
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Profil Saya</h2>
+                <p>Kelola Informasi Pribadi Anda</p>
             </div>
+
+            <div class="profile-card">
+                <div class="profile-user-info">
+                    <div class="big-avatar">👨🏽</div>
+                    <div class="user-meta">
+                        <h3><?= $_SESSION['nama_lengkap']; ?></h3>
+                        <p><?= $data['email']; ?></p>
+                        <span class="role-badge">Jemaat</span>
+                    </div>
+                </div>
 
                 <form method="POST">
                     <div class="form-grid">
@@ -286,7 +293,7 @@ if (isset($_POST['simpan'])) {
                                 <div id="php_error_msg" style="background-color: #fef2f2; color: #dc2626; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171; font-weight: bold;">
                                     ⚠️ <?= $error_msg; ?>
                                 </div>
-                            <?php endif; ?>         
+                            <?php endif; ?>
                             <?php if ($success_msg != ""): ?>
                                 <div id="php_success_msg" style="background-color: #dcfce7; color: #16a34a; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #4ade80; font-weight: bold;">
                                     ✅ <?= $success_msg; ?>
@@ -297,7 +304,7 @@ if (isset($_POST['simpan'])) {
                                 <div class="form-group full-width">
                                     <label>Kata Sandi Saat Ini</label>
                                     <input type="password" name="password_lama" id="pass_lama" placeholder="Masukkan kata sandi lama Anda" onkeyup="cekAlurPassword()">
-                                    
+
                                     <small id="pesan_pass_lama" style="color: #dc2626; margin-top: 5px; display: none; font-weight: bold;">❌ Kata sandi saat ini salah!</small>
                                 </div>
                                 <div class="form-group">
@@ -322,8 +329,8 @@ if (isset($_POST['simpan'])) {
                         </button>
                     </div>
                 </form>
+            </div>
         </div>
-    </div>
     </div>
     <script>
         const passwordAsli = "<?= $data['password']; ?>";
@@ -343,7 +350,7 @@ if (isset($_POST['simpan'])) {
             let inputLama = document.getElementById('pass_lama');
             let inputBaru = document.getElementById('pass_baru');
             let inputKonfirm = document.getElementById('pass_konfirm');
-            
+
             let pesanPassLama = document.getElementById('pesan_pass_lama');
             let pesanMatch = document.getElementById('pesan_match');
 
@@ -352,9 +359,9 @@ if (isset($_POST['simpan'])) {
                     // Jika SALAH
                     pesanPassLama.style.display = "block";
                     pesanPassLama.style.color = "#dc2626";
-                    pesanPassLama.innerHTML = "❌ Kata sandi saat ini salah!"; 
+                    pesanPassLama.innerHTML = "❌ Kata sandi saat ini salah!";
                     inputLama.style.borderColor = "#dc2626";
-                    
+
                     inputBaru.disabled = true;
                     inputKonfirm.disabled = true;
                     inputBaru.value = "";
@@ -362,18 +369,18 @@ if (isset($_POST['simpan'])) {
                     pesanMatch.style.display = "none";
                 } else {
                     // Jika BENAR
-                    pesanPassLama.style.display = "block"; 
-                    pesanPassLama.style.color = "#16a34a"; 
-                    pesanPassLama.innerHTML = "✅ Kata sandi benar!"; 
-                    inputLama.style.borderColor = "#4ade80"; 
-                    
+                    pesanPassLama.style.display = "block";
+                    pesanPassLama.style.color = "#16a34a";
+                    pesanPassLama.innerHTML = "✅ Kata sandi benar!";
+                    inputLama.style.borderColor = "#4ade80";
+
                     inputBaru.disabled = false;
                 }
             } else {
                 // Jika input dikosongkan kembali
                 pesanPassLama.style.display = "none";
-                inputLama.style.borderColor = "#cbd5e1"; 
-                
+                inputLama.style.borderColor = "#cbd5e1";
+
                 inputBaru.disabled = true;
                 inputKonfirm.disabled = true;
                 inputBaru.value = "";
@@ -393,15 +400,15 @@ if (isset($_POST['simpan'])) {
                 if (inputBaru.value !== inputKonfirm.value) {
                     // Jika SALAH
                     pesanMatch.style.display = "block";
-                    pesanMatch.style.color = "#dc2626"; 
+                    pesanMatch.style.color = "#dc2626";
                     pesanMatch.innerHTML = "❌ Kata sandi tidak cocok!";
-                    inputKonfirm.style.borderColor = "#dc2626"; 
+                    inputKonfirm.style.borderColor = "#dc2626";
                 } else {
                     // Jika BENAR
                     pesanMatch.style.display = "block";
-                    pesanMatch.style.color = "#16a34a"; 
+                    pesanMatch.style.color = "#16a34a";
                     pesanMatch.innerHTML = "✅ Kata sandi cocok!";
-                    inputKonfirm.style.borderColor = "#4ade80"; 
+                    inputKonfirm.style.borderColor = "#4ade80";
                 }
             } else {
                 pesanMatch.style.display = "none";
@@ -410,4 +417,5 @@ if (isset($_POST['simpan'])) {
         }
     </script>
 </body>
+
 </html>
