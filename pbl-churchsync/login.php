@@ -186,10 +186,11 @@
                     <input type="password" name="password" id="password" placeholder="Masukkan password" required>
                 </div>
 
-                <div class="form-options">
+                <!-- Belum Dijalankan -->
+                <!-- <div class="form-options">
                     <label><input type="checkbox"> Remember me</label>
                     <a href="#">Reset Password?</a>
-                </div>
+                </div> -->
 
                 <button type="submit" class="btn-login">Sign In</button>
             </form>

@@ -457,6 +457,11 @@ if ($is_admin && isset($_GET['edit_id'])) {
                         ✅ Berhasil: Jadwal baru berhasil ditambahkan!
                     </div>
 
+                <?php elseif ($_GET['pesan'] == 'sukses_hapus_laporan'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        🗑️ Berhasil: Laporan ibadah telah dihapus dari sistem. Status kembali menjadi "Laporan Belum Dibuat".
+                    </div>
+
                 <?php endif; ?>
             <?php endif; ?>
 
@@ -641,7 +646,7 @@ if ($is_admin && isset($_GET['edit_id'])) {
                                         </div>
                                         <div class="modal-actions">
                                             <button type="button" class="btn-cancel" onclick="tutupModal('modalEditLaporan_<?= $row['id_jadwal']; ?>')">Batal</button>
-                                            <button type="submit" class="btn-add" style="background-color: #f59e0b; color: white;">Simpan Perubahan</button>
+                                            <button type="submit" class="btn-add" style="background-color: #ffc107; color: black;">Simpan Perubahan</button>
                                         </div>
                                     </form>
                                 </div>
