@@ -183,11 +183,14 @@ $query_pengumuman_dash = mysqli_query($conn, "
             <div class="navbar-right">
                 <?php include '../widget_notif.php'; ?>
 
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown(event)">
                     <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?></div>
-                    ▼
-                    <div class="dropdown-content">
+
+                    <div class="nav-user-name">
+                        <?= $_SESSION['nama_lengkap']; ?> ▼
+                    </div>
+
+                    <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_jemaat.php">Profil Saya</a>
                         <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
@@ -312,6 +315,42 @@ $query_pengumuman_dash = mysqli_query($conn, "
         </div>
     </div>
     <script>
+        function toggleDropdown(event) {
+            let profil = document.getElementById("profileDropdown");
+            if (profil) profil.classList.toggle("show");
+
+            let notif = document.getElementById("notifDropdown");
+            if (notif) notif.classList.remove("show");
+
+            event.stopPropagation();
+        }
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+
+            const profile = document.getElementById("profileDropdown");
+            profile.classList.toggle("show");
+
+            const notif = document.getElementById("notifDropdown");
+            if (notif) notif.classList.remove("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile-dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+            if (!event.target.closest('.noti-icon')) {
+                let notif = document.getElementById("notifDropdown");
+                if (notif) notif.classList.remove('show');
+            }
+        }
+
         function kirimUcapanJemaat(idPenerima, tombol) {
             let teksAsli = tombol.innerText;
             tombol.innerText = "Mengirim...";

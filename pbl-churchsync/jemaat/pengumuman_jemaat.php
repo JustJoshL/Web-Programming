@@ -138,13 +138,16 @@ $query_pengumuman = mysqli_query($conn, "
             <div class="navbar-right">
                 <?php include '../widget_notif.php'; ?>
 
-                <div class="user-profile-dropdown">
+                <div class="user-profile-dropdown" onclick="toggleDropdown(event)">
                     <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name"><?= $_SESSION['nama_lengkap']; ?></div>
-                    ▼
-                    <div class="dropdown-content">
+
+                    <div class="nav-user-name">
+                        <?= $_SESSION['nama_lengkap']; ?> ▼
+                    </div>
+
+                    <div class="dropdown-content" id="profileDropdown">
                         <a href="profil_jemaat.php">Profil Saya</a>
-                        <a href="login.php" class="logout-item">Logout</a>
+                        <a href="../logout.php" class="logout-item">Logout</a>
                     </div>
                 </div>
             </div>
@@ -280,6 +283,39 @@ align-items:center;
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleDropdown(event) {
+            event.stopPropagation();
+
+            const profile = document.getElementById("profileDropdown");
+            if (profile) {
+                profile.classList.toggle("show");
+            }
+
+            const notif = document.getElementById("notifDropdown");
+            if (notif) {
+                notif.classList.remove("show");
+            }
+        }
+
+        window.onclick = function(event) {
+
+            if (!event.target.closest('.user-profile-dropdown')) {
+                const profile = document.getElementById("profileDropdown");
+                if (profile) {
+                    profile.classList.remove("show");
+                }
+            }
+
+            if (!event.target.closest('.noti-container')) {
+                const notif = document.getElementById("notifDropdown");
+                if (notif) {
+                    notif.classList.remove("show");
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>

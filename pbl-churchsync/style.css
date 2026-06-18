@@ -292,3 +292,7 @@ body {
 .birthday-item .avatar {
     margin: 0 auto 10px;
 }
+
+.dropdown-content.show {
+    display: block;
+}
