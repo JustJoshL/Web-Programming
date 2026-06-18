@@ -1,5 +1,4 @@
 <?php
-// Pastikan variabel $conn udah jalan dari file yang manggil widget ini
 $nama_login_notif = $_SESSION['nama_lengkap'];
 
 /** @var mysqli $conn */

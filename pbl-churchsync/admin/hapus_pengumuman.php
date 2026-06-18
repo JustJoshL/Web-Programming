@@ -18,7 +18,7 @@ if ($nama_gambar != "") {
     $lokasi_file = "../uploads/" . $nama_gambar;
     
     if (file_exists($lokasi_file)) {
-        unlink($lokasi_file); // unlink() adalah fungsi PHP buat ngehapus/menghancurkan file fisik!
+        unlink($lokasi_file); // fungsi PHP buat ngehapus/menghancurkan file fisik
     }
 }
 

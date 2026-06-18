@@ -565,12 +565,10 @@ $query_pengumuman = mysqli_query($conn, "
             }
         }
 
-        // Script Dropdown Profil (Harus ada biar tetep jalan)
         function toggleDropdown(event) {
             let profil = document.getElementById("profileDropdown");
             if (profil) profil.classList.toggle("show");
 
-            // Tutup notif kalau ada
             if (typeof toggleNotif === 'function') {
                 let notif = document.getElementById("notifDropdown");
                 if (notif) notif.classList.remove("show");

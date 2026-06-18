@@ -67,16 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id_cabang = mysqli_real_escape_string($conn, $_POST['id_cabang']);
 
         if (!empty($id_cabang)) {
-            // CEK: Ada jemaatnya nggak di cabang ini?
+            // Cek ada jemaatnya nggak di cabang ini
             $cek_jemaat = mysqli_query($conn, "SELECT id_jemaat FROM jemaat WHERE id_cabang = '$id_cabang'");
 
             if (mysqli_num_rows($cek_jemaat) > 0) {
-                // Kalau masih ada jemaat, TENDANG BALIK! Ga boleh hapus sembarangan.
                 header("Location: cabang_admin.php?pesan=gagal_hapus_berisi");
                 exit();
             }
 
-            // Hapus Pendataan Ibadah yang nyangkut di cabang ini (udah diperbaikin typo kuerinya)
             mysqli_query($conn, "
                 DELETE FROM pendataan 
                 WHERE id_jadwal IN (
@@ -84,13 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 )
             ");
 
-            // Hapus Jadwal Ibadah di cabang ini
             mysqli_query($conn, "
                 DELETE FROM jadwal_ibadah 
                 WHERE id_cabang = '$id_cabang'
             ");
 
-            // Terakhir, baru hapus Gedung Cabangnya
             mysqli_query($conn, "
                 DELETE FROM cabang_gereja 
                 WHERE id_cabang='$id_cabang'

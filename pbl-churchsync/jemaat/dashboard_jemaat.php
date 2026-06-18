@@ -241,7 +241,6 @@ $query_pengumuman_dash = mysqli_query($conn, "
                 <div class="card">
                     <div class="card-header" style="margin-bottom: 15px;">
                         <h3>Pengumuman</h3>
-                        <!-- Ini tombol Lihat Semuanya! -->
                         <a href="pengumuman_jemaat.php" style="font-size: 12px; text-decoration: none; color: var(--primary-blue); font-weight: 600;">Lihat Semua &rarr;</a>
                     </div>
 

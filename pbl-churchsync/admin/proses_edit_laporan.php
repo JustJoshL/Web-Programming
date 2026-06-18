@@ -4,14 +4,13 @@ include '../koneksi.php';
 
 /** @var mysqli $conn */
 
-// Tangkap data Laporan dari Form Edit
+// Tangkap data Laporan dari form 
 $id_jadwal = $_POST['id_jadwal'];
 $kehadiran = $_POST['kehadiran'];
 $persembahan = $_POST['persembahan'];
 $perpuluhan = $_POST['perpuluhan']; 
 $catatan = $_POST['catatan']; 
 
-// === 1. UPDATE DATA DI TABEL PENDATAAN ===
 $query_update = "UPDATE pendataan SET 
                     jumlah_kehadiran = '$kehadiran', 
                     total_persembahan = '$persembahan', 
@@ -21,8 +20,6 @@ $query_update = "UPDATE pendataan SET
                   
 if(mysqli_query($conn, $query_update)) {
     
-    // === 2. UPDATE DATA MULTIPLE PELAYAN ===
-    // Trik paling ampuh: Hapus pelayan lama, lalu insert ulang yang baru
     mysqli_query($conn, "DELETE FROM penugasan_pelayan WHERE id_jadwal = '$id_jadwal'");
 
     if (isset($_POST['nama_pelayan']) && isset($_POST['peran_pelayan'])) {
@@ -43,7 +40,6 @@ if(mysqli_query($conn, $query_update)) {
         }
     }
 
-    // Balik ke halaman jadwal
     header("location: jadwal_admin_up.php?pesan=sukses_edit_laporan");
     
 } else {

@@ -397,7 +397,6 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                                         border-left: 4px solid var(--primary-yellow);
                                     ">
                                     <div>
-                                        <!-- Typo d-block udah dibenerin jadi display: block -->
                                         <strong style="color: var(--primary-blue); display: block; margin-bottom: 3px;"><?= $row_jdwal['kategori_ibadah']; ?></strong>
                                         <div style="font-size: 12px; color: #666;">
                                             🕒 <?= date('l, d M Y - H:i', strtotime($row_jdwal['waktu_pelaksanaan'])); ?> WIB

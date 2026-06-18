@@ -12,10 +12,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
 
 $id_cabang_user = $_SESSION['id_cabang'];
 
-// Kueri ke tabel cabang_gereja buat nyari nama cabangnya
+// Query ke tabel cabang_gereja buat nyari nama cabangnya
 $query_cabang = mysqli_query($conn, "SELECT nama_cabang FROM cabang_gereja WHERE id_cabang = '$id_cabang_user'");
 
-// Tarik datanya jadi array
+// Tarik data jadi array
 $data_cabang = mysqli_fetch_assoc($query_cabang);
 
 // Simpan nama cabangnya ke variabel biar gampang dipanggil di HTML

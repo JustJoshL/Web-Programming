@@ -53,7 +53,6 @@ if (isset($_FILES['gambar_pendukung']) && $_FILES['gambar_pendukung']['error'] =
             WHERE id_pengumuman='$id_pengumuman' AND id_cabang='$id_cabang'");
     }
 } else {
-    // Update database TANPA ganti gambar
     mysqli_query($conn, "UPDATE pengumuman SET 
         judul_pengumuman='$judul', 
         kategori_pengumuman='$kategori', 

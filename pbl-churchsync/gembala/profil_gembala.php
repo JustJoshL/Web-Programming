@@ -397,7 +397,6 @@ if (isset($_POST['simpan'])) {
                         inputBaru.disabled = false;
                     }
                 } else {
-                    // Jika input dikosongkan kembali
                     pesanPassLama.style.display = "none";
                     inputLama.style.borderColor = "#cbd5e1";
 

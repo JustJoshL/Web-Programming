@@ -11,7 +11,6 @@ $waktu = $_POST['waktu'];
 
 $waktu_pelaksanaan = $tanggal . " " . $waktu . ":00"; 
 
-// 🚨 JURUS 1: Cegah Input Tanggal Masa Lalu (Tetep dipakai ya, biar elegan)
 date_default_timezone_set('Asia/Jakarta');
 $tanggal_sekarang = date('Y-m-d');
 
@@ -20,7 +19,6 @@ if ($tanggal < $tanggal_sekarang) {
     exit();
 }
 
-// 🚨 JURUS 2: Kembali ke Awal (Cek 100% Data Kembar)
 $cek_dobel = mysqli_query($conn, "
     SELECT id_jadwal FROM jadwal_ibadah 
     WHERE kategori_ibadah = '$kategori' 
@@ -29,12 +27,10 @@ $cek_dobel = mysqli_query($conn, "
 ");
 
 if (mysqli_num_rows($cek_dobel) > 0) {
-    // Kalau 100% kembar identik, tendang balik!
     header("location: jadwal_admin_up.php?pesan=gagal_dobel");
     exit();
     
 } else {
-    // Kalau lolos, langsung INSERT
     $query_jadwal = "INSERT INTO jadwal_ibadah (kategori_ibadah, waktu_pelaksanaan, id_cabang) 
                      VALUES ('$kategori', '$waktu_pelaksanaan', '$id_cabang')";
 
