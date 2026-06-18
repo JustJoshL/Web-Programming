@@ -58,6 +58,37 @@ $query_pengumuman = mysqli_query($conn, "
     <link rel="stylesheet" href="../style.css">
 
     <style>
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 15px;
+        }
+
+        .sidebar-logo img {
+            width: 55px;
+            height: auto;
+            flex-shrink: 0;
+        }
+
+        .logo-text-wrapper {
+            font-family: Georgia, serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        .logo-text-wrapper span {
+            margin-top: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 2.1px;
+            text-transform: uppercase;
+            margin-left: 6px;
+        }
+
         .header-toolbar {
             display: flex;
             justify-content: space-between;

@@ -2,10 +2,41 @@
 <html lang="en">
 
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ChurchSync</title>
     <style>
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand img {
+            width: 110px;
+            height: auto;
+        }
+
+        .brand-text h1 {
+            font-family: Georgia, serif;
+            font-size: 72px;
+            font-weight: bold;
+            color: #ffc107;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-text p {
+            margin-top: 10px;
+            margin-left: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+        }
+
         :root {
             --primary-blue: #1e3264;
             --primary-yellow: #ffc107;
@@ -102,22 +133,25 @@
 
         .right-panel {
             width: 50%;
-            background-color: var(--primary-blue);
-            background-image: linear-gradient(rgba(30, 50, 100, 0.7), rgba(30, 50, 100, 0.7)), url('https://images.unsplash.com/photo-1548625361-ec8538749a2a?auto=format&fit=crop&q=80');
+            background-image:
+                linear-gradient(rgba(30, 50, 100, 0.75),
+                    rgba(30, 50, 100, 0.75)),
+                url('uploads/Dalam Gereja.jpg');
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
+
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: white;
         }
 
         .logo-text {
-            font-size: 48px;
-            font-weight: bold;
+            font-family: Georgia, serif;
+            font-size: 52px;
+            font-weight: 800;
             color: var(--primary-yellow);
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
         .error-message {
@@ -163,7 +197,18 @@
     </div>
 
     <div class="right-panel">
-        <h2 class="logo-text">CHURCHSYNC</h2>
+        <div class="brand-wrapper">
+
+            <div class="brand">
+                <img src="uploads/churchsync-logo.png" alt="Logo ChurchSync">
+
+                <div class="brand-text">
+                    <h1>ChurchSync</h1>
+                    <p>ALL ABOUT OUR CHURCH</p>
+                </div>
+            </div>
+
+        </div>
     </div>
 </body>
 
