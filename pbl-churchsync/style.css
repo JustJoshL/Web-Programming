@@ -215,61 +215,51 @@ body {
     background-color: #fef2f2;
 }
 
-/* Trik CSS: Munculin dropdown otomatis pas kontainer di-hover */
 .user-profile-dropdown:hover .dropdown-content {
     display: block;
 }
 
-/* CSS Logo Sidebar */
 .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px 20px;
-    overflow: hidden;
-    color: var(--primary-yellow);
-    /* Memastikan teksnya tetep putih di atas background biru */
+    gap: 12px;
+    padding: 20px 15px;
 }
 
 .sidebar-logo img {
-    width: 45px;
+    width: 55px;
     height: auto;
+    flex-shrink: 0;
 }
 
 .logo-text-wrapper {
-    font-family: 'Merriweather', serif;
-    font-weight: 900;
+    font-family: Georgia, serif;
     font-size: 24px;
-    line-height: 1.1;
-    position: relative;
-    z-index: 2;
-    letter-spacing: -0.5px;
+    font-weight: bold;
+    color: #ffc107;
 }
 
 .logo-text-wrapper span {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    display: block;
-    font-size: 10px;
+    margin-top: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 8px;
     font-weight: 600;
-    letter-spacing: 1.5px;
-    color: #cbd5e1;
-    margin-top: 3px;
+    color: white;
+    letter-spacing: 2.1px;
+    text-transform: uppercase;
+    margin-left: 6px;
 }
 
 .birthday-list {
     display: flex;
     gap: 20px;
     justify-content: flex-start;
-    /* 1. Ini mantra utama buat munculin scroll ke samping */
     overflow-x: auto;
-    /* 2. Kasih jarak bawah dikit biar scrollbar ga nabrak kotak */
     padding-bottom: 15px;
-    /* 3. Maksa elemen buat berbaris lurus ke kanan, ga turun ke bawah */
     flex-wrap: nowrap;
     scroll-behavior: smooth;
 }
 
-/* BONUS: Bikin scrollbar-nya estetik warna kuning gereja lu! */
 .birthday-list::-webkit-scrollbar {
     height: 8px;
 }

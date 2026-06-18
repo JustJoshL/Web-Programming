@@ -35,13 +35,11 @@ $q_ultah = mysqli_query($conn, "
     (SELECT COUNT(*) FROM ucapan_ultah WHERE id_penerima = j.id_jemaat AND tahun = YEAR(NOW())) as total_ucapan
     FROM jemaat j
     LEFT JOIN cabang_gereja c ON j.id_cabang = c.id_cabang
-    WHERE j.id_cabang = '$id_cabang_gembala' 
-    AND (
+    WHERE 
         (DATE_FORMAT(j.tanggal_lahir, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d'))
         OR 
         (DATE_FORMAT(NOW(), '%m-%d') > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d') AND 
         (DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') OR DATE_FORMAT(j.tanggal_lahir, '%m-%d') <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%m-%d')))
-    )
     ORDER BY 
         CASE WHEN DATE_FORMAT(j.tanggal_lahir, '%m-%d') >= DATE_FORMAT(NOW(), '%m-%d') THEN 0 ELSE 1 END,
         DATE_FORMAT(j.tanggal_lahir, '%m-%d') ASC
@@ -71,37 +69,6 @@ $bulan_nama = $bulan_indo[date('n') - 1];
     <title>Dashboard Gembala - ChurchSync</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 20px 15px;
-        }
-
-        .sidebar-logo img {
-            width: 55px;
-            height: auto;
-            flex-shrink: 0;
-        }
-
-        .logo-text-wrapper {
-            font-family: Georgia, serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffc107;
-        }
-
-        .logo-text-wrapper span {
-            margin-top: 6px;
-            font-family: Arial, sans-serif;
-            font-size: 8px;
-            font-weight: 600;
-            color: white;
-            letter-spacing: 2.1px;
-            text-transform: uppercase;
-            margin-left: 6px;
-        }
-
         .profile-banner {
             background-color: var(--primary-blue);
             border-radius: 12px;
@@ -376,7 +343,7 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <p style="color: #64748b; padding: 10px;">Tidak ada jemaat yang berulang tahun dalam 7 hari ke depan.</p>
+                        <p style="color: #64748b; padding: 10px; width: 100%; text-align: center;">Tidak ada jemaat yang berulang tahun dalam 7 hari ke depan.</p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -464,6 +431,29 @@ $bulan_nama = $bulan_indo[date('n') - 1];
                     }
                 }
             }
+        }
+
+        function kirimUcapanIni(idPenerima, tombol) {
+            let teksAsli = tombol.innerText;
+            tombol.innerText = "Mengirim...";
+            tombol.disabled = true;
+
+            fetch('../proses_kirim_ucapan.php?id_penerima=' + idPenerima)
+                .then(response => response.text())
+                .then(hasil => {
+                    if (hasil.trim() === 'sukses') {
+                        alert('🎉 Ucapan selamat ulang tahun berhasil dikirim!');
+                        location.reload();
+                    } else if (hasil.trim() === 'udah_pernah') {
+                        alert('Waduh, kamu udah ngirim ucapan ke jemaat ini tahun ini!');
+                        tombol.innerText = "Sudah Terkirim";
+                    } else {
+                        alert('Error: Gagal mengirim ucapan.');
+                        console.log(hasil);
+                        tombol.innerText = teksAsli;
+                        tombol.disabled = false;
+                    }
+                });
         }
     </script>
 </body>

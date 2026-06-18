@@ -4,7 +4,6 @@ include '../koneksi.php';
 
 /** @var mysqli $conn */
 
-// 1. SATPAM PINTU: Hanya Admin & Gembala yang boleh masuk
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'gembala_cabang')) {
     header("location:../login.php?pesan=belum_login");
     exit();
@@ -13,7 +12,6 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['rol
 $is_admin = ($_SESSION['role'] == 'admin');
 $is_gembala = ($_SESSION['role'] == 'gembala_cabang');
 
-// 2. FILTER JADWAL: Gembala cuma liat cabangnya sendiri, Admin liat semua cabang
 if ($is_gembala) {
     $id_cabang_gembala = $_SESSION['id_cabang'];
     $query_jadwal = mysqli_query($conn, "

@@ -88,19 +88,6 @@ $query_cabang = mysqli_query($conn, "
     <title>Data Jemaat - Admin ChurchSync</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 20px 15px;
-        }
-
-        .sidebar-logo img {
-            width: 55px;
-            height: auto;
-            flex-shrink: 0;
-        }
-
         .logo-text-wrapper {
             font-family: Georgia, serif;
             font-size: 24px;
