@@ -14,6 +14,10 @@ $judul    = $_POST['judul_pengumuman'];
 $kategori = $_POST['kategori_pengumuman'];
 $tanggal  = $_POST['tanggal_publikasi'];
 $isi      = $_POST['isi_pengumuman'];
+$status = $_POST['status_publikasi'];
+if ($status == 'Published' && $tanggal > date('Y-m-d')) {
+    $status = 'Draft';
+}
 
 $nama_gambar = "";
 
@@ -46,7 +50,7 @@ mysqli_query($conn, "
         '$judul',
         '$isi',
         '$tanggal',
-        'Published',
+        '$status',
         '$kategori',
         '$nama_gambar',
         'cabang',

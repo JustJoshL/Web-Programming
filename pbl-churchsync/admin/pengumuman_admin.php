@@ -9,6 +9,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 
 include '../koneksi.php';
 
+mysqli_query($conn, "
+    UPDATE pengumuman
+    SET status_publikasi = 'Published'
+    WHERE status_publikasi = 'Draft'
+    AND tanggal_publikasi <= CURDATE()
+");
+
 $query_pengumuman = mysqli_query($conn, "
     SELECT p.*, c.nama_cabang 
     FROM pengumuman p
@@ -384,7 +391,18 @@ if (isset($_GET['edit_id'])) {
                                     <?php endif; ?>
 
                                     <span class="badge-status <?= $row['status_publikasi'] == 'Published' ? 'status-Published' : 'status-Draft'; ?>">
-                                        <?= strtoupper($row['status_publikasi']); ?>
+
+                                        <?php
+                                        if (
+                                            $row['status_publikasi'] == 'Draft' &&
+                                            $row['tanggal_publikasi'] > date('Y-m-d')
+                                        ) {
+                                            echo 'TERJADWAL';
+                                        } else {
+                                            echo strtoupper($row['status_publikasi']);
+                                        }
+                                        ?>
+
                                     </span>
 
                                     • Dipublikasikan: <?= date('d M Y', strtotime($row['tanggal_publikasi'])); ?>

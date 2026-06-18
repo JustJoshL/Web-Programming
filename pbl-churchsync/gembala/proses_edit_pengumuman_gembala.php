@@ -18,6 +18,9 @@ $kategori = mysqli_real_escape_string($conn, $_POST['kategori_pengumuman']);
 $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal_publikasi']);
 $status = mysqli_real_escape_string($conn, $_POST['status_publikasi']);
 $isi = mysqli_real_escape_string($conn, $_POST['isi_pengumuman']);
+if ($status == 'Published' && $tanggal > date('Y-m-d')) {
+    $status = 'Draft';
+}
 
 $cek_milik = mysqli_query($conn, "SELECT gambar_pendukung FROM pengumuman WHERE id_pengumuman='$id_pengumuman' AND id_cabang='$id_cabang'");
 
@@ -30,11 +33,11 @@ $data_lama = mysqli_fetch_assoc($cek_milik);
 if (isset($_FILES['gambar_pendukung']) && $_FILES['gambar_pendukung']['error'] == 0) {
     $nama_file = $_FILES['gambar_pendukung']['name'];
     $tmp_file = $_FILES['gambar_pendukung']['tmp_name'];
-    
+
     $ext = pathinfo($nama_file, PATHINFO_EXTENSION);
     $nama_baru = time() . '_' . uniqid() . '.' . $ext;
     $path = '../uploads/' . $nama_baru;
-    
+
     if (move_uploaded_file($tmp_file, $path)) {
         if (!empty($data_lama['gambar_pendukung']) && file_exists('../uploads/' . $data_lama['gambar_pendukung'])) {
             unlink('../uploads/' . $data_lama['gambar_pendukung']);
@@ -61,4 +64,3 @@ if (isset($_FILES['gambar_pendukung']) && $_FILES['gambar_pendukung']['error'] =
 }
 
 header("location:pengumuman_gembala.php?pesan=edit_sukses");
-?>

@@ -10,6 +10,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
 
 include '../koneksi.php';
 
+mysqli_query($conn, "
+    UPDATE pengumuman
+    SET status_publikasi='Published'
+    WHERE status_publikasi='Draft'
+    AND tanggal_publikasi <= CURDATE()
+");
+
 $id_cabang = $_SESSION['id_cabang'];
 
 $filter = $_GET['filter'] ?? 'semua';
@@ -19,7 +26,10 @@ $cari   = $_GET['cari'] ?? '';
 $where = "
 (
     (target_tipe='umum' AND status_publikasi='Published')
-    OR (id_cabang='$id_cabang')
+    OR (
+        target_tipe='cabang'
+        AND id_cabang='$id_cabang'
+    )
 )
 ";
 

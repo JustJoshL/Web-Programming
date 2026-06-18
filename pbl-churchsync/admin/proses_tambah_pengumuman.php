@@ -13,6 +13,9 @@ $kategori = $_POST['kategori_pengumuman'];
 $tanggal  = $_POST['tanggal_publikasi'];
 $isi      = $_POST['isi_pengumuman'];
 $status   = $_POST['status_publikasi'];
+if ($status == 'Published' && $tanggal > date('Y-m-d')) {
+    $status = 'Draft';
+}
 $nama_gambar = "";
 $target_tipe = $_POST['target_tipe'];
 
@@ -63,4 +66,3 @@ if ($eksekusi) {
 } else {
     echo "Waduh, gagal nambahin pengumuman nih cuy: " . mysqli_error($conn);
 }
-?>
