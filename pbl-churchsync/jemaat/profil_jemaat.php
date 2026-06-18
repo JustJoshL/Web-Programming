@@ -1,3 +1,78 @@
+<?php
+session_start();
+
+/** @var mysqli $conn */
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'jemaat') {
+    header("location:../login.php?pesan=belum_login");
+    exit();
+}
+
+include '../koneksi.php';
+
+$id_jemaat = $_SESSION['id_jemaat'];
+
+$query_current = mysqli_query($conn, "SELECT * FROM jemaat WHERE id_jemaat='$id_jemaat'");
+$data = mysqli_fetch_assoc($query_current);
+
+$error_msg = "";
+$success_msg = "";
+
+if (isset($_POST['simpan'])) {
+    $nama = $_POST['nama_lengkap'];
+    $email = $_POST['email'];
+    $no_telp = $_POST['no_telp'];
+    $tanggal_lahir = $_POST['tanggal_lahir'];
+    $alamat = $_POST['alamat'];
+
+    $password_lama = $_POST['password_lama'] ?? '';
+    $password_baru = $_POST['password_baru'] ?? '';
+    $konfirmasi_password = $_POST['konfirmasi_password'] ?? '';
+
+    $update_password = false;
+
+    if (!empty($password_lama) || !empty($password_baru) || !empty($konfirmasi_password)) {
+        
+        if (empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
+            $error_msg = "Gagal: Harap lengkapi seluruh kolom kata sandi jika ingin mengubahnya!";
+        } 
+        elseif ($password_lama != $data['password']) {
+            $error_msg = "Gagal: Password saat ini salah!";
+        } 
+        elseif ($password_baru != $konfirmasi_password) {
+            $error_msg = "Gagal: Konfirmasi password tidak cocok!";
+        } 
+        // Lolos uji
+        else {
+            $update_password = true;
+        }
+    }
+
+    if (empty($error_msg)) {
+        if ($update_password) {
+            mysqli_query($conn, "
+                UPDATE jemaat
+                SET nama_lengkap='$nama', email='$email', password='$password_baru', no_telp='$no_telp', tanggal_lahir='$tanggal_lahir', alamat='$alamat'
+                WHERE id_jemaat='$id_jemaat'
+            ");
+            $data['password'] = $password_baru; 
+        } else {
+            mysqli_query($conn, "
+                UPDATE jemaat
+                SET nama_lengkap='$nama', email='$email', no_telp='$no_telp', tanggal_lahir='$tanggal_lahir', alamat='$alamat'
+                WHERE id_jemaat='$id_jemaat'
+            ");
+        }
+
+        $success_msg = "Profil berhasil diperbarui!";
+        
+        $data['nama_lengkap'] = $nama;
+        $data['email'] = $email;
+        $data['no_telp'] = $no_telp;
+        $data['tanggal_lahir'] = $tanggal_lahir;
+        $data['alamat'] = $alamat;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -146,18 +221,15 @@
         <div class="top-navbar">
             <div class="navbar-right">
                 <?php include '../widget_notif.php'; ?>
-
                 <div class="user-profile-dropdown">
-                    <div class="nav-avatar">👨🏽</div>
-                    <div class="nav-user-name">Justin Bieber</div>
-                    ▼
-                    <div class="dropdown-content">
-                        <a href="profil_jemaat.php">Profil Saya</a>
-                        <a href="login.php" class="logout-item">Logout</a>
+                    <div class="nav-avatar">⚡</div>
+                    <div class="nav-user-name">
+                        <?= $data['nama_lengkap']; ?> (<?= ucfirst($data['role']);?>) ▼
                     </div>
+                    <div class="dropdown-content"><a href="../logout.php">Logout</a></div>
                 </div>
             </div>
-        </div>
+        </div>    
 
     <div class="main-content">
         <div class="page-header">
@@ -175,42 +247,167 @@
                 </div>
             </div>
 
-            <form>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" value="justinbieber@gmail.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" value="Justin Bieber">
-                    </div>
-                    <div class="form-group">
-                        <label>Telepon (opsional)</label>
-                        <input type="text" value="08123456789">
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input type="text" value="02/12/1994">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Alamat</label>
-                        <input type="text" value="Jalan Senopati No 2, Cimahi, Bandung, Jawa Barat">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Cabang Gereja</label>
-                        <input type="text" value="GBI Maranatha Dago" disabled
-                            style="background-color: #e2e8f0; cursor: not-allowed;">
-                    </div>
-                </div>
+                <form method="POST">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text"
+                                name="nama_lengkap"
+                                value="<?= $data['nama_lengkap']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email"
+                                name="email"
+                                value="<?= $data['email']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="text"
+                                name="no_telp"
+                                value="<?= $data['no_telp']; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Lahir</label>
+                            <input type="date"
+                                name="tanggal_lahir"
+                                value="<?= $data['tanggal_lahir']; ?>">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Alamat</label>
+                            <textarea name="alamat"
+                                rows="4"><?= $data['alamat']; ?></textarea>
+                        </div>
+                        <div class="form-group full-width" style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                            <h4 style="color: var(--primary-blue); margin-bottom: 5px; font-size: 16px;">Ubah Kata Sandi (Opsional)</h4>
+                            <p style="font-size: 12px; color: var(--text-gray); margin-bottom: 15px;">Kosongkan jika tidak ingin mengubah kata sandi.</p>
 
-                <div class="form-actions">
-                    <a href="../login.html" class="btn-logout">Logout</a>
-                    <button type="button" class="btn-submit">Simpan Perubahan</button>
-                </div>
-            </form>
+                            <?php if ($error_msg != ""): ?>
+                                <div id="php_error_msg" style="background-color: #fef2f2; color: #dc2626; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171; font-weight: bold;">
+                                    ⚠️ <?= $error_msg; ?>
+                                </div>
+                            <?php endif; ?>         
+                            <?php if ($success_msg != ""): ?>
+                                <div id="php_success_msg" style="background-color: #dcfce7; color: #16a34a; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #4ade80; font-weight: bold;">
+                                    ✅ <?= $success_msg; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="form-grid" style="margin-bottom: 0;">
+                                <div class="form-group full-width">
+                                    <label>Kata Sandi Saat Ini</label>
+                                    <input type="password" name="password_lama" id="pass_lama" placeholder="Masukkan kata sandi lama Anda" onkeyup="cekAlurPassword()">
+                                    
+                                    <small id="pesan_pass_lama" style="color: #dc2626; margin-top: 5px; display: none; font-weight: bold;">❌ Kata sandi saat ini salah!</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Kata Sandi Baru</label>
+                                    <input type="password" name="password_baru" id="pass_baru" placeholder="Masukkan kata sandi baru" disabled onkeyup="cekAlurPassword()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Konfirmasi Kata Sandi Baru</label>
+                                    <input type="password" name="konfirmasi_password" id="pass_konfirm" placeholder="Ketik ulang kata sandi baru" disabled onkeyup="cekAlurPassword()">
+                                    <small id="pesan_match" style="color: #dc2626; margin-top: 5px; display: none; font-weight: bold;">❌ Kata sandi tidak cocok!</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="../logout.php" class="btn-logout">Logout</a>
+                        <button type="submit"
+                            name="simpan"
+                            class="btn-submit">
+                            Simpan Profil Jemaat
+                        </button>
+                    </div>
+                </form>
         </div>
     </div>
     </div>
+    <script>
+        const passwordAsli = "<?= $data['password']; ?>";
 
+        function cekAlurPassword() {
+
+            let phpSuccess = document.getElementById('php_success_msg');
+            if (phpSuccess) {
+                phpSuccess.style.display = "none";
+            }
+
+            let phpError = document.getElementById('php_error_msg');
+            if (phpError) {
+                phpError.style.display = "none";
+            }
+
+            let inputLama = document.getElementById('pass_lama');
+            let inputBaru = document.getElementById('pass_baru');
+            let inputKonfirm = document.getElementById('pass_konfirm');
+            
+            let pesanPassLama = document.getElementById('pesan_pass_lama');
+            let pesanMatch = document.getElementById('pesan_match');
+
+            if (inputLama.value.length > 0) {
+                if (inputLama.value !== passwordAsli) {
+                    // Jika SALAH
+                    pesanPassLama.style.display = "block";
+                    pesanPassLama.style.color = "#dc2626";
+                    pesanPassLama.innerHTML = "❌ Kata sandi saat ini salah!"; 
+                    inputLama.style.borderColor = "#dc2626";
+                    
+                    inputBaru.disabled = true;
+                    inputKonfirm.disabled = true;
+                    inputBaru.value = "";
+                    inputKonfirm.value = "";
+                    pesanMatch.style.display = "none";
+                } else {
+                    // Jika BENAR
+                    pesanPassLama.style.display = "block"; 
+                    pesanPassLama.style.color = "#16a34a"; 
+                    pesanPassLama.innerHTML = "✅ Kata sandi benar!"; 
+                    inputLama.style.borderColor = "#4ade80"; 
+                    
+                    inputBaru.disabled = false;
+                }
+            } else {
+                // Jika input dikosongkan kembali
+                pesanPassLama.style.display = "none";
+                inputLama.style.borderColor = "#cbd5e1"; 
+                
+                inputBaru.disabled = true;
+                inputKonfirm.disabled = true;
+                inputBaru.value = "";
+                inputKonfirm.value = "";
+                pesanMatch.style.display = "none";
+            }
+
+            if (inputBaru.value.length > 0) {
+                inputKonfirm.disabled = false;
+            } else {
+                inputKonfirm.disabled = true;
+                inputKonfirm.value = "";
+                pesanMatch.style.display = "none";
+            }
+
+            if (inputKonfirm.value.length > 0) {
+                if (inputBaru.value !== inputKonfirm.value) {
+                    // Jika SALAH
+                    pesanMatch.style.display = "block";
+                    pesanMatch.style.color = "#dc2626"; 
+                    pesanMatch.innerHTML = "❌ Kata sandi tidak cocok!";
+                    inputKonfirm.style.borderColor = "#dc2626"; 
+                } else {
+                    // Jika BENAR
+                    pesanMatch.style.display = "block";
+                    pesanMatch.style.color = "#16a34a"; 
+                    pesanMatch.innerHTML = "✅ Kata sandi cocok!";
+                    inputKonfirm.style.borderColor = "#4ade80"; 
+                }
+            } else {
+                pesanMatch.style.display = "none";
+                inputKonfirm.style.borderColor = "#cbd5e1";
+            }
+        }
+    </script>
+</body>
 </html>
