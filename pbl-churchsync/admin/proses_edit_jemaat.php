@@ -9,6 +9,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
     exit();
 }
 
+$role = $_POST['role'];
+    $id_cabang = $_POST['id_cabang'];
+    $id_jemaat = $_POST['id_jemaat']; // (ID jemaat yang lagi diedit)
+
+    if ($role == 'gembala_cabang') {
+        $cek_gembala = mysqli_query($conn, "SELECT id_jemaat FROM jemaat WHERE id_cabang = '$id_cabang' AND role = 'gembala_cabang' AND id_jemaat != '$id_jemaat'");
+        
+        if (mysqli_num_rows($cek_gembala) > 0) {
+            header("Location: data_jemaat_admin.php?pesan=cabang_penuh");
+            exit();
+        }
+    }
+
 $id_jemaat = $_GET['id'];
 
 $query = mysqli_query($conn, "

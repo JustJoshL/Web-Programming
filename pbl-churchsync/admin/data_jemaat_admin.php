@@ -20,6 +20,22 @@ if (isset($_POST['tambah'])) {
     $id_cabang = $_POST['id_cabang'];
     $role = $_POST['role'];
 
+    if (!empty($email)) {
+        $cek_email = mysqli_query($conn, "SELECT email FROM jemaat WHERE email = '$email'");
+        if (mysqli_num_rows($cek_email) > 0) {
+            header("Location: data_jemaat_admin.php?pesan=email_terdaftar");
+            exit();
+        }
+    }
+
+    if ($role == 'gembala_cabang') {
+        $cek_gembala = mysqli_query($conn, "SELECT id_jemaat FROM jemaat WHERE id_cabang = '$id_cabang' AND role = 'gembala_cabang'");
+        if (mysqli_num_rows($cek_gembala) > 0) {
+            header("Location: data_jemaat_admin.php?pesan=cabang_penuh");
+            exit();
+        }
+    }
+
     mysqli_query($conn, "
         INSERT INTO jemaat (
             nama_lengkap,
@@ -532,21 +548,24 @@ $query_cabang = mysqli_query($conn, "
                 </div>
             </div>
             <?php if (isset($_GET['pesan'])): ?>
-                <?php if ($_GET['pesan'] == 'email_terdaftar'): ?>
+                <?php if ($_GET['pesan'] == 'cabang_penuh'): ?>
                     <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
-                        🚨 Gagal: Email tersebut sudah terdaftar! Silakan gunakan email lain atau kosongkan centang akun.
+                        🚨 Gagal: Cabang yang Anda pilih SUDAH memiliki Gembala! Ubah posisi Gembala saat ini menjadi Jemaat terlebih dahulu jika ingin menggantinya.
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'email_terdaftar'): ?>
+                    <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; color: #b91c1c; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        🚨 Gagal: Email tersebut sudah terdaftar! Silakan gunakan email lain atau matikan centang akun.
                     </div>
                 <?php elseif ($_GET['pesan'] == 'sukses_tambah'): ?>
                     <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
-                        ✅ Berhasil: Data Jemaat baru berhasil ditambahkan!
+                        ✅ Berhasil: Data pengguna baru berhasil ditambahkan!
                     </div>
                 <?php elseif ($_GET['pesan'] == 'sukses_hapus'): ?>
                     <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
-                        🗑️ Berhasil: Data Jemaat telah dihapus dari sistem.
+                        🗑️ Berhasil: Data pengguna telah dihapus dari sistem.
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
-
             <?php while ($row = mysqli_fetch_assoc($query_jemaat)) : ?>
 
                 <div class="list-card">
