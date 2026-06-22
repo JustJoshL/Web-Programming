@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
-    header("location:../index.php");
+    header("location:../login.php");
     exit();
 }
 
@@ -14,18 +14,16 @@ $judul    = $_POST['judul_pengumuman'];
 $kategori = $_POST['kategori_pengumuman'];
 $tanggal  = $_POST['tanggal_publikasi'];
 $isi      = $_POST['isi_pengumuman'];
-$status = $_POST['status_publikasi'];
-
-$hari_ini = date('Y-m-d');
-if ($tanggal <= $hari_ini) {
-    $status = 'Published';
-} else {
-    $status = 'Draft'; 
-}
 
 $nama_gambar = "";
 $id_cabang = $_SESSION['id_cabang'];
 $hari_ini = date('Y-m-d');
+
+if ($tanggal <= $hari_ini) {
+    $status = 'Published';
+} else {
+    $status = 'Draft';
+}
 
 if ($_FILES['gambar_pendukung']['name'] != '') {
     $nama_gambar = time() . '_' . $_FILES['gambar_pendukung']['name'];
@@ -64,6 +62,6 @@ if ($eksekusi) {
     }
     exit();
 } else {
-    echo "Gagal: " . mysqli_error($conn);
+    echo "Gagal coy: " . mysqli_error($conn);
 }
 ?>

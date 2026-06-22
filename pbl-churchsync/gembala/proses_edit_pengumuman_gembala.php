@@ -3,7 +3,7 @@ session_start();
 
 /** @var mysqli $conn */
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
-    header("location:../index.php?pesan=belum_login");
+    header("location:../login.php?pesan=belum_login");
     exit();
 }
 
@@ -15,7 +15,6 @@ $id_pengumuman = mysqli_real_escape_string($conn, $_POST['id_pengumuman']);
 $judul = mysqli_real_escape_string($conn, $_POST['judul_pengumuman']);
 $kategori = mysqli_real_escape_string($conn, $_POST['kategori_pengumuman']);
 $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal_publikasi']);
-$status = mysqli_real_escape_string($conn, $_POST['status_publikasi']);
 $isi = mysqli_real_escape_string($conn, $_POST['isi_pengumuman']);
 
 $hari_ini = date('Y-m-d');
@@ -24,7 +23,6 @@ if ($tanggal <= $hari_ini) {
 } else {
     $status = 'Draft'; 
 }
-$hari_ini = date('Y-m-d');
 
 $cek_milik = mysqli_query($conn, "SELECT gambar_pendukung FROM pengumuman WHERE id_pengumuman='$id_pengumuman' AND id_cabang='$id_cabang'");
 

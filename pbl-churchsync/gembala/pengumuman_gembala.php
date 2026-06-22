@@ -453,14 +453,8 @@ $query_pengumuman = mysqli_query($conn, "
                 </div>
 
                 <div class="form-group">
-                    <label>Tanggal & Status</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="date" name="tanggal_publikasi" required style="flex: 1;">
-                        <select name="status_publikasi" required style="flex: 1;">
-                            <option value="Published">Published</option>
-                            <option value="Draft">Draft</option>
-                        </select>
-                    </div>
+                    <label>Tanggal Publikasi</label>
+                    <input type="date" name="tanggal_publikasi" min="<?= date('Y-m-d'); ?>" required style="width: 100%; box-sizing: border-box;">
                 </div>
 
                 <div class="form-group">
@@ -478,7 +472,7 @@ $query_pengumuman = mysqli_query($conn, "
 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalTambah').style.display='none'">Batal</button>
-                    <button type="submit" class="btn-add">Simpan</button>
+                    <button type="submit" class="btn-add">Publikasikan/Jadwalkan</button>
                 </div>
             </form>
         </div>
@@ -508,14 +502,8 @@ $query_pengumuman = mysqli_query($conn, "
                 </div>
 
                 <div class="form-group">
-                    <label>Tanggal & Status</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="date" id="edit_tanggal" name="tanggal_publikasi" required style="flex: 1;">
-                        <select id="edit_status" name="status_publikasi" required style="flex: 1;">
-                            <option value="Published">Published</option>
-                            <option value="Draft">Draft</option>
-                        </select>
-                    </div>
+                    <label>Tanggal Publikasi</label>
+                    <input type="date" id="edit_tanggal" name="tanggal_publikasi" min="<?= date('Y-m-d'); ?>" required style="width: 100%; box-sizing: border-box;">
                 </div>
 
                 <div class="form-group">
@@ -533,26 +521,25 @@ $query_pengumuman = mysqli_query($conn, "
 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalEdit').style.display='none'">Batal</button>
-                    <button type="submit" class="btn-add">Update</button>
+                    <button type="submit" class="btn-add">Update Data</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Buka modal edit & isi datanya otomatis
-        function bukaModalEdit(id, judul, kategori, tanggal, isi, status) {
+        // Buka modal edit (parameter status dihilangkan)
+        function bukaModalEdit(id, judul, kategori, tanggal, isi) {
             document.getElementById('edit_id').value = id;
             document.getElementById('edit_judul').value = judul;
             document.getElementById('edit_kategori').value = kategori;
             document.getElementById('edit_tanggal').value = tanggal;
             document.getElementById('edit_isi').value = isi;
-            document.getElementById('edit_status').value = status;
 
             document.getElementById('modalEdit').style.display = 'flex';
         }
 
-        // Ubah teks tombol upload kalo file udah dipilih
+        // JS lainnya tetep sama
         function updateFileName(inputId, textId) {
             let input = document.getElementById(inputId);
             let text = document.getElementById(textId);
