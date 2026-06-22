@@ -357,6 +357,18 @@ $query_pengumuman = mysqli_query($conn, "
                 </button>
             </div>
 
+            <?php if (isset($_GET['pesan'])): ?>
+                <?php if ($_GET['pesan'] == 'sukses_publish'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ✅ Berhasil: Pengumuman cabang langsung dipublikasikan karena tanggal pelaksanaannya adalah hari ini.
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'sukses_jadwal'): ?>
+                    <div style="background-color: #fefce8; border-left: 4px solid #eab308; color: #a16207; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ⏳ Berhasil: Pengumuman dijadwalkan untuk tanggal <?= !empty($_GET['tgl']) ? date('d M Y', strtotime($_GET['tgl'])) : ''; ?>. (Otomatis rilis saat hari H).
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+
             <form id="formFilter" method="GET" style="display:flex; gap:10px; margin-bottom:25px; flex-wrap:wrap; align-items:center;">
                 <input type="text" name="cari" placeholder="Cari pengumuman..." value="<?= htmlspecialchars($cari); ?>" style="padding:10px; border:1px solid #ccc; border-radius:6px; min-width:250px;">
                 <button type="submit" class="btn-add">Cari</button>
