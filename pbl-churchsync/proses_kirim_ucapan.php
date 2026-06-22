@@ -26,7 +26,6 @@ if (isset($_GET['id_penerima'])) {
         exit();
     }
 
-    // Cek apakah udah pernah ngucapin
     $q_cek = mysqli_query($conn, "SELECT * FROM ucapan_ultah WHERE id_pengirim = '$id_pengirim' AND id_penerima = '$id_penerima' AND tahun = '$tahun_sekarang'");
     
     ob_clean();
@@ -39,7 +38,6 @@ if (isset($_GET['id_penerima'])) {
         if ($q_insert) {
             echo "sukses";
         } else {
-            //  Biar tau kalau database-nya error karena tabel belum dibikin
             echo "Error DB: " . mysqli_error($conn);
         }
     }

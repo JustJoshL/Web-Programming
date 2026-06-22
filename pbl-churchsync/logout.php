@@ -6,6 +6,6 @@ $_SESSION = [];
 session_unset();
 session_destroy();
 
-header("location: login.php?pesan=logout");
+header("location: index.php?pesan=logout");
 exit();
 ?>
