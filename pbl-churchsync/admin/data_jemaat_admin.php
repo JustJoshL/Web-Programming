@@ -20,22 +20,6 @@ if (isset($_POST['tambah'])) {
     $id_cabang = $_POST['id_cabang'];
     $role = $_POST['role'];
 
-    if (!empty($email)) {
-        $cek_email = mysqli_query($conn, "SELECT email FROM jemaat WHERE email = '$email'");
-        if (mysqli_num_rows($cek_email) > 0) {
-            header("Location: data_jemaat_admin.php?pesan=email_terdaftar");
-            exit();
-        }
-    }
-
-    if ($role == 'gembala_cabang') {
-        $cek_gembala = mysqli_query($conn, "SELECT id_jemaat FROM jemaat WHERE id_cabang = '$id_cabang' AND role = 'gembala_cabang'");
-        if (mysqli_num_rows($cek_gembala) > 0) {
-            header("Location: data_jemaat_admin.php?pesan=cabang_penuh");
-            exit();
-        }
-    }
-
     mysqli_query($conn, "
         INSERT INTO jemaat (
             nama_lengkap,
