@@ -2,9 +2,8 @@
 session_start();
 
 /** @var mysqli $conn */
-
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 
@@ -18,9 +17,14 @@ $kategori = mysqli_real_escape_string($conn, $_POST['kategori_pengumuman']);
 $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal_publikasi']);
 $status = mysqli_real_escape_string($conn, $_POST['status_publikasi']);
 $isi = mysqli_real_escape_string($conn, $_POST['isi_pengumuman']);
-if ($status == 'Published' && $tanggal > date('Y-m-d')) {
-    $status = 'Draft';
+
+$hari_ini = date('Y-m-d');
+if ($tanggal <= $hari_ini) {
+    $status = 'Published';
+} else {
+    $status = 'Draft'; 
 }
+$hari_ini = date('Y-m-d');
 
 $cek_milik = mysqli_query($conn, "SELECT gambar_pendukung FROM pengumuman WHERE id_pengumuman='$id_pengumuman' AND id_cabang='$id_cabang'");
 
@@ -62,4 +66,10 @@ if (isset($_FILES['gambar_pendukung']) && $_FILES['gambar_pendukung']['error'] =
         WHERE id_pengumuman='$id_pengumuman' AND id_cabang='$id_cabang'");
 }
 
-header("location:pengumuman_gembala.php?pesan=edit_sukses");
+if ($tanggal <= $hari_ini) {
+    header("Location: pengumuman_gembala.php?pesan=sukses_publish");
+} else {
+    header("Location: pengumuman_gembala.php?pesan=sukses_jadwal&tgl=" . $tanggal);
+}
+exit();
+?>

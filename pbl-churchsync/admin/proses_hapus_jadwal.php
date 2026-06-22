@@ -5,7 +5,7 @@ include '../koneksi.php';
 /** @var mysqli $conn */
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 

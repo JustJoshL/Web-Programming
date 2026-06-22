@@ -4,7 +4,7 @@ session_start();
 /** @var mysqli $conn */
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 
@@ -607,7 +607,7 @@ $query_cabang = mysqli_query($conn, "
                             👁️
                         </button>
 
-                        <a href="edit_jemaat.php?id=<?= $row['id_jemaat']; ?>"
+                        <a href="proses_edit_jemaat.php?id=<?= $row['id_jemaat']; ?>"
                             class="btn-edit"
                             style="text-decoration:none;padding:8px 12px;border-radius:6px;">
                             Edit Data

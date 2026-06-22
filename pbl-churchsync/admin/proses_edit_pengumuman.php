@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 
@@ -14,11 +14,14 @@ $kategori = $_POST['kategori_pengumuman'];
 $tanggal  = $_POST['tanggal_publikasi'];
 $isi      = $_POST['isi_pengumuman'];
 $status   = $_POST['status_publikasi'];
+
 if ($status == 'Published' && $tanggal > date('Y-m-d')) {
     $status = 'Draft';
 }
 $gbr_lama = $_POST['gambar_lama'];
 $gbr_baru = $_FILES['gambar_baru']['name'];
+
+$hari_ini = date('Y-m-d');
 
 if ($gbr_baru != "") {
     $lokasi_sementara = $_FILES['gambar_baru']['tmp_name'];
@@ -49,7 +52,13 @@ if ($gbr_baru != "") {
 }
 
 if (mysqli_query($conn, $query)) {
-    header("location: pengumuman_admin.php?pesan=sukses_edit");
+    if ($tanggal <= $hari_ini) {
+        header("Location: pengumuman_admin.php?pesan=sukses_publish");
+    } else {
+        header("Location: pengumuman_admin.php?pesan=sukses_jadwal&tgl=" . $tanggal);
+    }
+    exit(); 
 } else {
     echo "Gagal total bung: " . mysqli_error($conn);
 }
+?>

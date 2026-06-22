@@ -8,10 +8,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
     exit();
 }
 
-
-
 if (isset($_GET['id_jadwal'])) {
     $id_jadwal = mysqli_real_escape_string($conn, $_GET['id_jadwal']);
+
+    mysqli_query($conn, "DELETE FROM penugasan_pelayan WHERE id_jadwal = '$id_jadwal'");
 
     $query_hapus = "DELETE FROM pendataan WHERE id_jadwal = '$id_jadwal'";
 

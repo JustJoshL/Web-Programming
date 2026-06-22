@@ -3,7 +3,7 @@ session_start();
 
 /** @var mysqli $conn */
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 
@@ -370,7 +370,17 @@ if (isset($_GET['edit_id'])) {
                 </div>
                 <button class="btn-add" onclick="document.getElementById('modalTambah').style.display='flex'">+ Buat Pengumuman Baru</button>
             </div>
-
+            <?php if (isset($_GET['pesan'])): ?>
+                <?php if ($_GET['pesan'] == 'sukses_publish'): ?>
+                    <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ✅ Berhasil: Pengumuman langsung dipublikasikan ke jemaat karena tanggal publikasinya adalah hari ini.
+                    </div>
+                <?php elseif ($_GET['pesan'] == 'sukses_jadwal'): ?>
+                    <div style="background-color: #fefce8; border-left: 4px solid #eab308; color: #a16207; padding: 12px 20px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; width: 100%;">
+                        ⏳ Berhasil: Pengumuman dijadwalkan untuk tanggal <?= !empty($_GET['tgl']) ? date('d M Y', strtotime($_GET['tgl'])) : ''; ?> (Berstatus Draft dan otomatis dipublikasikan saat hari H).
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
             <?php
             if (mysqli_num_rows($query_pengumuman) == 0) {
                 echo "<p style='text-align:center; color: var(--text-gray); padding: 40px; background: white; border-radius: 12px;'>Belum ada data pengumuman.</p>";
@@ -410,7 +420,7 @@ if (isset($_GET['edit_id'])) {
                             </div>
                             <div class="action-btns">
                                 <a href="pengumuman_admin.php?edit_id=<?= $row['id_pengumuman']; ?>" class="btn-edit">✏️ Edit</a>
-                                <a href="hapus_pengumuman.php?id=<?= $row['id_pengumuman']; ?>" class="btn-delete" onclick="return confirm('Yakin mau hapus pengumuman ini secara permanen?');">🗑️ Hapus</a>
+                                <a href="proses_hapus_pengumuman.php?id=<?= $row['id_pengumuman']; ?>" class="btn-delete" onclick="return confirm('Yakin mau hapus pengumuman ini secara permanen?');">🗑️ Hapus</a>
                             </div>
                         </div>
 
@@ -473,7 +483,7 @@ if (isset($_GET['edit_id'])) {
 
                 <div class="form-group">
                     <label>Tanggal Publikasi</label>
-                    <input type="date" name="tanggal_publikasi" required>
+                    <input type="date" name="tanggal_publikasi" min="<?= date('Y-m-d'); ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -491,7 +501,6 @@ if (isset($_GET['edit_id'])) {
 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="document.getElementById('modalTambah').style.display='none'">Batal</button>
-                    <button type="submit" name="status_publikasi" value="Draft" class="btn-draft">Draft</button>
                     <button type="submit" name="status_publikasi" value="Published" class="btn-add">Publikasikan</button>
                 </div>
             </form>
@@ -538,7 +547,7 @@ if (isset($_GET['edit_id'])) {
 
                 <div class="form-group">
                     <label>Tanggal Publikasi</label>
-                    <input type="date" name="tanggal_publikasi" value="<?= $data_edit['tanggal_publikasi'] ?? ''; ?>" required>
+                    <input type="date" name="tanggal_publikasi" min="<?= date('Y-m-d'); ?>" value="<?= $data_edit['tanggal_publikasi'] ?? ''; ?>" required>
                 </div>
 
                 <div class="form-group">
@@ -556,7 +565,6 @@ if (isset($_GET['edit_id'])) {
 
                 <div class="modal-actions">
                     <a href="pengumuman_admin.php" class="btn-cancel" style="text-decoration: none; text-align: center; line-height: 20px;">Batal</a>
-                    <button type="submit" name="status_publikasi" value="Draft" class="btn-draft">Simpan Draft</button>
                     <button type="submit" name="status_publikasi" value="Published" class="btn-add">Update</button>
                 </div>
             </form>

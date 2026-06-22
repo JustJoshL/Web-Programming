@@ -5,7 +5,7 @@ session_start();
 include '../koneksi.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'gembala_cabang') {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 

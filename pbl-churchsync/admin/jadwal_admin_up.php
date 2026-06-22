@@ -5,7 +5,7 @@ include '../koneksi.php';
 /** @var mysqli $conn */
 
 if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'gembala_cabang')) {
-    header("location:../login.php?pesan=belum_login");
+    header("location:../index.php?pesan=belum_login");
     exit();
 }
 
@@ -514,7 +514,7 @@ if ($is_admin && isset($_GET['edit_id'])) {
 
                             <?php if ($is_admin): ?>
                                 <a href="jadwal_admin_up.php?edit_id=<?= $row['id_jadwal']; ?>" class="btn-edit" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Edit</a>
-                                <a href="hapus_jadwal.php?id=<?= $row['id_jadwal']; ?>" class="btn-delete" onclick="return confirm('Yakin mau hapus jadwal ini?');" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Hapus</a>
+                                <a href="proses_hapus_jadwal.php?id=<?= $row['id_jadwal']; ?>" class="btn-delete" onclick="return confirm('Yakin mau hapus jadwal ini?');" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Hapus</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -563,7 +563,7 @@ if ($is_admin && isset($_GET['edit_id'])) {
 
                                 <div class="modal-actions" style="justify-content: space-between; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px;">
                                     <?php if ($is_gembala): ?>
-                                        <a href="hapus_laporan.php?id_jadwal=<?= $row['id_jadwal']; ?>" style="background: #fef2f2; color: #dc3545; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid #fecaca; font-size: 13px;" onclick="return confirm('Yakin mau hapus laporan ini?');">Hapus</a>
+                                        <a href="proses_hapus_laporan.php?id_jadwal=<?= $row['id_jadwal']; ?>" style="background: #fef2f2; color: #dc3545; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; border: 1px solid #fecaca; font-size: 13px;" onclick="return confirm('Yakin mau hapus laporan ini?');">Hapus</a>
                                         <div style="display: flex; gap: 8px;">
                                             <button type="button" style="background: #ffc107; color: black; padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 13px;" onclick="tutupModal('modalDetail_<?= $row['id_jadwal']; ?>'); bukaModal('modalEditLaporan_<?= $row['id_jadwal']; ?>')">Edit Laporan</button>
                                             <button type="button" class="btn-cancel" onclick="tutupModal('modalDetail_<?= $row['id_jadwal']; ?>')">Tutup</button>
